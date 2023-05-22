@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Airposrts.txt" />
+    <None Remove="Models\Aircrafts.txt" />
+    <None Remove="Models\Airlines.txt" />
+    <None Remove="Models\Airports.txt" />
+    <None Remove="Models\Cognomi.txt" />
+    <None Remove="Models\Nomi.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="MySql.EntityFrameworkCore" Version="7.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Models\Aircrafts.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\Airlines.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\Airports.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\Cognomi.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Models\Nomi.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

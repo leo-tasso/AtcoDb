@@ -1,0 +1,43 @@
+﻿Rome Fiumicino , FCO, LIRF
+Milan Malpensa , MXP, LIMC
+Milan Linate , LIN, LIML
+Naples International , NAP, LIRN
+Venice Marco Polo , VCE, LIPZ
+Bologna Guglielmo Marconi, BLQ, LIPE
+Florence , FLR, LIRQ
+Turin , TRN, LIMF
+Catania Fontanarossa , CTA, LICC
+Pisa International , PSA, LIRP
+Genoa Cristoforo Colombo , GOA, LIMJ
+Olbia Costa Smeralda , OLB, LIEO
+Cagliari Elmas , CAG, LIEE
+Verona Villafranca , VRN, LIPX
+Lamezia Terme , SUF, LICA
+Bari Karol Wojtyła , BRI, LIBD
+Alghero-Fertilia , AHO, LIEA
+Pescara , PSR, LIBP
+Reggio Calabria , REG, LICR
+Ancona Falconara , AOI, LIPY
+Brindisi – Salento , BDS, LIBR
+Perugia San Francesco d'Assisi, PEG, LIRZ
+Treviso , TSF, LIPH
+Parma , PMF, LIMP
+Lampedusa , LMP, LICD
+Crotone , CRV, LIBC
+Palermo-Boccadifalco , LICB
+Grosseto , GRS, LIRS
+Pantelleria , PNL, LICG
+Rimini – Federico Fellini, RMI, LIPR
+Reggio Emilia , REB, LIDE
+Falcone–Borsellino , PMO, LICJ
+Forlì International , FRL, LIPK
+Brescia Montichiari , VBS, LIPO
+Trieste , TRS, LIPQ
+Rieti , QRT, LIQN
+Capri , PRJ, LICP
+Padua , QPA, LIPU
+Aosta Valley , AOT, LIMW
+Ischia , ISH, LIKO
+Aviano Air Base, AVB, LIPA
+Siena-Ampugnano , SAY, LIQS
+Salerno Costa d'Amalfi, QSR, LIRI
