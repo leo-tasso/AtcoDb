@@ -90,7 +90,7 @@ namespace AtcoDbPopulator
                             NomeCentro = s
                         };
                         dbContext.Postaziones.Add(newPos);
-                        var newSettore = SectorFactory(dbContext,s + "Sec" + i, new[] { newPos, globalPos },null);
+                        var newSettore = SectorFactory(dbContext, s + "Sec" + i, new[] { newPos, globalPos }, null);
                         newSettores.Add(newSettore);
                     }
                     dbContext.SaveChanges();
@@ -105,7 +105,7 @@ namespace AtcoDbPopulator
             }
         }
 
-        private Settore SectorFactory(AtctablesContext dbContext,string id, Postazione[] postazioni, string? codAd)
+        private Settore SectorFactory(AtctablesContext dbContext, string id, Postazione[] postazioni, string? codAd)
         {
             Postazione newPos;
             Postazione globalPos;
@@ -120,6 +120,7 @@ namespace AtcoDbPopulator
             dbContext.Settores.Add(newSettore);
             if (codAd == null)
             {
+                IList<Punto> newPoints= new List<Punto>();
                 for (int j = 0; j < POINTSPERCENTER; j++)
                 {
                     Punto newWaypoint = new Punto()
@@ -129,8 +130,9 @@ namespace AtcoDbPopulator
                         PosLongitudine = Math.Round(random.NextDouble() * 12.5 + 6.6, 4).ToString(),
                         IdSettore = newSettore.IdSettore
                     };
-                    dbContext.Puntos.Add(newWaypoint);
+                    if(!newPoints.Any(p=>p.NomePunto.Equals(newWaypoint.NomePunto))&&dbContext.Puntos.Find(newWaypoint.NomePunto)==null) newPoints.Add(newWaypoint);
                 }
+                dbContext.Puntos.AddRange(newPoints);
             }
 
             return newSettore;
@@ -239,7 +241,7 @@ namespace AtcoDbPopulator
 
         private void InitializeApts()
         {
-            using (var dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
+            using (var dbContext = new AtctablesContext()) 
             {
                 foreach (var Airport in FetchAirportInfo(fullPath))
                 {
@@ -352,5 +354,76 @@ namespace AtcoDbPopulator
 
             }
         }
+
+        private void TrafficPopulatorbuttonClick(object sender, EventArgs e)
+        {
+            IList<string> Types = ReadFileToList("Models/Aircrafts.txt");
+            IList<string> Companies = ReadFileToList("Models/Airlines.txt");
+            DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
+
+            TimeSpan timeSpan = endDate - startDate;
+            int totalDays = timeSpan.Days;
+            using (var dbContext = new AtctablesContext())
+            {
+                for (int i = 0; i < TrafficCounter.Value; i++)
+                {
+                    var adTakeOff = dbContext.Aerodromos.ToList()[random.Next(0, dbContext.Aerodromos.Count())];
+                    var adLanding = dbContext.Aerodromos.ToList()[random.Next(0, dbContext.Aerodromos.Count())];
+
+                    var newPlane = new Aereomobile()
+                    {
+                        Tipo = Types[random.Next(0, Types.Count)],
+                        NumeroDiCoda = GenerateRandomString(1) + "-" + GenerateRandomString(4)
+                    };
+                    var newFlightPlan = new Pianodivolo()
+                    {
+                        Callsign = random.NextDouble() > 0.8
+                            ? newPlane.NumeroDiCoda
+                            : (Companies[random.Next(0, Companies.Count)] + random.Next(100, 10000).ToString()),
+                        Dof = startDate.AddDays(random.Next(totalDays)),
+                        NumeroDiCoda = newPlane.NumeroDiCoda,
+                        CodAdDecollo = adTakeOff.CodiceIcao,
+                        CodAdAtterraggio = adLanding.CodiceIcao,
+                        OrientamentoPistaDecollo = dbContext.Pista.First(p => p.CodAd.Equals(adTakeOff.CodiceIcao)).Orientamento,
+                        OrientamentoPistaAtterraggio = dbContext.Pista.First(p => p.CodAd.Equals(adLanding.CodiceIcao)).Orientamento,
+                    };
+                    dbContext.Aereomobiles.Add(newPlane);
+                    dbContext.Pianodivolos.Add(newFlightPlan);
+                    dbContext.SaveChanges();
+      
+                    foreach (var CrossingSector in dbContext.Settores.Where(s => s.CodAd == null).Take(random.Next(LONGESTFLIGHTSECTORS / 2, LONGESTFLIGHTSECTORS)).ToList())
+                    {
+                        var PointsInSector = dbContext.Puntos.Count(p => p.IdSettore.Equals(CrossingSector.IdSettore));
+                        IList<Punto> NewExtimatesNames = new List<Punto>();
+                        IList<Stimati> NewExtimates = new List<Stimati>();
+                        NewExtimatesNames = dbContext.Puntos
+                            .Where(p => p.IdSettore.Equals(CrossingSector.IdSettore))
+                            .Take(random.Next(PointsInSector/2))
+                            .ToList();
+
+                        for (int k = 0; k < NewExtimatesNames.Count; k++)
+                        {
+                            string NewExtimatesName = NewExtimatesNames[0].NomePunto;
+                            NewExtimatesNames.RemoveAt(0);
+                            var NewExtimate = new Stimati()
+                            {
+                                Callsign = newFlightPlan.Callsign,
+                                Dof = newFlightPlan.Dof,
+                                NomePunto = NewExtimatesName,
+                                OrarioStimato = NewExtimates.Any()? NewExtimates.Max(s=>s.OrarioStimato).AddSeconds(random.Next(100,1000)): newFlightPlan.Dof.AddSeconds(random.Next(86400))
+                            };
+                            NewExtimates.Add(NewExtimate);
+                        }
+                        dbContext.Stimatis.AddRange(NewExtimates);
+                        dbContext.SaveChanges();
+                    }
+                }
+            }
+        }
+
+        private const int CROSSINGPOINTSPERSECTOR = 10;
+
+        private const int LONGESTFLIGHTSECTORS = 10;
     }
 }

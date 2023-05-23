@@ -5,9 +5,9 @@ namespace AtcoDbPopulator.Models;
 
 public partial class Aerodromo
 {
-    public string AdLatitudine { get; set; } = null!;
+    public string AdLatitudine { get; set; }
 
-    public string AdLongitudine { get; set; } = null!;
+    public string AdLongitudine { get; set; }
 
     public string CodiceIcao { get; set; } = null!;
 

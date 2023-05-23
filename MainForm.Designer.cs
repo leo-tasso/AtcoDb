@@ -34,7 +34,10 @@
             button1 = new Button();
             button2 = new Button();
             wipeButton = new Button();
+            TrafficCounter = new NumericUpDown();
+            TrafficPopulatorbutton = new Button();
             ((System.ComponentModel.ISupportInitialize)ControllerNum).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)TrafficCounter).BeginInit();
             SuspendLayout();
             // 
             // PopulateControllers
@@ -96,11 +99,34 @@
             wipeButton.UseVisualStyleBackColor = true;
             wipeButton.Click += WipeButtonClick;
             // 
+            // TrafficCounter
+            // 
+            TrafficCounter.Increment = new decimal(new int[] { 25, 0, 0, 0 });
+            TrafficCounter.Location = new Point(186, 113);
+            TrafficCounter.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            TrafficCounter.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
+            TrafficCounter.Name = "TrafficCounter";
+            TrafficCounter.Size = new Size(151, 23);
+            TrafficCounter.TabIndex = 8;
+            TrafficCounter.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            // 
+            // TrafficPopulatorbutton
+            // 
+            TrafficPopulatorbutton.Location = new Point(12, 113);
+            TrafficPopulatorbutton.Name = "TrafficPopulatorbutton";
+            TrafficPopulatorbutton.Size = new Size(151, 23);
+            TrafficPopulatorbutton.TabIndex = 7;
+            TrafficPopulatorbutton.Text = "Populate Traffic";
+            TrafficPopulatorbutton.UseVisualStyleBackColor = true;
+            TrafficPopulatorbutton.Click += TrafficPopulatorbuttonClick;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(TrafficCounter);
+            Controls.Add(TrafficPopulatorbutton);
             Controls.Add(wipeButton);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -111,6 +137,7 @@
             Text = "Populate controllers";
             Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)ControllerNum).EndInit();
+            ((System.ComponentModel.ISupportInitialize)TrafficCounter).EndInit();
             ResumeLayout(false);
         }
 
@@ -122,5 +149,7 @@
         private Button button1;
         private Button button2;
         private Button wipeButton;
+        private NumericUpDown TrafficCounter;
+        private Button TrafficPopulatorbutton;
     }
 }

@@ -83,7 +83,7 @@ public partial class AtctablesContext : DbContext
                         j.ToTable("abilitazionesettori");
                         j.HasIndex(new[] { "IdSettore" }, "FKIdSettore");
                         j.IndexerProperty<string>("IdSettore")
-                            .HasMaxLength(1)
+                            .HasMaxLength(50)
                             .IsFixedLength();
                     });
         });
@@ -109,16 +109,10 @@ public partial class AtctablesContext : DbContext
             entity.ToTable("aerodromo");
 
             entity.Property(e => e.CodiceIcao)
-                .HasMaxLength(1)
-                .IsFixedLength();
-            entity.Property(e => e.AdLatitudine)
-                .HasMaxLength(1)
-                .IsFixedLength();
-            entity.Property(e => e.AdLongitudine)
-                .HasMaxLength(1)
+                .HasMaxLength(4)
                 .IsFixedLength();
             entity.Property(e => e.CodiceIata)
-                .HasMaxLength(1)
+                .HasMaxLength(3)
                 .IsFixedLength();
         });
 
@@ -128,7 +122,7 @@ public partial class AtctablesContext : DbContext
 
             entity.ToTable("centro");
 
-            entity.Property(e => e.NomeCentro).HasMaxLength(10);
+            entity.Property(e => e.NomeCentro).HasMaxLength(40);
         });
 
         modelBuilder.Entity<Controllore>(entity =>
@@ -144,7 +138,7 @@ public partial class AtctablesContext : DbContext
                 .IsFixedLength();
             entity.Property(e => e.Cognome).HasMaxLength(20);
             entity.Property(e => e.Nome).HasMaxLength(20);
-            entity.Property(e => e.NomeCentro).HasMaxLength(10);
+            entity.Property(e => e.NomeCentro).HasMaxLength(40);
 
             entity.HasOne(d => d.NomeCentroNavigation).WithMany(p => p.Controllores)
                 .HasForeignKey(d => d.NomeCentro)
@@ -183,7 +177,7 @@ public partial class AtctablesContext : DbContext
             entity.Property(e => e.NomePunto)
                 .HasMaxLength(5)
                 .IsFixedLength();
-            entity.Property(e => e.OrarioDiSorvolo).HasColumnType("date");
+            entity.Property(e => e.OrarioDiSorvolo).HasColumnType("datetime");
 
             entity.HasOne(d => d.NomePuntoNavigation).WithMany(p => p.Percorrenzas)
                 .HasForeignKey(d => d.NomePunto)
@@ -211,16 +205,16 @@ public partial class AtctablesContext : DbContext
             entity.Property(e => e.Callsign).HasMaxLength(30);
             entity.Property(e => e.Dof).HasColumnType("date");
             entity.Property(e => e.CodAdAtterraggio)
-                .HasMaxLength(1)
+                .HasMaxLength(4)
                 .IsFixedLength();
             entity.Property(e => e.CodAdDecollo)
-                .HasMaxLength(1)
+                .HasMaxLength(4)
                 .IsFixedLength();
             entity.Property(e => e.NumeroDiCoda)
                 .HasMaxLength(6)
                 .IsFixedLength();
-            entity.Property(e => e.OrarioAtterraggio).HasColumnType("date");
-            entity.Property(e => e.OrarioDecollo).HasColumnType("date");
+            entity.Property(e => e.OrarioAtterraggio).HasColumnType("datetime");
+            entity.Property(e => e.OrarioDecollo).HasColumnType("datetime");
             entity.Property(e => e.OrientamentoPistaAtterraggio)
                 .HasMaxLength(3)
                 .IsFixedLength();
@@ -251,7 +245,7 @@ public partial class AtctablesContext : DbContext
             entity.ToTable("pista");
 
             entity.Property(e => e.CodAd)
-                .HasMaxLength(1)
+                .HasMaxLength(4)
                 .IsFixedLength();
             entity.Property(e => e.Orientamento)
                 .HasMaxLength(3)
@@ -271,8 +265,8 @@ public partial class AtctablesContext : DbContext
 
             entity.HasIndex(e => e.NomeCentro, "FKUbicazione");
 
-            entity.Property(e => e.IdPostazione).HasMaxLength(10);
-            entity.Property(e => e.NomeCentro).HasMaxLength(10);
+            entity.Property(e => e.IdPostazione).HasMaxLength(50);
+            entity.Property(e => e.NomeCentro).HasMaxLength(40);
 
             entity.HasOne(d => d.NomeCentroNavigation).WithMany(p => p.Postaziones)
                 .HasForeignKey(d => d.NomeCentro)
@@ -295,9 +289,9 @@ public partial class AtctablesContext : DbContext
                         j.HasKey("IdPostazione", "IdSettore").HasName("PRIMARY");
                         j.ToTable("composizionesettori");
                         j.HasIndex(new[] { "IdSettore" }, "FKCom_Set");
-                        j.IndexerProperty<string>("IdPostazione").HasMaxLength(10);
+                        j.IndexerProperty<string>("IdPostazione").HasMaxLength(50);
                         j.IndexerProperty<string>("IdSettore")
-                            .HasMaxLength(1)
+                            .HasMaxLength(50)
                             .IsFixedLength();
                     });
         });
@@ -314,10 +308,8 @@ public partial class AtctablesContext : DbContext
                 .HasMaxLength(5)
                 .IsFixedLength();
             entity.Property(e => e.IdSettore)
-                .HasMaxLength(1)
+                .HasMaxLength(50)
                 .IsFixedLength();
-            entity.Property(e => e.PosLatitudine).HasPrecision(5, 5);
-            entity.Property(e => e.PosLongitudine).HasPrecision(5, 5);
 
             entity.HasOne(d => d.IdSettoreNavigation).WithMany(p => p.Puntos)
                 .HasForeignKey(d => d.IdSettore)
@@ -334,10 +326,10 @@ public partial class AtctablesContext : DbContext
             entity.HasIndex(e => e.CodAd, "FKAppartenenza");
 
             entity.Property(e => e.IdSettore)
-                .HasMaxLength(1)
+                .HasMaxLength(50)
                 .IsFixedLength();
             entity.Property(e => e.CodAd)
-                .HasMaxLength(1)
+                .HasMaxLength(4)
                 .IsFixedLength();
 
             entity.HasOne(d => d.CodAdNavigation).WithMany(p => p.Settores)
@@ -358,7 +350,7 @@ public partial class AtctablesContext : DbContext
             entity.Property(e => e.NomePunto)
                 .HasMaxLength(5)
                 .IsFixedLength();
-            entity.Property(e => e.OrarioStimato).HasColumnType("date");
+            entity.Property(e => e.OrarioStimato).HasColumnType("datetime");
 
             entity.HasOne(d => d.NomePuntoNavigation).WithMany(p => p.Stimatis)
                 .HasForeignKey(d => d.NomePunto)
@@ -386,7 +378,7 @@ public partial class AtctablesContext : DbContext
                 .IsFixedLength();
             entity.Property(e => e.Data).HasColumnType("date");
             entity.Property(e => e.CentroStandBy).HasMaxLength(10);
-            entity.Property(e => e.IdPostazione).HasMaxLength(10);
+            entity.Property(e => e.IdPostazione).HasMaxLength(50);
 
             entity.HasOne(d => d.CentroStandByNavigation).WithMany(p => p.Turnos)
                 .HasForeignKey(d => d.CentroStandBy)
