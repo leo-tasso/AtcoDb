@@ -7,6 +7,7 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
+
         /// <summary>
         ///  Clean up any resources being used.
         /// </summary>
@@ -36,6 +37,7 @@
             wipeButton = new Button();
             TrafficCounter = new NumericUpDown();
             TrafficPopulatorbutton = new Button();
+            RandomstateButton = new Button();
             ((System.ComponentModel.ISupportInitialize)ControllerNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)TrafficCounter).BeginInit();
             SuspendLayout();
@@ -120,11 +122,22 @@
             TrafficPopulatorbutton.UseVisualStyleBackColor = true;
             TrafficPopulatorbutton.Click += TrafficPopulatorbuttonClick;
             // 
+            // RandomstateButton
+            // 
+            RandomstateButton.Location = new Point(12, 142);
+            RandomstateButton.Name = "RandomstateButton";
+            RandomstateButton.Size = new Size(151, 23);
+            RandomstateButton.TabIndex = 9;
+            RandomstateButton.Text = "Random State Traffic";
+            RandomstateButton.UseVisualStyleBackColor = true;
+            RandomstateButton.Click += RandomstateButton_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(RandomstateButton);
             Controls.Add(TrafficCounter);
             Controls.Add(TrafficPopulatorbutton);
             Controls.Add(wipeButton);
@@ -135,7 +148,6 @@
             Controls.Add(PopulateControllers);
             Name = "MainForm";
             Text = "Populate controllers";
-            Load += MainForm_Load;
             ((System.ComponentModel.ISupportInitialize)ControllerNum).EndInit();
             ((System.ComponentModel.ISupportInitialize)TrafficCounter).EndInit();
             ResumeLayout(false);
@@ -151,5 +163,6 @@
         private Button wipeButton;
         private NumericUpDown TrafficCounter;
         private Button TrafficPopulatorbutton;
+        private Button RandomstateButton;
     }
 }

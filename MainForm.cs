@@ -57,12 +57,14 @@ namespace AtcoDbPopulator
             "AmendolaCTR"
         };
 
+
         public MainForm()
         {
             InitializeComponent();
         }
 
         private const int NUMPOS = 3;
+
 
         private void InitializeCenters()
         {
@@ -120,7 +122,7 @@ namespace AtcoDbPopulator
             dbContext.Settores.Add(newSettore);
             if (codAd == null)
             {
-                IList<Punto> newPoints= new List<Punto>();
+                IList<Punto> newPoints = new List<Punto>();
                 for (int j = 0; j < POINTSPERCENTER; j++)
                 {
                     Punto newWaypoint = new Punto()
@@ -130,7 +132,7 @@ namespace AtcoDbPopulator
                         PosLongitudine = Math.Round(random.NextDouble() * 12.5 + 6.6, 4).ToString(),
                         IdSettore = newSettore.IdSettore
                     };
-                    if(!newPoints.Any(p=>p.NomePunto.Equals(newWaypoint.NomePunto))&&dbContext.Puntos.Find(newWaypoint.NomePunto)==null) newPoints.Add(newWaypoint);
+                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && dbContext.Puntos.Find(newWaypoint.NomePunto) == null) newPoints.Add(newWaypoint);
                 }
                 dbContext.Puntos.AddRange(newPoints);
             }
@@ -241,9 +243,9 @@ namespace AtcoDbPopulator
 
         private void InitializeApts()
         {
-            using (var dbContext = new AtctablesContext()) 
+            using (var dbContext = new AtctablesContext())
             {
-                foreach (var Airport in FetchAirportInfo(fullPath))
+                foreach (var Airport in new AirportFetcher().FetchAirportInfo(fullPath))
                 {
                     AerodromoFactory(Airport, dbContext);
                     var newCenter = new Centro()
@@ -289,42 +291,6 @@ namespace AtcoDbPopulator
             dbContext.Aerodromos.Add(NewAirport);
             dbContext.Pista.Add(newPistum);
             return NewAirport;
-        }
-
-        public List<(string, string, string)> FetchAirportInfo(string filePath)
-        {
-            List<(string, string, string)> airportInfoList = new List<(string, string, string)>();
-
-            try
-            {
-                using (StreamReader reader = new StreamReader(filePath))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        string[] parts = line.Split(',');
-                        if (parts.Length >= 3)
-                        {
-                            string airportName = parts[0].Trim();
-                            string iataCode = parts[1].Trim();
-                            string icaoCode = parts[2].Trim();
-
-                            airportInfoList.Add((airportName, iataCode, icaoCode));
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error: " + e.Message);
-            }
-
-            return airportInfoList;
-        }
-
-        private void MainForm_Load(object sender, EventArgs e)
-        {
-
         }
 
         private void WipeButtonClick(object sender, EventArgs e)
@@ -391,7 +357,7 @@ namespace AtcoDbPopulator
                     dbContext.Aereomobiles.Add(newPlane);
                     dbContext.Pianodivolos.Add(newFlightPlan);
                     dbContext.SaveChanges();
-      
+
                     foreach (var CrossingSector in dbContext.Settores.Where(s => s.CodAd == null).Take(random.Next(LONGESTFLIGHTSECTORS / 2, LONGESTFLIGHTSECTORS)).ToList())
                     {
                         var PointsInSector = dbContext.Puntos.Count(p => p.IdSettore.Equals(CrossingSector.IdSettore));
@@ -399,7 +365,7 @@ namespace AtcoDbPopulator
                         IList<Stimati> NewExtimates = new List<Stimati>();
                         NewExtimatesNames = dbContext.Puntos
                             .Where(p => p.IdSettore.Equals(CrossingSector.IdSettore))
-                            .Take(random.Next(PointsInSector/2))
+                            .Take(random.Next(PointsInSector / 2))
                             .ToList();
 
                         for (int k = 0; k < NewExtimatesNames.Count; k++)
@@ -411,7 +377,7 @@ namespace AtcoDbPopulator
                                 Callsign = newFlightPlan.Callsign,
                                 Dof = newFlightPlan.Dof,
                                 NomePunto = NewExtimatesName,
-                                OrarioStimato = NewExtimates.Any()? NewExtimates.Max(s=>s.OrarioStimato).AddSeconds(random.Next(100,1000)): newFlightPlan.Dof.AddSeconds(random.Next(86400))
+                                OrarioStimato = NewExtimates.Any() ? NewExtimates.Max(s => s.OrarioStimato).AddSeconds(random.Next(100, 1000)) : newFlightPlan.Dof.AddSeconds(random.Next(86400))
                             };
                             NewExtimates.Add(NewExtimate);
                         }
@@ -425,5 +391,56 @@ namespace AtcoDbPopulator
         private const int CROSSINGPOINTSPERSECTOR = 10;
 
         private const int LONGESTFLIGHTSECTORS = 10;
+
+        private void RandomstateButton_Click(object sender, EventArgs e)
+        {
+            
+            using (AtctablesContext dbContext = new AtctablesContext())
+            {
+                IList<Stimati> passedExtimates = dbContext.Stimatis.Where(s => s.OrarioStimato < DateTime.Now.AddHours(2)).ToList(); //the max hour in advance
+                foreach (var extimate in passedExtimates)
+                {
+                    var overTime = extimate.OrarioStimato.AddSeconds(random.Next(0, 3000))
+                        .Subtract(new TimeSpan(0, 0, random.Next(0, 1000)));
+                    if (overTime < DateTime.Now)
+                    {
+                        var newPassed = new Percorrenza()
+                        {
+                            Callsign = extimate.Callsign,
+                            Dof = extimate.Dof,
+                            NomePunto = extimate.NomePunto,
+                            OrarioDiSorvolo = overTime
+                        };
+                        dbContext.Percorrenzas.Add(newPassed);
+                    }
+                }
+
+
+                dbContext.SaveChanges();
+                foreach (var firstPoint in dbContext.Percorrenzas.GroupBy(f => new { f.Dof, f.Callsign })
+                             .Select(g => g.OrderBy(f => f.OrarioDiSorvolo).First())
+                             .ToList())
+                {
+                    dbContext.Pianodivolos.Find(firstPoint.Callsign, firstPoint.Dof).OrarioDecollo =
+                        firstPoint.OrarioDiSorvolo.Subtract(new TimeSpan(0, random.Next(10, 30), random.Next(0, 60)));
+                }
+                dbContext.SaveChanges();
+                foreach (var flightPlan in dbContext.Pianodivolos.ToList())
+                {
+                    if (dbContext.Stimatis.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign) ==
+                        dbContext.Percorrenzas.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign))
+                    {
+                        var stimatoAtterraggio = dbContext.Percorrenzas
+                            .Where(p => p.Dof == flightPlan.Dof && p.Callsign == flightPlan.Callsign)
+                            .Max(p => p.OrarioDiSorvolo).AddSeconds(random.Next(100, 1000));
+                        if (stimatoAtterraggio<DateTime.Now)
+                        {
+                            flightPlan.OrarioAtterraggio = stimatoAtterraggio;
+                        }
+                    }
+                }
+                dbContext.SaveChanges();
+            }
+        }
     }
 }
