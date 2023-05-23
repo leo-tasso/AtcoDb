@@ -9,6 +9,7 @@ namespace AtcoDbPopulator
 {
     public partial class MainForm : Form
     {
+        private Player player;
         Random random = new Random();
         static string filePath = "Models/Airports.txt";
         string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
@@ -57,10 +58,10 @@ namespace AtcoDbPopulator
             "AmendolaCTR"
         };
 
-
         public MainForm()
         {
             InitializeComponent();
+            player = new Player(this);
         }
 
         private const int NUMPOS = 3;
@@ -177,6 +178,7 @@ namespace AtcoDbPopulator
 
         private void PopulateControllersClick(object sender, EventArgs e)
         {
+            PopulateControllers.Enabled = false;
             int newId = 0;
             using (AtctablesContext
                    dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
@@ -237,8 +239,11 @@ namespace AtcoDbPopulator
         }
         private void CentersPopulateClick(object sender, EventArgs e)
         {
+            CentersPopulate.Enabled = false;
             InitializeCenters();
             InitializeApts();
+            PopulateControllers.Enabled = true;
+            TrafficPopulatorbutton.Enabled = true;
         }
 
         private void InitializeApts()
@@ -319,10 +324,18 @@ namespace AtcoDbPopulator
                 dbContext.SaveChanges();
 
             }
+            CentersPopulate.Enabled = true;
+            PopulateControllers.Enabled = false;
+            TrafficPopulatorbutton.Enabled = false;
+            RandomstateButton.Enabled = false;
+            playButton.Enabled = false;
+            pauseButton.Enabled = false;
         }
 
         private void TrafficPopulatorbuttonClick(object sender, EventArgs e)
         {
+            PopulateControllers.Enabled = false;
+            TrafficPopulatorbutton.Enabled = false;
             IList<string> Types = ReadFileToList("Models/Aircrafts.txt");
             IList<string> Companies = ReadFileToList("Models/Airlines.txt");
             DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
@@ -386,6 +399,8 @@ namespace AtcoDbPopulator
                     }
                 }
             }
+
+            RandomstateButton.Enabled = true;
         }
 
         private const int CROSSINGPOINTSPERSECTOR = 10;
@@ -394,53 +409,33 @@ namespace AtcoDbPopulator
 
         private void RandomstateButton_Click(object sender, EventArgs e)
         {
-            
-            using (AtctablesContext dbContext = new AtctablesContext())
-            {
-                IList<Stimati> passedExtimates = dbContext.Stimatis.Where(s => s.OrarioStimato < DateTime.Now.AddHours(2)).ToList(); //the max hour in advance
-                foreach (var extimate in passedExtimates)
-                {
-                    var overTime = extimate.OrarioStimato.AddSeconds(random.Next(0, 3000))
-                        .Subtract(new TimeSpan(0, 0, random.Next(0, 1000)));
-                    if (overTime < DateTime.Now)
-                    {
-                        var newPassed = new Percorrenza()
-                        {
-                            Callsign = extimate.Callsign,
-                            Dof = extimate.Dof,
-                            NomePunto = extimate.NomePunto,
-                            OrarioDiSorvolo = overTime
-                        };
-                        dbContext.Percorrenzas.Add(newPassed);
-                    }
-                }
+            RandomstateButton.Enabled = false;
+            DateTime selecteDateTime = dateTimePicker1.Value;
+            selecteDateTime = selecteDateTime.Add(new TimeSpan(0, (int)HourPicker.Value, (int)MinutePicker.Value));
 
+            player.UpdateTill(selecteDateTime);
+            playButton.Enabled = true;
+            SpeedBar.Enabled = true;
 
-                dbContext.SaveChanges();
-                foreach (var firstPoint in dbContext.Percorrenzas.GroupBy(f => new { f.Dof, f.Callsign })
-                             .Select(g => g.OrderBy(f => f.OrarioDiSorvolo).First())
-                             .ToList())
-                {
-                    dbContext.Pianodivolos.Find(firstPoint.Callsign, firstPoint.Dof).OrarioDecollo =
-                        firstPoint.OrarioDiSorvolo.Subtract(new TimeSpan(0, random.Next(10, 30), random.Next(0, 60)));
-                }
-                dbContext.SaveChanges();
-                foreach (var flightPlan in dbContext.Pianodivolos.ToList())
-                {
-                    if (dbContext.Stimatis.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign) ==
-                        dbContext.Percorrenzas.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign))
-                    {
-                        var stimatoAtterraggio = dbContext.Percorrenzas
-                            .Where(p => p.Dof == flightPlan.Dof && p.Callsign == flightPlan.Callsign)
-                            .Max(p => p.OrarioDiSorvolo).AddSeconds(random.Next(100, 1000));
-                        if (stimatoAtterraggio<DateTime.Now)
-                        {
-                            flightPlan.OrarioAtterraggio = stimatoAtterraggio;
-                        }
-                    }
-                }
-                dbContext.SaveChanges();
-            }
         }
+
+        private void PauseButtonClick(object sender, EventArgs e)
+        {
+            player.pause();
+            pauseButton.Enabled = false;
+            playButton.Enabled = true;
+            SpeedBar.Enabled = true;
+
+        }
+
+        private void playButton_Click(object sender, EventArgs e)
+        {
+            player.play(SpeedBar.Value);
+            pauseButton.Enabled = true;
+            playButton.Enabled = false;
+            SpeedBar.Enabled = false;
+        }
+
+
     }
 }
