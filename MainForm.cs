@@ -39,7 +39,7 @@ namespace AtcoDbPopulator
             "LameziaCTR",
             "BrindisiCTR",
             "ReggioCTR",
-            "TorrejónCTR",
+            "TorrejÃ³nCTR",
             "TrevisoCTR",
             "PescaraCTR",
             "RiminiCTR",
@@ -421,7 +421,7 @@ namespace AtcoDbPopulator
 
         private void PauseButtonClick(object sender, EventArgs e)
         {
-            player.pause();
+            player.Pause();
             pauseButton.Enabled = false;
             playButton.Enabled = true;
             SpeedBar.Enabled = true;
@@ -430,7 +430,7 @@ namespace AtcoDbPopulator
 
         private void playButton_Click(object sender, EventArgs e)
         {
-            player.play(SpeedBar.Value);
+            player.Play(SpeedBar.Value);
             pauseButton.Enabled = true;
             playButton.Enabled = false;
             SpeedBar.Enabled = false;
