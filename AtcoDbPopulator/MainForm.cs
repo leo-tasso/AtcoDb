@@ -141,10 +141,11 @@ namespace AtcoDbPopulator
             int totalDays = timeSpan.Days;
             using (var dbContext = new AtctablesContext())
             {
+                var aerodromos = dbContext.Aerodromos.ToList();
                 for (int i = 0; i < this.trafficNum.Value; i++)
                 {
-                    var adTakeOff = dbContext.Aerodromos.ToList()[this.random.Next(0, dbContext.Aerodromos.Count())];
-                    var adLanding = dbContext.Aerodromos.ToList()[this.random.Next(0, dbContext.Aerodromos.Count())];
+                    var adTakeOff = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
+                    var adLanding = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
 
                     var newPlane = new Aereomobile()
                     {

@@ -26,4 +26,10 @@ public interface IPlayer
     /// Method to pause the situation.
     /// </summary>
     void Pause();
+
+    /// <summary>
+    /// Method to add a plane after the initialization.
+    /// </summary>
+    /// <param name="estimates">The estimates to add.</param>
+    void AddPlanes(IList<AtcoDbPopulator.Models.Stimati> estimates);
 }

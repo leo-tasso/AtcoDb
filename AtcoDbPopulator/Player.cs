@@ -11,9 +11,11 @@ using Models;
 /// </summary>
 public class Player : IPlayer
 {
-    private readonly Random random = new Random();
+    private readonly IDictionary<(string, DateTime), DateTime> futureTakeOffTimes = new Dictionary<(string, DateTime), DateTime>();
+    private readonly IDictionary<(string, DateTime), DateTime> futureLandingsTimes = new Dictionary<(string, DateTime), DateTime>();
     private readonly NormalDistribution normalDistribution = new NormalDistribution();
-    private IList<Percorrenza> futureOverpass = new List<Percorrenza>();
+    private List<Percorrenza> futureOverpass = new List<Percorrenza>();
+    private Thread? playThread;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Player"/> class.
@@ -37,8 +39,58 @@ public class Player : IPlayer
     {
         this.ActualDateTime = selectedDateTime;
         using var dbContext = new AtctablesContext();
-        IList<Stimati> passedEstimates = dbContext.Stimatis.ToList();
-        foreach (var estimate in passedEstimates)
+        this.AddPlanes(dbContext.Stimatis.ToList());
+        this.UpdateSystem(dbContext);
+    }
+
+    /// <inheritdoc/>
+    public void Play(int speed)
+    {
+        this.Cont = true;
+
+        this.playThread = new Thread(() =>
+        {
+            while (this.Cont)
+            {
+                this.ActualDateTime = this.ActualDateTime.AddSeconds(speed * 5);
+                using (AtctablesContext dbContext = new AtctablesContext())
+                {
+                    this.UpdateSystem(dbContext);
+                }
+
+                this.Mf.BeginInvoke(() =>
+                {
+                    this.Mf.dateTimePicker.Value = this.ActualDateTime;
+                    this.Mf.hourPicker.Value = this.ActualDateTime.Hour;
+                    this.Mf.minutePicker.Value = this.ActualDateTime.Minute;
+                });
+
+                Thread.Sleep(200);
+            }
+        });
+        this.playThread.Start();
+    }
+
+    /// <inheritdoc/>
+    public void Pause()
+    {
+        this.Cont = false;
+        if (this.playThread is { IsAlive: true })
+        {
+            this.playThread?.Join();
+        }
+    }
+
+    /// <summary>
+    /// Method to add one or more planes to the system, by giving his estimates (Flight plan must be already created),
+    /// hidden overflights, TO and Landing times will be generated and stored until reached.
+    /// </summary>
+    /// <param name="estimates">The list of new estimates.</param>
+    public void AddPlanes(IList<Stimati> estimates)
+    {
+        // Create a list of future hidden overpasses.
+        IList<Percorrenza> newFutureOverpasses = new List<Percorrenza>();
+        foreach (var estimate in estimates)
         {
             var overTime =
                 estimate.OrarioStimato.Add(new TimeSpan(
@@ -52,77 +104,56 @@ public class Player : IPlayer
                 NomePunto = estimate.NomePunto,
                 OrarioDiSorvolo = overTime,
             };
-            this.futureOverpass.Add(newPassed);
+            newFutureOverpasses.Add(newPassed);
         }
 
-        this.UpdatePassed(dbContext);
-        foreach (var firstPoint in dbContext.Percorrenzas.GroupBy(f => new { f.Dof, f.Callsign })
+        this.futureOverpass.AddRange(newFutureOverpasses);
+
+        // Create a TakeOff Time
+        foreach (var firstNewOverpass in newFutureOverpasses.GroupBy(f => new { f.Dof, f.Callsign })
                      .Select(g => g.OrderBy(f => f.OrarioDiSorvolo).First())
                      .ToList())
         {
-            dbContext.Pianodivolos.Find(firstPoint.Callsign, firstPoint.Dof) !.OrarioDecollo =
-                firstPoint.OrarioDiSorvolo.Subtract(new TimeSpan(0, this.random.Next(10, 30), this.random.Next(0, 60)));
+            this.futureTakeOffTimes.Add((firstNewOverpass.Callsign, firstNewOverpass.Dof), firstNewOverpass.OrarioDiSorvolo.Subtract(new TimeSpan(
+                0,
+                0,
+                (int)this.normalDistribution.GenerateNormalRandomNumber(120, 10))));
         }
 
-        dbContext.SaveChanges();
-        foreach (var flightPlan in dbContext.Pianodivolos.ToList())
+        // Create a Landing Time
+        foreach (var latestNewOverpass in newFutureOverpasses.GroupBy(f => new { f.Dof, f.Callsign })
+                     .Select(g => g.OrderByDescending(f => f.OrarioDiSorvolo).First())
+                     .ToList())
         {
-            if (dbContext.Stimatis.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign) ==
-                dbContext.Percorrenzas.Count(s => s.Dof == flightPlan.Dof && s.Callsign == flightPlan.Callsign))
-            {
-                var stimatoAtterraggio = dbContext.Percorrenzas
-                    .Where(p => p.Dof == flightPlan.Dof && p.Callsign == flightPlan.Callsign)
-                    .Max(p => p.OrarioDiSorvolo).AddSeconds(this.random.Next(100, 1000));
-                if (stimatoAtterraggio < this.ActualDateTime)
-                {
-                    flightPlan.OrarioAtterraggio = stimatoAtterraggio;
-                }
-            }
+            this.futureLandingsTimes.Add((latestNewOverpass.Callsign, latestNewOverpass.Dof), latestNewOverpass.OrarioDiSorvolo.AddSeconds((int)this.normalDistribution.GenerateNormalRandomNumber(120, 10)));
         }
-
-        dbContext.SaveChanges();
     }
 
-    /// <inheritdoc/>
-    public void Play(int speed)
+    private void UpdateSystem(AtctablesContext dbContext)
     {
-        this.Cont = true;
-
-        new Thread(() =>
-        {
-            while (this.Cont)
-            {
-                this.ActualDateTime = this.ActualDateTime.AddSeconds(speed);
-                using (AtctablesContext dbContext = new AtctablesContext())
-                {
-                    this.UpdatePassed(dbContext);
-
-                    // TODO update also airports
-                }
-
-                this.Mf.BeginInvoke(() =>
-                {
-                    this.Mf.dateTimePicker.Value = this.ActualDateTime;
-                    this.Mf.hourPicker.Value = this.ActualDateTime.Hour;
-                    this.Mf.minutePicker.Value = this.ActualDateTime.Minute;
-                });
-
-                Thread.Sleep(1000);
-            }
-        }).Start();
-    }
-
-    /// <inheritdoc/>
-    public void Pause()
-    {
-        this.Cont = false;
-    }
-
-    private void UpdatePassed(AtctablesContext dbContext)
-    {
+        // Update Overflights.
         var passed = this.futureOverpass.Where(p => p.OrarioDiSorvolo < this.ActualDateTime);
         this.futureOverpass = this.futureOverpass.Where(p => p.OrarioDiSorvolo >= this.ActualDateTime).ToList();
         dbContext.Percorrenzas.AddRange(passed);
+
+        // Update TOs.
+        var tookOff = this.futureTakeOffTimes.Where(p => p.Value < this.ActualDateTime).ToList();
+        foreach (var ongoingTakeOff in tookOff)
+        {
+            dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2) !.OrarioDecollo =
+                ongoingTakeOff.Value;
+            this.futureTakeOffTimes.Remove(ongoingTakeOff);
+        }
+
+        // Update Landings.
+        var landed = this.futureLandingsTimes.Where(p => p.Value < this.ActualDateTime).ToList();
+        foreach (var ongoingLanding in landed)
+        {
+            dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2) !.OrarioAtterraggio =
+                ongoingLanding.Value;
+            this.futureLandingsTimes.Remove(ongoingLanding);
+        }
+
         dbContext.SaveChanges();
     }
 }
