@@ -17,52 +17,8 @@ namespace AtcoDbPopulator
         private const string FilePath = "Models/Airports.txt";
         private const int NumPositionsPerCenter = 3;
         private const int PointsPerCenter = 30;
-
-        private static readonly IList<string> CentersNames = new List<string>()
-        {
-            "PadovaACC",
-            "MilanoACC",
-            "RomaACC",
-            "BrindisiACC",
-            "RomaCTR",
-            "MilanoCTR",
-            "TorinoCTR",
-            "NapoliCTR",
-            "VeneziaCTR",
-            "PalermoCTR",
-            "CataniaCTR",
-            "BolognaCTR",
-            "FirenzeCTR",
-            "GenovaCTR",
-            "PisaCTR",
-            "VeronaCTR",
-            "BergamoCTR",
-            "CagliariCTR",
-            "AnconaCTR",
-            "PerugiaCTR",
-            "TriesteCTR",
-            "LameziaCTR",
-            "BrindisiCTR",
-            "ReggioCTR",
-            "TorrejónCTR",
-            "TrevisoCTR",
-            "PescaraCTR",
-            "RiminiCTR",
-            "LampedusaCTR",
-            "ComisoCTR",
-            "GrossetoCTR",
-            "TrapaniCTR",
-            "SalernoCTR",
-            "BolzanoCTR",
-            "AlgheroCTR",
-            "VicenzaCTR",
-            "AvianoCTR",
-            "LatinaCTR",
-            "SigonellaCTR",
-            "DecimomannuCTR",
-            "AmendolaCTR",
-        };
-
+        private const int NumControllersEachCenter = 10;
+        private const int LongestFlightSectors = 10;
         private readonly Player player;
         private readonly Random random = new Random();
         private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
@@ -76,9 +32,15 @@ namespace AtcoDbPopulator
             this.player = new Player(this);
         }
 
+        private static int MaxControllerId(AtctablesContext dbContext)
+        {
+            return dbContext.Controllores.Any() ? dbContext.Controllores.ToList().Max(c => int.Parse(c.IdControllore)) : 0;
+        }
+
         private void InitializeCenters()
         {
-            foreach (string s in CentersNames)
+            IList<string> centersNames = FileToList.ReadFileToList("Models/Centers.txt");
+            foreach (string s in centersNames)
             {
                 using var dbContext = new AtctablesContext();
                 var newCenter = new Centro()
@@ -111,7 +73,7 @@ namespace AtcoDbPopulator
                 }
 
                 dbContext.SaveChanges();
-                for (int i = 1; i < Numcontrollerseachcenter; i++)
+                for (int i = 1; i < NumControllersEachCenter; i++)
                 {
                     this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
                 }
@@ -120,10 +82,6 @@ namespace AtcoDbPopulator
 
         private Settore SectorFactory(AtctablesContext dbContext, string id, Postazione[] positions, string? codAd)
         {
-            Postazione newPos;
-            Postazione globalPos;
-            string s;
-            int i;
             var newSettore = new Settore()
             {
                 IdPostaziones = positions,
@@ -138,9 +96,9 @@ namespace AtcoDbPopulator
                 {
                     Punto newWaypoint = new Punto()
                     {
-                        NomePunto = GenerateRandomString(5),
-                        PosLatitudine = Math.Round(random.NextDouble() * 12 + 35.5, 4).ToString(),
-                        PosLongitudine = Math.Round(random.NextDouble() * 12.5 + 6.6, 4).ToString(),
+                        NomePunto = RandomStringGenerator.GenerateRandomString(5),
+                        PosLatitudine = Math.Round((this.random.NextDouble() * 12) + 35.5, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        PosLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
                         IdSettore = newSettore.IdSettore,
                     };
                     if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && dbContext.Puntos.Find(newWaypoint.NomePunto) == null)
@@ -155,93 +113,54 @@ namespace AtcoDbPopulator
             return newSettore;
         }
 
-        private string GenerateRandomString(int length)
+        private void PopulateControllersButtonClick(object sender, EventArgs e)
         {
-            Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            return new string(Enumerable.Repeat(chars, length)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
-        }
-
-
-        private static int MaxControllerId(AtctablesContext dbContext)
-        {
-            return dbContext.Controllores.Any() ? dbContext.Controllores.ToList().Max(c => int.Parse(c.IdControllore)) : 0;
-        }
-
-        private const int Numcontrollerseachcenter = 10;
-
-
-        static List<string> ReadFileToList(string filePath)
-        {
-            List<string> strings = new List<string>();
-
-            try
-            {
-                // Read all lines from the file and add them to the list
-                strings.AddRange(File.ReadAllLines(filePath));
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine("An error occurred while reading the file: " + e.Message);
-            }
-
-            return strings;
-        }
-
-        private void PopulateControllersClick(object sender, EventArgs e)
-        {
-            PopulateControllers.Enabled = false;
-            int newId = 0;
+            this.populateControllersButton.Enabled = false;
+            int newId;
             using (AtctablesContext
                    dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
             {
                 newId = MaxControllerId(dbContext);
             }
 
-            for (int i = newId; i < ControllerNum.Value + newId; i++)
+            for (int i = newId; i < this.controllerNum.Value + newId; i++)
             {
-                using (var dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
+                using var dbContext = new AtctablesContext();
+                var newController = this.ControllerFactory(i + 1, dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
+
+                var startDate = new DateTime(DateTime.Now.Year, this.random.Next(1, 13), this.random.Next(1, 28));
+                var newHoliday = new Ferie()
                 {
-
-                    var newController = ControllerFactory(i + 1, dbContext.Centros.ToArray()[random.Next(0, CentersNames.Count)], dbContext);
-
-                    var inizioDate = new DateTime(DateTime.Now.Year, random.Next(1, 13), random.Next(1, 28));
-                    var newFerie = new Ferie()
-                    {
-                        IdControllore = (i + 1).ToString(),
-                        Inizio = inizioDate,
-                        Fine = inizioDate.AddDays(15)
-                    };
-
-                    dbContext.Feries.Add(newFerie);
-                    dbContext.SaveChanges();
-
-                    Console.WriteLine("New Controller added successfully.");
-                }
+                    IdControllore = (i + 1).ToString(),
+                    Inizio = startDate,
+                    Fine = startDate.AddDays(15),
+                };
+                dbContext.Controllores.Add(newController);
+                dbContext.Feries.Add(newHoliday);
+                dbContext.SaveChanges();
             }
         }
 
-        private Controllore ControllerFactory(int Id, Centro center, AtctablesContext dbContext)
+        private Controllore ControllerFactory(int id, Centro center, AtctablesContext dbContext)
         {
-            IList<string> names = ReadFileToList("Models/Nomi.txt");
-            IList<string> surnames = ReadFileToList("Models/Cognomi.txt");
+            IList<string> names = FileToList.ReadFileToList("Models/Names.txt");
+            IList<string> surnames = FileToList.ReadFileToList("Models/Surnames.txt");
             var newController = new Controllore()
             {
-                IdControllore = (Id).ToString(),
-                Nome = names[random.Next(0, names.Count)],
-                Cognome = surnames[random.Next(0, surnames.Count)],
-                NomeCentro = center.NomeCentro
+                IdControllore = id.ToString(),
+                Nome = names[this.random.Next(0, names.Count)],
+                Cognome = surnames[this.random.Next(0, surnames.Count)],
+                NomeCentro = center.NomeCentro,
             };
-            var newAbilitazione = new Abilitazione()
+            var newLicence = new Abilitazione()
             {
                 MatricolaAbilitazione = dbContext.Abilitaziones.Any() ? dbContext.Abilitaziones.Max(a => a.MatricolaAbilitazione) + 1 : 1,
                 IdControllore = newController.IdControllore,
-                IdSettores = SectorsInCenter(dbContext.Centros.Find(newController.NomeCentro))
+                IdSettores = this.SectorsInCenter(dbContext.Centros.Find(newController.NomeCentro) !),
             };
-            newController.Abilitaziones.Add(newAbilitazione);
+            newController.Abilitaziones.Add(newLicence);
             dbContext.Controllores.Add(newController);
-            dbContext.Abilitaziones.Add(newAbilitazione);
+            dbContext.Abilitaziones.Add(newLicence);
             dbContext.SaveChanges();
             return newController;
         }
@@ -250,65 +169,62 @@ namespace AtcoDbPopulator
         {
             return c.Postaziones.SelectMany(p => p.IdSettores).ToList();
         }
-        private void CentersPopulateClick(object sender, EventArgs e)
+
+        private void CentersPopulateButtonClick(object sender, EventArgs e)
         {
-            CentersPopulate.Enabled = false;
-            InitializeCenters();
-            InitializeApts();
-            PopulateControllers.Enabled = true;
-            TrafficPopulatorbutton.Enabled = true;
+            this.centersPopulateButton.Enabled = false;
+            this.InitializeCenters();
+            this.InitializeApts();
+            this.populateControllersButton.Enabled = true;
+            this.trafficPopulatorButton.Enabled = true;
         }
 
         private void InitializeApts()
         {
-            using (var dbContext = new AtctablesContext())
+            using var dbContext = new AtctablesContext();
+            foreach (var airport in new AirportFetcher().FetchAirportInfo(this.fullPath))
             {
-                foreach (var Airport in new AirportFetcher().FetchAirportInfo(fullPath))
+                this.AptFactory(airport, dbContext);
+                var newCenter = new Centro()
                 {
-                    AerodromoFactory(Airport, dbContext);
-                    var newCenter = new Centro()
-                    {
-                        NomeCentro = Airport.Item1 + "APT"
-                    };
-                    var newSector = new Settore()
-                    {
-                        IdSettore = Airport.Item1 + "APT" + "Sec",
-                        CodAd = Airport.Item3
-
-                    };
-                    var newPosition = new Postazione()
-                    {
-                        IdPostazione = Airport.Item1 + "APT" + "TWR",
-                        IdSettores = new[] { newSector },
-                        NomeCentro = newCenter.NomeCentro
-                    };
-                    dbContext.Postaziones.Add(newPosition);
-                    dbContext.Settores.Add(newSector);
-                    dbContext.Centros.Add(newCenter);
-                    ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
-                    dbContext.SaveChanges();
-                }
+                    NomeCentro = airport.Item1 + "APT",
+                };
+                var newSector = new Settore()
+                {
+                    IdSettore = airport.Item1 + "APT" + "Sec",
+                    CodAd = airport.Item3,
+                };
+                var newPosition = new Postazione()
+                {
+                    IdPostazione = airport.Item1 + "APT" + "TWR",
+                    IdSettores = new[] { newSector },
+                    NomeCentro = newCenter.NomeCentro,
+                };
+                dbContext.Postaziones.Add(newPosition);
+                dbContext.Settores.Add(newSector);
+                dbContext.Centros.Add(newCenter);
+                this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
+                dbContext.SaveChanges();
             }
         }
 
-        private Aerodromo AerodromoFactory((string, string, string) Airport, AtctablesContext dbContext)
+        private void AptFactory((string, string, string) airport, AtctablesContext dbContext)
         {
-            Aerodromo NewAirport = new Aerodromo()
+            var newAirport = new Aerodromo()
             {
-                AdLatitudine = Math.Round(random.NextDouble() * 12 + 35.5, 4).ToString(),
-                AdLongitudine = Math.Round(random.NextDouble() * 12.5 + 6.6, 4).ToString(),
-                CodiceIata = Airport.Item2,
-                CodiceIcao = Airport.Item3
+                AdLatitudine = Math.Round((this.random.NextDouble() * 12) + 35.5, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
+                AdLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
+                CodiceIata = airport.Item2,
+                CodiceIcao = airport.Item3,
             };
-            Pistum newPistum = new Pistum()
+            Pistum newRunway = new Pistum()
             {
-                CodAd = NewAirport.CodiceIcao,
-                Orientamento = random.Next(0, 19).ToString(),
-                Lunghezza = random.Next(999),
+                CodAd = newAirport.CodiceIcao,
+                Orientamento = this.random.Next(0, 19).ToString(),
+                Lunghezza = this.random.Next(999),
             };
-            dbContext.Aerodromos.Add(NewAirport);
-            dbContext.Pista.Add(newPistum);
-            return NewAirport;
+            dbContext.Aerodromos.Add(newAirport);
+            dbContext.Pista.Add(newRunway);
         }
 
         private void WipeButtonClick(object sender, EventArgs e)
@@ -335,22 +251,22 @@ namespace AtcoDbPopulator
 
                 // Save the changes to the database
                 dbContext.SaveChanges();
-
             }
-            CentersPopulate.Enabled = true;
-            PopulateControllers.Enabled = false;
-            TrafficPopulatorbutton.Enabled = false;
-            RandomstateButton.Enabled = false;
-            playButton.Enabled = false;
-            pauseButton.Enabled = false;
+
+            this.centersPopulateButton.Enabled = true;
+            this.populateControllersButton.Enabled = false;
+            this.trafficPopulatorButton.Enabled = false;
+            this.randomstateButton.Enabled = false;
+            this.playButton.Enabled = false;
+            this.pauseButton.Enabled = false;
         }
 
-        private void TrafficPopulatorbuttonClick(object sender, EventArgs e)
+        private void TrafficPopulatorButtonClick(object sender, EventArgs e)
         {
-            PopulateControllers.Enabled = false;
-            TrafficPopulatorbutton.Enabled = false;
-            IList<string> Types = ReadFileToList("Models/Aircrafts.txt");
-            IList<string> Companies = ReadFileToList("Models/Airlines.txt");
+            this.populateControllersButton.Enabled = false;
+            this.trafficPopulatorButton.Enabled = false;
+            IList<string> types = FileToList.ReadFileToList("Models/Aircrafts.txt");
+            IList<string> companies = FileToList.ReadFileToList("Models/Airlines.txt");
             DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
             DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
 
@@ -358,22 +274,22 @@ namespace AtcoDbPopulator
             int totalDays = timeSpan.Days;
             using (var dbContext = new AtctablesContext())
             {
-                for (int i = 0; i < TrafficCounter.Value; i++)
+                for (int i = 0; i < this.trafficNum.Value; i++)
                 {
-                    var adTakeOff = dbContext.Aerodromos.ToList()[random.Next(0, dbContext.Aerodromos.Count())];
-                    var adLanding = dbContext.Aerodromos.ToList()[random.Next(0, dbContext.Aerodromos.Count())];
+                    var adTakeOff = dbContext.Aerodromos.ToList()[this.random.Next(0, dbContext.Aerodromos.Count())];
+                    var adLanding = dbContext.Aerodromos.ToList()[this.random.Next(0, dbContext.Aerodromos.Count())];
 
                     var newPlane = new Aereomobile()
                     {
-                        Tipo = Types[random.Next(0, Types.Count)],
-                        NumeroDiCoda = GenerateRandomString(1) + "-" + GenerateRandomString(4)
+                        Tipo = types[this.random.Next(0, types.Count)],
+                        NumeroDiCoda = RandomStringGenerator.GenerateRandomString(1) + "-" + RandomStringGenerator.GenerateRandomString(4),
                     };
                     var newFlightPlan = new Pianodivolo()
                     {
-                        Callsign = random.NextDouble() > 0.8
+                        Callsign = this.random.NextDouble() > 0.8
                             ? newPlane.NumeroDiCoda
-                            : (Companies[random.Next(0, Companies.Count)] + random.Next(100, 10000).ToString()),
-                        Dof = startDate.AddDays(random.Next(totalDays)),
+                            : (companies[this.random.Next(0, companies.Count)] + this.random.Next(100, 10000).ToString()),
+                        Dof = startDate.AddDays(this.random.Next(totalDays)),
                         NumeroDiCoda = newPlane.NumeroDiCoda,
                         CodAdDecollo = adTakeOff.CodiceIcao,
                         CodAdAtterraggio = adLanding.CodiceIcao,
@@ -384,71 +300,63 @@ namespace AtcoDbPopulator
                     dbContext.Pianodivolos.Add(newFlightPlan);
                     dbContext.SaveChanges();
 
-                    foreach (var CrossingSector in dbContext.Settores.Where(s => s.CodAd == null).Take(random.Next(LONGESTFLIGHTSECTORS / 2, LONGESTFLIGHTSECTORS)).ToList())
+                    foreach (var crossingSector in dbContext.Settores.Where(s => s.CodAd == null).Take(this.random.Next(LongestFlightSectors / 2, LongestFlightSectors)).ToList())
                     {
-                        var PointsInSector = dbContext.Puntos.Count(p => p.IdSettore.Equals(CrossingSector.IdSettore));
-                        IList<Punto> NewExtimatesNames = new List<Punto>();
-                        IList<Stimati> NewExtimates = new List<Stimati>();
-                        NewExtimatesNames = dbContext.Puntos
-                            .Where(p => p.IdSettore.Equals(CrossingSector.IdSettore))
-                            .Take(random.Next(PointsInSector / 2))
+                        var pointsInSector = dbContext.Puntos.Count(p => p.IdSettore.Equals(crossingSector.IdSettore));
+                        IList<Stimati> newEstimates = new List<Stimati>();
+                        IList<Punto> newEstimatesNames = dbContext.Puntos
+                            .Where(p => p.IdSettore.Equals(crossingSector.IdSettore))
+                            .Take(this.random.Next(pointsInSector / 2))
                             .ToList();
 
-                        for (int k = 0; k < NewExtimatesNames.Count; k++)
+                        for (int k = 0; k < newEstimatesNames.Count; k++)
                         {
-                            string NewExtimatesName = NewExtimatesNames[0].NomePunto;
-                            NewExtimatesNames.RemoveAt(0);
-                            var NewExtimate = new Stimati()
+                            string newEstimatesName = newEstimatesNames[0].NomePunto;
+                            newEstimatesNames.RemoveAt(0);
+                            var newEstimate = new Stimati()
                             {
                                 Callsign = newFlightPlan.Callsign,
                                 Dof = newFlightPlan.Dof,
-                                NomePunto = NewExtimatesName,
-                                OrarioStimato = NewExtimates.Any() ? NewExtimates.Max(s => s.OrarioStimato).AddSeconds(random.Next(100, 1000)) : newFlightPlan.Dof.AddSeconds(random.Next(86400))
+                                NomePunto = newEstimatesName,
+                                OrarioStimato = newEstimates.Any() ? newEstimates.Max(s => s.OrarioStimato).AddSeconds(this.random.Next(100, 1000)) : newFlightPlan.Dof.AddSeconds(this.random.Next(86400)),
                             };
-                            NewExtimates.Add(NewExtimate);
+                            newEstimates.Add(newEstimate);
                         }
-                        dbContext.Stimatis.AddRange(NewExtimates);
+
+                        dbContext.Stimatis.AddRange(newEstimates);
                         dbContext.SaveChanges();
                     }
                 }
             }
 
-            RandomstateButton.Enabled = true;
+            this.randomstateButton.Enabled = true;
         }
 
-        private const int CROSSINGPOINTSPERSECTOR = 10;
-
-        private const int LONGESTFLIGHTSECTORS = 10;
-
-        private void RandomstateButton_Click(object sender, EventArgs e)
+        private void RandomStateButton_Click(object sender, EventArgs e)
         {
-            RandomstateButton.Enabled = false;
-            DateTime selecteDateTime = dateTimePicker1.Value;
-            selecteDateTime = selecteDateTime.Add(new TimeSpan(0, (int)HourPicker.Value, (int)MinutePicker.Value));
+            this.randomstateButton.Enabled = false;
+            DateTime selectedDateTime = this.dateTimePicker.Value;
+            selectedDateTime = selectedDateTime.Add(new TimeSpan(0, (int)this.hourPicker.Value, (int)this.minutePicker.Value));
 
-            player.UpdateTill(selecteDateTime);
-            playButton.Enabled = true;
-            SpeedBar.Enabled = true;
-
+            this.player.UpdateTill(selectedDateTime);
+            this.playButton.Enabled = true;
+            this.speedBar.Enabled = true;
         }
 
         private void PauseButtonClick(object sender, EventArgs e)
         {
-            player.Pause();
-            pauseButton.Enabled = false;
-            playButton.Enabled = true;
-            SpeedBar.Enabled = true;
-
+            this.player.Pause();
+            this.pauseButton.Enabled = false;
+            this.playButton.Enabled = true;
+            this.speedBar.Enabled = true;
         }
 
-        private void playButton_Click(object sender, EventArgs e)
+        private void PlayButton_Click(object sender, EventArgs e)
         {
-            player.Play(SpeedBar.Value);
-            pauseButton.Enabled = true;
-            playButton.Enabled = false;
-            SpeedBar.Enabled = false;
+            this.player.Play(this.speedBar.Value);
+            this.pauseButton.Enabled = true;
+            this.playButton.Enabled = false;
+            this.speedBar.Enabled = false;
         }
-
-
     }
 }

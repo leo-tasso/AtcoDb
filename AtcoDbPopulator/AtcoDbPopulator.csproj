@@ -6,15 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Airposrts.txt" />
     <None Remove="Models\Aircrafts.txt" />
     <None Remove="Models\Airlines.txt" />
     <None Remove="Models\Airports.txt" />
-    <None Remove="Models\Cognomi.txt" />
-    <None Remove="Models\Nomi.txt" />
+    <None Remove="Models\Surnames.txt" />
+    <None Remove="Models\Names.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,10 +42,16 @@
     <Content Include="Models\Airports.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Models\Cognomi.txt">
+    <None Remove="Models\Centers.txt" />
+    <Content Include="Models\Centers.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Models\Nomi.txt">
+    <None Remove="Models\Names.txt" />
+    <Content Include="Models\Names.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Models\Surnames.txt" />
+    <Content Include="Models\Surnames.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

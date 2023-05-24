@@ -102,9 +102,9 @@ public class Player : IPlayer
 
                 this.Mf.BeginInvoke(() =>
                 {
-                    this.Mf.dateTimePicker1.Value = this.ActualDateTime;
-                    this.Mf.HourPicker.Value = this.ActualDateTime.Hour;
-                    this.Mf.MinutePicker.Value = this.ActualDateTime.Minute;
+                    this.Mf.dateTimePicker.Value = this.ActualDateTime;
+                    this.Mf.hourPicker.Value = this.ActualDateTime.Hour;
+                    this.Mf.minutePicker.Value = this.ActualDateTime.Minute;
                 });
 
                 Thread.Sleep(1000);
