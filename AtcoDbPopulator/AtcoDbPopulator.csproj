@@ -50,4 +50,9 @@
     </Content>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="stylecop.json" />
+    <AdditionalFiles Include="stylecop.json" />
+  </ItemGroup>
+
 </Project>

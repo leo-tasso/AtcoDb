@@ -1,19 +1,24 @@
-using AtcoDbPopulator.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Linq;
-using MySqlX.XDevAPI;
+// <copyright file="MainForm.cs" company="Leonardo Tassinari">
+// Copyright (c) Leonardo Tassinari. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace AtcoDbPopulator
 {
+    using System.Linq;
+    using AtcoDbPopulator.Models;
+    using Microsoft.EntityFrameworkCore;
+
+    /// <summary>
+    /// MainForm of the Populator.
+    /// </summary>
     public partial class MainForm : Form
     {
-        private Player player;
-        Random random = new Random();
-        static string filePath = "Models/Airports.txt";
-        string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filePath);
-        public static IList<string> NomiCentri = new List<string>()
+        private const string FilePath = "Models/Airports.txt";
+        private const int NumPositionsPerCenter = 3;
+        private const int PointsPerCenter = 30;
+
+        private static readonly IList<string> CentersNames = new List<string>()
         {
             "PadovaACC",
             "MilanoACC",
@@ -55,60 +60,65 @@ namespace AtcoDbPopulator
             "LatinaCTR",
             "SigonellaCTR",
             "DecimomannuCTR",
-            "AmendolaCTR"
+            "AmendolaCTR",
         };
 
+        private readonly Player player;
+        private readonly Random random = new Random();
+        private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// </summary>
         public MainForm()
         {
-            InitializeComponent();
-            player = new Player(this);
+            this.InitializeComponent();
+            this.player = new Player(this);
         }
-
-        private const int NUMPOS = 3;
-
 
         private void InitializeCenters()
         {
-            foreach (string s in NomiCentri)
+            foreach (string s in CentersNames)
             {
-                using (var dbContext = new AtctablesContext())
+                using var dbContext = new AtctablesContext();
+                var newCenter = new Centro()
                 {
-                    var newCenter = new Centro()
-                    {
-                        NomeCentro = s
-                    };
-                    dbContext.Centros.Add(newCenter);
-                    var globalPos = new Postazione()
-                    {
-                        IdPostazione = s + "Pos" + NUMPOS,
-                        NomeCentro = s,
-                    };
-                    dbContext.Postaziones.Add(globalPos);
-                    IList<Settore> newSettores = new List<Settore>();
-                    for (int i = 1; i < NUMPOS; i++)
-                    {
-                        var newPos = new Postazione()
-                        {
-                            IdPostazione = s + "Pos" + i,
-                            NomeCentro = s
-                        };
-                        dbContext.Postaziones.Add(newPos);
-                        var newSettore = SectorFactory(dbContext, s + "Sec" + i, new[] { newPos, globalPos }, null);
-                        newSettores.Add(newSettore);
-                    }
-                    dbContext.SaveChanges();
-                    Console.WriteLine("New center added successfully.");
-                    for (int i = 1; i < NUMCONTROLLERSEACHCENTER; i++)
-                    {
-                        this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
-                    }
+                    NomeCentro = s,
+                };
+                dbContext.Centros.Add(newCenter);
+                var globalPos = new Postazione()
+                {
+                    IdPostazione = $"{s}Pos{NumPositionsPerCenter}",
+                    NomeCentro = s,
+                };
+                dbContext.Postaziones.Add(globalPos);
+                IList<Settore> newSectors = new List<Settore>();
+                if (newSectors == null)
+                {
+                    throw new ArgumentNullException(nameof(newSectors));
                 }
 
+                for (int i = 1; i < NumPositionsPerCenter; i++)
+                {
+                    var newPos = new Postazione()
+                    {
+                        IdPostazione = s + "Pos" + i,
+                        NomeCentro = s,
+                    };
+                    dbContext.Postaziones.Add(newPos);
+                    var newSettore = this.SectorFactory(dbContext, s + "Sec" + i, new[] { newPos, globalPos }, null);
+                    newSectors.Add(newSettore);
+                }
 
+                dbContext.SaveChanges();
+                for (int i = 1; i < Numcontrollerseachcenter; i++)
+                {
+                    this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
+                }
             }
         }
 
-        private Settore SectorFactory(AtctablesContext dbContext, string id, Postazione[] postazioni, string? codAd)
+        private Settore SectorFactory(AtctablesContext dbContext, string id, Postazione[] positions, string? codAd)
         {
             Postazione newPos;
             Postazione globalPos;
@@ -116,31 +126,35 @@ namespace AtcoDbPopulator
             int i;
             var newSettore = new Settore()
             {
-                IdPostaziones = postazioni,
+                IdPostaziones = positions,
                 IdSettore = id,
-                CodAd = codAd
+                CodAd = codAd,
             };
             dbContext.Settores.Add(newSettore);
             if (codAd == null)
             {
                 IList<Punto> newPoints = new List<Punto>();
-                for (int j = 0; j < POINTSPERCENTER; j++)
+                for (int j = 0; j < PointsPerCenter; j++)
                 {
                     Punto newWaypoint = new Punto()
                     {
                         NomePunto = GenerateRandomString(5),
                         PosLatitudine = Math.Round(random.NextDouble() * 12 + 35.5, 4).ToString(),
                         PosLongitudine = Math.Round(random.NextDouble() * 12.5 + 6.6, 4).ToString(),
-                        IdSettore = newSettore.IdSettore
+                        IdSettore = newSettore.IdSettore,
                     };
-                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && dbContext.Puntos.Find(newWaypoint.NomePunto) == null) newPoints.Add(newWaypoint);
+                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && dbContext.Puntos.Find(newWaypoint.NomePunto) == null)
+                    {
+                        newPoints.Add(newWaypoint);
+                    }
                 }
+
                 dbContext.Puntos.AddRange(newPoints);
             }
 
             return newSettore;
-
         }
+
         private string GenerateRandomString(int length)
         {
             Random random = new Random();
@@ -149,14 +163,13 @@ namespace AtcoDbPopulator
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        private const int POINTSPERCENTER = 30;
 
         private static int MaxControllerId(AtctablesContext dbContext)
         {
             return dbContext.Controllores.Any() ? dbContext.Controllores.ToList().Max(c => int.Parse(c.IdControllore)) : 0;
         }
 
-        private const int NUMCONTROLLERSEACHCENTER = 10;
+        private const int Numcontrollerseachcenter = 10;
 
 
         static List<string> ReadFileToList(string filePath)
@@ -191,7 +204,7 @@ namespace AtcoDbPopulator
                 using (var dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
                 {
 
-                    var newController = ControllerFactory(i + 1, dbContext.Centros.ToArray()[random.Next(0, NomiCentri.Count)], dbContext);
+                    var newController = ControllerFactory(i + 1, dbContext.Centros.ToArray()[random.Next(0, CentersNames.Count)], dbContext);
 
                     var inizioDate = new DateTime(DateTime.Now.Year, random.Next(1, 13), random.Next(1, 28));
                     var newFerie = new Ferie()

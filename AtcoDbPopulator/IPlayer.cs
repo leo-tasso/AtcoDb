@@ -1,4 +1,9 @@
-﻿namespace AtcoDbPopulator;
+﻿// <copyright file="IPlayer.cs" company="Leonardo Tassinari">
+// Copyright (c) Leonardo Tassinari. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
+
+namespace AtcoDbPopulator;
 
 /// <summary>
 /// Interface to model a player class, a class that makes the traffic situation evolve over time.
