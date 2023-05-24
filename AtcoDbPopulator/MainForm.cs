@@ -130,6 +130,8 @@ namespace AtcoDbPopulator
 
         private void TrafficPopulatorButtonClick(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+            Application.DoEvents();
             this.populateControllersButton.Enabled = false;
             this.trafficPopulatorButton.Enabled = false;
             IList<string> types = FileToList.ReadFileToList("Models/Aircrafts.txt");
@@ -197,6 +199,7 @@ namespace AtcoDbPopulator
                 }
             }
 
+            Cursor.Current = Cursors.Default;
             this.randomstateButton.Enabled = true;
         }
 
@@ -217,6 +220,7 @@ namespace AtcoDbPopulator
             this.pauseButton.Enabled = false;
             this.playButton.Enabled = true;
             this.speedBar.Enabled = true;
+            this.wipeButton.Enabled = true;
         }
 
         private void PlayButton_Click(object sender, EventArgs e)
@@ -225,6 +229,7 @@ namespace AtcoDbPopulator
             this.pauseButton.Enabled = true;
             this.playButton.Enabled = false;
             this.speedBar.Enabled = false;
+            this.wipeButton.Enabled = false;
         }
     }
 }

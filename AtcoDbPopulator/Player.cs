@@ -50,9 +50,12 @@ public class Player : IPlayer
 
         this.playThread = new Thread(() =>
         {
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             while (this.Cont)
             {
-                this.ActualDateTime = this.ActualDateTime.AddSeconds(speed * 5);
+                stopwatch.Restart(); // Start measuring elapsed time
+
+                this.ActualDateTime = this.ActualDateTime.AddSeconds(speed / 5.0);
                 using (AtctablesContext dbContext = new AtctablesContext())
                 {
                     this.UpdateSystem(dbContext);
@@ -65,7 +68,16 @@ public class Player : IPlayer
                     this.Mf.minutePicker.Value = this.ActualDateTime.Minute;
                 });
 
-                Thread.Sleep(200);
+                stopwatch.Stop(); // Stop measuring elapsed time
+
+                // Calculate the remaining sleep time to reach the desired 200ms duration
+                int sleepTime = 200 - (int)stopwatch.ElapsedMilliseconds;
+                if (sleepTime > 0)
+                {
+                    Thread.Sleep(sleepTime);
+                }
+
+                // If the elapsed time exceeds 200ms, the loop will continue immediately
             }
         });
         this.playThread.Start();
