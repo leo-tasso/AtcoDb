@@ -15,14 +15,14 @@ namespace AtcoDbPopulator
     public partial class MainForm : Form
     {
         private const string FilePath = "Models/Airports.txt";
-        private const int NumPositionsPerCenter = 3;
-        private const int PointsPerCenter = 30;
         private const int NumControllersEachCenter = 10;
         private const int LongestFlightSectors = 10;
         private readonly Player player;
         private readonly Random random = new Random();
         private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
-        private readonly List<Punto> generalPoints = new List<Punto>();
+        private readonly AtcoDbPopulator.Factories.AptFactory aptFactory;
+        private readonly AtcoDbPopulator.Factories.ControllerFactory controllerFactory;
+        private readonly AtcoDbPopulator.Factories.CenterFactory centerFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -31,16 +31,10 @@ namespace AtcoDbPopulator
         {
             this.InitializeComponent();
             this.player = new Player(this);
-            this.LastControllerId = 0;
-            this.LastLicenceId = 1;
+            this.controllerFactory = new AtcoDbPopulator.Factories.ControllerFactory(1);
+            this.aptFactory = new AtcoDbPopulator.Factories.AptFactory();
+            this.centerFactory = new AtcoDbPopulator.Factories.CenterFactory();
         }
-
-        /// <summary>
-        /// Gets or sets the last controller Id used.
-        /// </summary>
-        private int LastControllerId { get; set; }
-
-        private int LastLicenceId { get; set; }
 
         /// <inheritdoc/>
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -49,131 +43,46 @@ namespace AtcoDbPopulator
             this.player.Pause();
         }
 
+        private void InitializeApts()
+        {
+            using var dbContext = new AtctablesContext();
+            foreach (var airport in new AirportFetcher().FetchAirportInfo(this.fullPath))
+            {
+                var newCenter = this.aptFactory.Create(airport, dbContext);
+                this.controllerFactory.Create(newCenter, dbContext);
+            }
+
+            dbContext.SaveChanges();
+        }
+
         private void InitializeCenters()
         {
             IList<string> centersNames = FileToList.ReadFileToList("Models/Centers.txt");
             foreach (string s in centersNames)
             {
                 using var dbContext = new AtctablesContext();
-                var newCenter = new Centro()
-                {
-                    NomeCentro = s,
-                };
-                dbContext.Centros.Add(newCenter);
-                var globalPos = new Postazione()
-                {
-                    IdPostazione = $"{s}Pos{NumPositionsPerCenter}",
-                    NomeCentro = s,
-                };
-                dbContext.Postaziones.Add(globalPos);
-                IList<Settore> newSectors = new List<Settore>();
-                if (newSectors == null)
-                {
-                    throw new ArgumentNullException(nameof(newSectors));
-                }
+                var newCenter = this.centerFactory.Create(s, dbContext);
 
-                for (int i = 1; i < NumPositionsPerCenter; i++)
+                // For each center some controllers are created each with a licence valid for each sector of the center.
+                for (int i = 1; i < NumControllersEachCenter; i++)
                 {
-                    var newPos = new Postazione()
-                    {
-                        IdPostazione = s + "Pos" + i,
-                        NomeCentro = s,
-                    };
-                    dbContext.Postaziones.Add(newPos);
-                    var newSettore = this.SectorFactory(dbContext, s + "Sec" + i, new[] { newPos, globalPos }, null);
-                    newSectors.Add(newSettore);
+                    this.controllerFactory.Create(newCenter, dbContext);
                 }
 
                 dbContext.SaveChanges();
-                for (int i = 1; i < NumControllersEachCenter; i++)
-                {
-                    this.ControllerFactory(this.LastControllerId++ + 1, newCenter, dbContext);
-                }
             }
-        }
-
-        private Settore SectorFactory(AtctablesContext dbContext, string id, Postazione[] positions, string? codAd)
-        {
-            var newSettore = new Settore()
-            {
-                IdPostaziones = positions,
-                IdSettore = id,
-                CodAd = codAd,
-            };
-            dbContext.Settores.Add(newSettore);
-            if (codAd == null)
-            {
-                IList<Punto> newPoints = new List<Punto>();
-                for (int j = 0; j < PointsPerCenter; j++)
-                {
-                    Punto newWaypoint = new Punto()
-                    {
-                        NomePunto = RandomStringGenerator.GenerateRandomString(5),
-                        PosLatitudine = Math.Round((this.random.NextDouble() * 12) + 35.5, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
-                        PosLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
-                        IdSettore = newSettore.IdSettore,
-                    };
-                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && !this.generalPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)))
-                    {
-                        newPoints.Add(newWaypoint);
-                    }
-                }
-
-                this.generalPoints.AddRange(newPoints);
-                dbContext.Puntos.AddRange(newPoints);
-            }
-
-            return newSettore;
         }
 
         private void PopulateControllersButtonClick(object sender, EventArgs e)
         {
             this.populateControllersButton.Enabled = false;
-            int newId = this.LastControllerId;
-
-            for (int i = newId; i < this.controllerNum.Value + newId; i++)
+            using var dbContext = new AtctablesContext();
+            for (int i = 0; i < this.controllerNum.Value; i++)
             {
-                using var dbContext = new AtctablesContext();
-                this.ControllerFactory(i + 1, dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
-
-                var startDate = new DateTime(DateTime.Now.Year, this.random.Next(1, 13), this.random.Next(1, 28));
-                var newHoliday = new Ferie()
-                {
-                    IdControllore = (i + 1).ToString(),
-                    Inizio = startDate,
-                    Fine = startDate.AddDays(15),
-                };
-                dbContext.Feries.Add(newHoliday);
-                dbContext.SaveChanges();
+                this.controllerFactory.Create(dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
             }
-        }
 
-        private void ControllerFactory(int id, Centro center, AtctablesContext dbContext)
-        {
-            IList<string> names = FileToList.ReadFileToList("Models/Names.txt");
-            IList<string> surnames = FileToList.ReadFileToList("Models/Surnames.txt");
-            var newController = new Controllore()
-            {
-                IdControllore = id.ToString(),
-                Nome = names[this.random.Next(0, names.Count)],
-                Cognome = surnames[this.random.Next(0, surnames.Count)],
-                NomeCentro = center.NomeCentro,
-            };
-            var newLicence = new Abilitazione()
-            {
-                MatricolaAbilitazione = this.LastLicenceId++,
-                IdControllore = newController.IdControllore,
-                IdSettores = this.SectorsInCenter(dbContext.Centros.Find(newController.NomeCentro) !),
-            };
-            newController.Abilitaziones.Add(newLicence);
-            dbContext.Controllores.Add(newController);
-            dbContext.Abilitaziones.Add(newLicence);
             dbContext.SaveChanges();
-        }
-
-        private IList<Settore> SectorsInCenter(Centro c)
-        {
-            return c.Postaziones.SelectMany(p => p.IdSettores).ToList();
         }
 
         private void CentersPopulateButtonClick(object sender, EventArgs e)
@@ -183,54 +92,6 @@ namespace AtcoDbPopulator
             this.InitializeApts();
             this.populateControllersButton.Enabled = true;
             this.trafficPopulatorButton.Enabled = true;
-        }
-
-        private void InitializeApts()
-        {
-            using var dbContext = new AtctablesContext();
-            foreach (var airport in new AirportFetcher().FetchAirportInfo(this.fullPath))
-            {
-                this.AptFactory(airport, dbContext);
-                var newCenter = new Centro()
-                {
-                    NomeCentro = airport.Item1 + "APT",
-                };
-                var newSector = new Settore()
-                {
-                    IdSettore = airport.Item1 + "APT" + "Sec",
-                    CodAd = airport.Item3,
-                };
-                var newPosition = new Postazione()
-                {
-                    IdPostazione = airport.Item1 + "APT" + "TWR",
-                    IdSettores = new[] { newSector },
-                    NomeCentro = newCenter.NomeCentro,
-                };
-                dbContext.Postaziones.Add(newPosition);
-                dbContext.Settores.Add(newSector);
-                dbContext.Centros.Add(newCenter);
-                this.ControllerFactory(this.LastControllerId++ + 1, newCenter, dbContext);
-                dbContext.SaveChanges();
-            }
-        }
-
-        private void AptFactory((string, string, string) airport, AtctablesContext dbContext)
-        {
-            var newAirport = new Aerodromo()
-            {
-                AdLatitudine = Math.Round((this.random.NextDouble() * 12) + 35.5, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
-                AdLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
-                CodiceIata = airport.Item2,
-                CodiceIcao = airport.Item3,
-            };
-            Pistum newRunway = new Pistum()
-            {
-                CodAd = newAirport.CodiceIcao,
-                Orientamento = this.random.Next(0, 19).ToString(),
-                Lunghezza = this.random.Next(999),
-            };
-            dbContext.Aerodromos.Add(newAirport);
-            dbContext.Pista.Add(newRunway);
         }
 
         private void WipeButtonClick(object sender, EventArgs e)
