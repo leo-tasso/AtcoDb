@@ -22,6 +22,7 @@ namespace AtcoDbPopulator
         private readonly Player player;
         private readonly Random random = new Random();
         private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
+        private readonly List<Punto> generalPoints = new List<Punto>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -30,11 +31,22 @@ namespace AtcoDbPopulator
         {
             this.InitializeComponent();
             this.player = new Player(this);
+            this.LastControllerId = 0;
+            this.LastLicenceId = 1;
         }
 
-        private static int MaxControllerId(AtctablesContext dbContext)
+        /// <summary>
+        /// Gets or sets the last controller Id used.
+        /// </summary>
+        private int LastControllerId { get; set; }
+
+        private int LastLicenceId { get; set; }
+
+        /// <inheritdoc/>
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            return dbContext.Controllores.Any() ? dbContext.Controllores.ToList().Max(c => int.Parse(c.IdControllore)) : 0;
+            base.OnFormClosing(e);
+            this.player.Pause();
         }
 
         private void InitializeCenters()
@@ -75,7 +87,7 @@ namespace AtcoDbPopulator
                 dbContext.SaveChanges();
                 for (int i = 1; i < NumControllersEachCenter; i++)
                 {
-                    this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
+                    this.ControllerFactory(this.LastControllerId++ + 1, newCenter, dbContext);
                 }
             }
         }
@@ -101,12 +113,13 @@ namespace AtcoDbPopulator
                         PosLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
                         IdSettore = newSettore.IdSettore,
                     };
-                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && dbContext.Puntos.Find(newWaypoint.NomePunto) == null)
+                    if (!newPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)) && !this.generalPoints.Any(p => p.NomePunto.Equals(newWaypoint.NomePunto)))
                     {
                         newPoints.Add(newWaypoint);
                     }
                 }
 
+                this.generalPoints.AddRange(newPoints);
                 dbContext.Puntos.AddRange(newPoints);
             }
 
@@ -116,12 +129,7 @@ namespace AtcoDbPopulator
         private void PopulateControllersButtonClick(object sender, EventArgs e)
         {
             this.populateControllersButton.Enabled = false;
-            int newId;
-            using (AtctablesContext
-                   dbContext = new AtctablesContext()) // Replace with the name of your generated DbContext class.
-            {
-                newId = MaxControllerId(dbContext);
-            }
+            int newId = this.LastControllerId;
 
             for (int i = newId; i < this.controllerNum.Value + newId; i++)
             {
@@ -153,7 +161,7 @@ namespace AtcoDbPopulator
             };
             var newLicence = new Abilitazione()
             {
-                MatricolaAbilitazione = dbContext.Abilitaziones.Any() ? dbContext.Abilitaziones.Max(a => a.MatricolaAbilitazione) + 1 : 1,
+                MatricolaAbilitazione = this.LastLicenceId++,
                 IdControllore = newController.IdControllore,
                 IdSettores = this.SectorsInCenter(dbContext.Centros.Find(newController.NomeCentro) !),
             };
@@ -201,7 +209,7 @@ namespace AtcoDbPopulator
                 dbContext.Postaziones.Add(newPosition);
                 dbContext.Settores.Add(newSector);
                 dbContext.Centros.Add(newCenter);
-                this.ControllerFactory(MaxControllerId(dbContext) + 1, newCenter, dbContext);
+                this.ControllerFactory(this.LastControllerId++ + 1, newCenter, dbContext);
                 dbContext.SaveChanges();
             }
         }
