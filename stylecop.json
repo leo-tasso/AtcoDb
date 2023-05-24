@@ -1,17 +1,12 @@
-{
-    "settings": {
-        "documentationRules": {
-            "companyName": "Leonardo Tassinari",
-            "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
-            "variables": {
-                "licenseName": "MIT",
-                "licenseFile": "LICENSE"
-            }
-        }
-    },
-    "rules": {
-        "SA1309": {
-            "enabled": false
-        }
+﻿{
+  "settings": {
+    "documentationRules": {
+      "companyName": "Leonardo Tassinari",
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.\nLicensed under the {licenseName} license. See {licenseFile} file in the project root for full license information.",
+      "variables": {
+        "licenseName": "MIT",
+        "licenseFile": "LICENSE"
+      }
     }
+  }
 }

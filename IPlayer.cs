@@ -1,6 +1,4 @@
-﻿
-
-namespace AtcoDbPopulator;
+﻿namespace AtcoDbPopulator;
 
 /// <summary>
 /// Interface to model a player class, a class that makes the traffic situation evolve over time.

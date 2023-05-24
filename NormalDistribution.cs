@@ -1,35 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AtcoDbPopulator
+﻿namespace AtcoDbPopulator
 {
+    using System;
+
+    /// <summary>
+    /// Class to manage normal distribution.
+    /// </summary>
     public class NormalDistribution
     {
-        private Random random;
+        private readonly Random random;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NormalDistribution"/> class.
+        /// </summary>
         public NormalDistribution()
         {
-            random = new Random();
+            this.random = new Random();
         }
 
-        public double GenerateNormalRandomNumber()
+        /// <summary>
+        /// Method to get a standard deviated number.
+        /// </summary>
+        /// <param name="mean">The mean value.</param>
+        /// <param name="standardDeviation">The standard deviation.</param>
+        /// <returns>A standard deviated number with the selected parameters.</returns>
+        public double GenerateNormalRandomNumber(double mean = 0, double standardDeviation = 1)
         {
-           return GenerateNormalRandomNumber(0, 1);
-        }
-
-        public double GenerateNormalRandomNumber(double mean, double standardDeviation)
-        {
-            double u1 = 1.0 - random.NextDouble(); // Uniform random number 1
-            double u2 = 1.0 - random.NextDouble(); // Uniform random number 2
+            var u1 = 1.0 - this.random.NextDouble(); // Uniform random number 1
+            var u2 = 1.0 - this.random.NextDouble(); // Uniform random number 2
 
             // Box-Muller transform to convert uniform distribution to normal distribution
-            double z = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(2.0 * Math.PI * u2);
+            var z = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Cos(2.0 * Math.PI * u2);
 
             // Scale the generated random number to the desired mean and standard deviation
-            double x = mean + z * standardDeviation;
+            var x = mean + (z * standardDeviation);
 
             return x;
         }
