@@ -126,7 +126,7 @@ namespace AtcoDbPopulator
             for (int i = newId; i < this.controllerNum.Value + newId; i++)
             {
                 using var dbContext = new AtctablesContext();
-                var newController = this.ControllerFactory(i + 1, dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
+                this.ControllerFactory(i + 1, dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
 
                 var startDate = new DateTime(DateTime.Now.Year, this.random.Next(1, 13), this.random.Next(1, 28));
                 var newHoliday = new Ferie()
@@ -135,13 +135,12 @@ namespace AtcoDbPopulator
                     Inizio = startDate,
                     Fine = startDate.AddDays(15),
                 };
-                dbContext.Controllores.Add(newController);
                 dbContext.Feries.Add(newHoliday);
                 dbContext.SaveChanges();
             }
         }
 
-        private Controllore ControllerFactory(int id, Centro center, AtctablesContext dbContext)
+        private void ControllerFactory(int id, Centro center, AtctablesContext dbContext)
         {
             IList<string> names = FileToList.ReadFileToList("Models/Names.txt");
             IList<string> surnames = FileToList.ReadFileToList("Models/Surnames.txt");
@@ -162,7 +161,6 @@ namespace AtcoDbPopulator
             dbContext.Controllores.Add(newController);
             dbContext.Abilitaziones.Add(newLicence);
             dbContext.SaveChanges();
-            return newController;
         }
 
         private IList<Settore> SectorsInCenter(Centro c)
