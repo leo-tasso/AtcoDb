@@ -52,7 +52,7 @@
             ((System.ComponentModel.ISupportInitialize)speedBar).BeginInit();
             SuspendLayout();
             // 
-            // PopulateControllers
+            // populateControllersButton
             // 
             populateControllersButton.Enabled = false;
             populateControllersButton.Location = new Point(12, 84);
@@ -63,7 +63,7 @@
             populateControllersButton.UseVisualStyleBackColor = true;
             populateControllersButton.Click += PopulateControllersButtonClick;
             // 
-            // ControllerNum
+            // controllerNum
             // 
             controllerNum.Increment = new decimal(new int[] { 25, 0, 0, 0 });
             controllerNum.Location = new Point(186, 84);
@@ -74,7 +74,7 @@
             controllerNum.TabIndex = 1;
             controllerNum.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
-            // CentersPopulate
+            // centersPopulateButton
             // 
             centersPopulateButton.Enabled = false;
             centersPopulateButton.Location = new Point(12, 48);
@@ -117,7 +117,7 @@
             wipeButton.UseVisualStyleBackColor = true;
             wipeButton.Click += WipeButtonClick;
             // 
-            // TrafficCounter
+            // trafficNum
             // 
             trafficNum.Increment = new decimal(new int[] { 25, 0, 0, 0 });
             trafficNum.Location = new Point(186, 113);
@@ -128,7 +128,7 @@
             trafficNum.TabIndex = 8;
             trafficNum.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // 
-            // TrafficPopulatorbutton
+            // trafficPopulatorButton
             // 
             trafficPopulatorButton.Enabled = false;
             trafficPopulatorButton.Location = new Point(12, 113);
@@ -139,7 +139,7 @@
             trafficPopulatorButton.UseVisualStyleBackColor = true;
             trafficPopulatorButton.Click += TrafficPopulatorButtonClick;
             // 
-            // RandomstateButton
+            // randomstateButton
             // 
             randomstateButton.Enabled = false;
             randomstateButton.Location = new Point(12, 142);
@@ -150,7 +150,7 @@
             randomstateButton.UseVisualStyleBackColor = true;
             randomstateButton.Click += RandomStateButton_Click;
             // 
-            // dateTimePicker1
+            // dateTimePicker
             // 
             dateTimePicker.Location = new Point(186, 142);
             dateTimePicker.MaxDate = new DateTime(2023, 12, 31, 0, 0, 0, 0);
@@ -159,7 +159,7 @@
             dateTimePicker.Size = new Size(200, 23);
             dateTimePicker.TabIndex = 10;
             // 
-            // HourPicker
+            // hourPicker
             // 
             hourPicker.Location = new Point(398, 142);
             hourPicker.Maximum = new decimal(new int[] { 23, 0, 0, 0 });
@@ -168,7 +168,7 @@
             hourPicker.TabIndex = 11;
             hourPicker.Value = new decimal(new int[] { 12, 0, 0, 0 });
             // 
-            // MinutePicker
+            // minutePicker
             // 
             minutePicker.Location = new Point(439, 142);
             minutePicker.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
@@ -176,14 +176,16 @@
             minutePicker.Size = new Size(35, 23);
             minutePicker.TabIndex = 12;
             // 
-            // SpeedBar
+            // speedBar
             // 
             speedBar.Enabled = false;
             speedBar.Location = new Point(185, 171);
             speedBar.Maximum = 86400;
+            speedBar.Minimum = 1;
             speedBar.Name = "speedBar";
             speedBar.Size = new Size(289, 45);
             speedBar.TabIndex = 13;
+            speedBar.Value = 1;
             // 
             // label1
             // 
