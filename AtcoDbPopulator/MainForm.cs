@@ -146,6 +146,8 @@ namespace AtcoDbPopulator
                 var aerodromos = dbContext.Aerodromos.ToList();
                 for (int i = 0; i < this.trafficNum.Value; i++)
                 {
+                    this.progressBar1.Value = (int)(i / this.trafficNum.Value * 100);
+                    Application.DoEvents();
                     var adTakeOff = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
                     var adLanding = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
 
@@ -196,7 +198,10 @@ namespace AtcoDbPopulator
                         dbContext.Stimatis.AddRange(newEstimates);
                         dbContext.SaveChanges();
                     }
+
                 }
+
+                this.progressBar1.Value = 0;
             }
 
             Cursor.Current = Cursors.Default;
