@@ -76,11 +76,15 @@ namespace AtcoDbPopulator
         private void PopulateControllersButtonClick(object sender, EventArgs e)
         {
             this.populateControllersButton.Enabled = false;
+            this.controllerNum.Enabled = false;
             using var dbContext = new AtctablesContext();
             for (int i = 0; i < this.controllerNum.Value; i++)
             {
+                this.progressBar1.Value = (int)(i / this.controllerNum.Value * 100);
                 this.controllerFactory.Create(dbContext.Centros.ToArray()[this.random.Next(0, dbContext.Centros.Count())], dbContext);
             }
+
+            this.progressBar1.Value = 0;
 
             dbContext.SaveChanges();
         }
@@ -91,7 +95,9 @@ namespace AtcoDbPopulator
             this.InitializeCenters();
             this.InitializeApts();
             this.populateControllersButton.Enabled = true;
+            this.controllerNum.Enabled = true;
             this.trafficPopulatorButton.Enabled = true;
+            this.trafficNum.Enabled = true;
         }
 
         private void WipeButtonClick(object sender, EventArgs e)
@@ -126,6 +132,11 @@ namespace AtcoDbPopulator
             this.randomstateButton.Enabled = false;
             this.playButton.Enabled = false;
             this.pauseButton.Enabled = false;
+            this.hourPicker.Enabled = false;
+            this.minutePicker.Enabled = false;
+            this.controllerNum.Enabled = false;
+            this.trafficNum.Enabled = false;
+            this.dateTimePicker.Enabled = false;
         }
 
         private void TrafficPopulatorButtonClick(object sender, EventArgs e)
@@ -134,6 +145,8 @@ namespace AtcoDbPopulator
             Application.DoEvents();
             this.populateControllersButton.Enabled = false;
             this.trafficPopulatorButton.Enabled = false;
+            this.trafficNum.Enabled = false;
+            this.controllerNum.Enabled = false;
             IList<string> types = FileToList.ReadFileToList("Models/Aircrafts.txt");
             IList<string> companies = FileToList.ReadFileToList("Models/Airlines.txt");
             DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
@@ -206,11 +219,17 @@ namespace AtcoDbPopulator
 
             Cursor.Current = Cursors.Default;
             this.randomstateButton.Enabled = true;
+            this.dateTimePicker.Enabled = true;
+            this.hourPicker.Enabled = true;
+            this.minutePicker.Enabled = true;
         }
 
         private void RandomStateButton_Click(object sender, EventArgs e)
         {
             this.randomstateButton.Enabled = false;
+            this.dateTimePicker.Enabled = false;
+            this.hourPicker.Enabled = false;
+            this.minutePicker.Enabled = false;
             DateTime selectedDateTime = this.dateTimePicker.Value;
             selectedDateTime = selectedDateTime.Add(new TimeSpan(0, (int)this.hourPicker.Value, (int)this.minutePicker.Value));
 
@@ -235,6 +254,11 @@ namespace AtcoDbPopulator
             this.playButton.Enabled = false;
             this.speedBar.Enabled = false;
             this.wipeButton.Enabled = false;
+        }
+
+        private void launchManagerButton_Click(object sender, EventArgs e)
+        {
+            new Thread(() => Application.Run(new Manager())).Start();
         }
     }
 }
