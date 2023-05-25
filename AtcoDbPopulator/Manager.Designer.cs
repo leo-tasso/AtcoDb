@@ -78,7 +78,7 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new Size(121, 23);
             this.comboBox1.TabIndex = 1;
-            this.comboBox1.SelectedIndexChanged += this.comboBox1_SelectedIndexChanged;
+            this.comboBox1.SelectedIndexChanged += this.ComboBox1_SelectedIndexChanged;
             // 
             // dataGridView1
             // 
