@@ -12,7 +12,10 @@ namespace AtcoDbPopulator;
 /// </summary>
 public class CenterTurns
 {
-    private const int ShiftsInDays = 3;
+    /// <summary>
+    /// The number of shifts within a day.
+    /// </summary>
+    public const int ShiftsInDays = 3;
     private const int MandatoryOffShifts = 3;
     private const int MaxShiftsPerYear = 300;
     private const int StandardPay = 80;

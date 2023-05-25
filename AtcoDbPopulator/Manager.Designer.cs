@@ -33,17 +33,20 @@
             this.comboBox1 = new ComboBox();
             this.dataGridView1 = new DataGridView();
             this.tabPage2 = new TabPage();
+            this.dataGridView2 = new DataGridView();
+            this.progressBarTurnGeneration = new ProgressBar();
             this.TurnsGenerator = new Button();
             this.label2 = new Label();
             this.label1 = new Label();
             this.numericUpDown2 = new NumericUpDown();
             this.numericUpDown1 = new NumericUpDown();
             this.tabPage3 = new TabPage();
-            this.progressBarTurnGeneration = new ProgressBar();
+            this.ExportButton = new Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)this.dataGridView2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDown2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).BeginInit();
             this.SuspendLayout();
@@ -96,6 +99,8 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.ExportButton);
+            this.tabPage2.Controls.Add(this.dataGridView2);
             this.tabPage2.Controls.Add(this.progressBarTurnGeneration);
             this.tabPage2.Controls.Add(this.TurnsGenerator);
             this.tabPage2.Controls.Add(this.label2);
@@ -109,6 +114,26 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Generatore Turni";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.AllowUserToAddRows = false;
+            this.dataGridView2.AllowUserToDeleteRows = false;
+            this.dataGridView2.AllowUserToOrderColumns = true;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new Point(6, 64);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.ReadOnly = true;
+            this.dataGridView2.RowTemplate.Height = 25;
+            this.dataGridView2.Size = new Size(1343, 585);
+            this.dataGridView2.TabIndex = 6;
+            // 
+            // progressBarTurnGeneration
+            // 
+            this.progressBarTurnGeneration.Location = new Point(6, 6);
+            this.progressBarTurnGeneration.Name = "progressBarTurnGeneration";
+            this.progressBarTurnGeneration.Size = new Size(1343, 23);
+            this.progressBarTurnGeneration.TabIndex = 5;
             // 
             // TurnsGenerator
             // 
@@ -168,12 +193,15 @@
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // progressBarTurnGeneration
+            // ExportButton
             // 
-            this.progressBarTurnGeneration.Location = new Point(6, 6);
-            this.progressBarTurnGeneration.Name = "progressBarTurnGeneration";
-            this.progressBarTurnGeneration.Size = new Size(1343, 23);
-            this.progressBarTurnGeneration.TabIndex = 5;
+            this.ExportButton.Location = new Point(1209, 35);
+            this.ExportButton.Name = "ExportButton";
+            this.ExportButton.Size = new Size(140, 23);
+            this.ExportButton.TabIndex = 7;
+            this.ExportButton.Text = "Esporta come xlsx";
+            this.ExportButton.UseVisualStyleBackColor = true;
+            this.ExportButton.Click += this.ExportButton_Click;
             // 
             // Manager
             // 
@@ -191,6 +219,7 @@
             ((System.ComponentModel.ISupportInitialize)this.dataGridView1).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)this.dataGridView2).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDown2).EndInit();
             ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).EndInit();
             this.ResumeLayout(false);
@@ -210,5 +239,7 @@
         private NumericUpDown numericUpDown2;
         private NumericUpDown numericUpDown1;
         private ProgressBar progressBarTurnGeneration;
+        private DataGridView dataGridView2;
+        private Button ExportButton;
     }
 }
