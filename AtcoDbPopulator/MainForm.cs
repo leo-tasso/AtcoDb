@@ -215,7 +215,6 @@ namespace AtcoDbPopulator
                         dbContext.Stimatis.AddRange(newEstimates);
                         dbContext.SaveChanges();
                     }
-
                 }
 
                 this.progressBar1.Value = 0;
@@ -260,7 +259,7 @@ namespace AtcoDbPopulator
             this.wipeButton.Enabled = false;
         }
 
-        private void launchManagerButton_Click(object sender, EventArgs e)
+        private void LaunchManagerButton_Click(object sender, EventArgs e)
         {
             new Thread(() => Application.Run(new Manager())).Start();
         }

@@ -50,26 +50,16 @@ namespace AtcoDbPopulator
             using var dbContext = new AtctablesContext();
             var totCenters = dbContext.Centros.Count(c => c.Postaziones.Count == 1);
             int done = 0;
-            foreach (var center in dbContext.Centros.Where(c => c.Postaziones.Count == 1)) // TODO expand with all centers
+            /* TODO expand with all centers */
+
+            foreach (var center in dbContext.Centros.Where(c => c.Postaziones.Count == 1))
             {
-                progressBarTurnGeneration.Value = done * 100 / totCenters;
+                this.progressBarTurnGeneration.Value = done * 100 / totCenters;
                 this.centerShifts.CenterTurnsGenerator(center, (int)this.numericUpDown1.Value, (int)this.numericUpDown2.Value);
                 done++;
             }
 
-            progressBarTurnGeneration.Value = 0;
+            this.progressBarTurnGeneration.Value = 0;
         }
-    }
-
-    /// <summary>
-    /// Short Controller view.
-    /// </summary>
-    public class ControlloreViewModel
-    {
-        public string Id { get; set; }
-
-        public string Nome { get; set; }
-
-        public string Cognome { get; set; }
     }
 }

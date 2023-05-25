@@ -236,7 +236,7 @@
             this.launchManagerButton.TabIndex = 18;
             this.launchManagerButton.Text = "Launch Manager";
             this.launchManagerButton.UseVisualStyleBackColor = true;
-            this.launchManagerButton.Click += this.launchManagerButton_Click;
+            this.launchManagerButton.Click += this.LaunchManagerButton_Click;
             // 
             // hourLabel
             // 
