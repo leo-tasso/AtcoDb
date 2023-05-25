@@ -49,7 +49,11 @@ namespace AtcoDbPopulator
             foreach (var airport in new AirportFetcher().FetchAirportInfo(this.fullPath))
             {
                 var newCenter = this.aptFactory.Create(airport, dbContext);
-                this.controllerFactory.Create(newCenter, dbContext);
+                // For each center some controllers are created each with a licence valid for each sector of the center.
+                for (int i = 1; i < NumControllersEachCenter; i++)
+                {
+                    this.controllerFactory.Create(newCenter, dbContext);
+                }
             }
 
             dbContext.SaveChanges();
