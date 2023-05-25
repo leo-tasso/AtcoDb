@@ -3,7 +3,7 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-namespace AtcoDbPopulator;
+namespace AtcoDbPopulator.Utils;
 
 /// <summary>
 /// Class to generate a random string.

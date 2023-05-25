@@ -13,7 +13,7 @@ public class Player : IPlayer
 {
     private readonly IDictionary<(string, DateTime), DateTime> futureTakeOffTimes = new Dictionary<(string, DateTime), DateTime>();
     private readonly IDictionary<(string, DateTime), DateTime> futureLandingsTimes = new Dictionary<(string, DateTime), DateTime>();
-    private readonly NormalDistribution normalDistribution = new NormalDistribution();
+    private readonly AtcoDbPopulator.Utils.NormalDistribution normalDistribution = new AtcoDbPopulator.Utils.NormalDistribution();
     private List<Percorrenza> futureOverpass = new List<Percorrenza>();
     private Thread? playThread;
 

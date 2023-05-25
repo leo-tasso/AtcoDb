@@ -43,7 +43,7 @@ public class SectorFactory
         {
             AtcoDbPopulator.Models.Punto newWaypoint = new AtcoDbPopulator.Models.Punto()
             {
-                NomePunto = RandomStringGenerator.GenerateRandomString(5),
+                NomePunto = AtcoDbPopulator.Utils.RandomStringGenerator.GenerateRandomString(5),
                 PosLatitudine = Math.Round((this.random.NextDouble() * 12) + 35.5, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
                 PosLongitudine = Math.Round((this.random.NextDouble() * 12.5) + 6.6, 4).ToString(System.Globalization.CultureInfo.InvariantCulture),
                 IdSettore = newSettore.IdSettore,

@@ -32,8 +32,8 @@ public class ControllerFactory
     /// <param name="dbContext">The relative db.</param>
     public void Create(AtcoDbPopulator.Models.Centro center, AtcoDbPopulator.Models.AtctablesContext dbContext)
     {
-        IList<string> names = FileToList.ReadFileToList("Models/Names.txt");
-        IList<string> surnames = FileToList.ReadFileToList("Models/Surnames.txt");
+        IList<string> names = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Names.txt");
+        IList<string> surnames = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Surnames.txt");
         var newController = new AtcoDbPopulator.Models.Controllore()
         {
             IdControllore = this.LastId.ToString(),

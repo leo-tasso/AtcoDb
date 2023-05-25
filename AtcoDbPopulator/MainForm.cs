@@ -46,9 +46,10 @@ namespace AtcoDbPopulator
         private void InitializeApts()
         {
             using var dbContext = new AtctablesContext();
-            foreach (var airport in new AirportFetcher().FetchAirportInfo(this.fullPath))
+            foreach (var airport in new AtcoDbPopulator.Utils.AirportFetcher().FetchAirportInfo(this.fullPath))
             {
                 var newCenter = this.aptFactory.Create(airport, dbContext);
+
                 // For each center some controllers are created each with a licence valid for each sector of the center.
                 for (int i = 1; i < NumControllersEachCenter; i++)
                 {
@@ -61,7 +62,7 @@ namespace AtcoDbPopulator
 
         private void InitializeCenters()
         {
-            IList<string> centersNames = FileToList.ReadFileToList("Models/Centers.txt");
+            IList<string> centersNames = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Centers.txt");
             foreach (string s in centersNames)
             {
                 using var dbContext = new AtctablesContext();
@@ -151,8 +152,8 @@ namespace AtcoDbPopulator
             this.trafficPopulatorButton.Enabled = false;
             this.trafficNum.Enabled = false;
             this.controllerNum.Enabled = false;
-            IList<string> types = FileToList.ReadFileToList("Models/Aircrafts.txt");
-            IList<string> companies = FileToList.ReadFileToList("Models/Airlines.txt");
+            IList<string> types = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Aircrafts.txt");
+            IList<string> companies = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Airlines.txt");
             DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
             DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
 
@@ -171,7 +172,7 @@ namespace AtcoDbPopulator
                     var newPlane = new Aereomobile()
                     {
                         Tipo = types[this.random.Next(0, types.Count)],
-                        NumeroDiCoda = RandomStringGenerator.GenerateRandomString(1) + "-" + RandomStringGenerator.GenerateRandomString(4),
+                        NumeroDiCoda = AtcoDbPopulator.Utils.RandomStringGenerator.GenerateRandomString(1) + "-" + AtcoDbPopulator.Utils.RandomStringGenerator.GenerateRandomString(4),
                     };
                     var newFlightPlan = new Pianodivolo()
                     {
