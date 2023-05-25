@@ -39,6 +39,7 @@
             this.numericUpDown2 = new NumericUpDown();
             this.numericUpDown1 = new NumericUpDown();
             this.tabPage3 = new TabPage();
+            this.progressBarTurnGeneration = new ProgressBar();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
@@ -95,6 +96,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.progressBarTurnGeneration);
             this.tabPage2.Controls.Add(this.TurnsGenerator);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.label1);
@@ -110,7 +112,7 @@
             // 
             // TurnsGenerator
             // 
-            this.TurnsGenerator.Location = new Point(297, 15);
+            this.TurnsGenerator.Location = new Point(292, 35);
             this.TurnsGenerator.Name = "TurnsGenerator";
             this.TurnsGenerator.Size = new Size(105, 23);
             this.TurnsGenerator.TabIndex = 4;
@@ -121,7 +123,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new Point(110, 17);
+            this.label2.Location = new Point(105, 37);
             this.label2.Name = "label2";
             this.label2.Size = new Size(39, 15);
             this.label2.TabIndex = 3;
@@ -130,7 +132,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new Point(11, 17);
+            this.label1.Location = new Point(6, 37);
             this.label1.Name = "label1";
             this.label1.Size = new Size(38, 15);
             this.label1.TabIndex = 2;
@@ -138,7 +140,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new Point(155, 15);
+            this.numericUpDown2.Location = new Point(150, 35);
             this.numericUpDown2.Maximum = new decimal(new int[] { 2050, 0, 0, 0 });
             this.numericUpDown2.Minimum = new decimal(new int[] { 2023, 0, 0, 0 });
             this.numericUpDown2.Name = "numericUpDown2";
@@ -148,7 +150,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new Point(55, 15);
+            this.numericUpDown1.Location = new Point(50, 35);
             this.numericUpDown1.Maximum = new decimal(new int[] { 12, 0, 0, 0 });
             this.numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             this.numericUpDown1.Name = "numericUpDown1";
@@ -165,6 +167,13 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // progressBarTurnGeneration
+            // 
+            this.progressBarTurnGeneration.Location = new Point(6, 6);
+            this.progressBarTurnGeneration.Name = "progressBarTurnGeneration";
+            this.progressBarTurnGeneration.Size = new Size(1343, 23);
+            this.progressBarTurnGeneration.TabIndex = 5;
             // 
             // Manager
             // 
@@ -200,5 +209,6 @@
         private Label label1;
         private NumericUpDown numericUpDown2;
         private NumericUpDown numericUpDown1;
+        private ProgressBar progressBarTurnGeneration;
     }
 }

@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using Microsoft.EntityFrameworkCore;
+
 namespace AtcoDbPopulator;
 
 /// <summary>
@@ -19,6 +21,7 @@ public class CenterTurns
     private readonly Dictionary<string, ICollection<string>> controllersSkills = new Dictionary<string, ICollection<string>>();
     private readonly Dictionary<string, ICollection<AtcoDbPopulator.Models.Turno>> controllersShifts = new Dictionary<string, ICollection<AtcoDbPopulator.Models.Turno>>();
     private readonly List<AtcoDbPopulator.Models.Controllore> controllers;
+    private ICollection<AtcoDbPopulator.Models.Turno> Shifts = new List<AtcoDbPopulator.Models.Turno>();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CenterTurns"/> class.
@@ -27,6 +30,7 @@ public class CenterTurns
     {
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         this.controllers = dbContext.Controllores.ToList();
+        this.Shifts = dbContext.Turnos.ToList();
     }
 
     /// <summary>
@@ -37,9 +41,10 @@ public class CenterTurns
     /// <param name="year">The relative year.</param>
     public void CenterTurnsGenerator(AtcoDbPopulator.Models.Centro center, int month, int year)
     {
+
+
         DateTime i = new DateTime(year, month, 1);
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
-
         while (i.Month == month)
         {
             var positions = dbContext.Postaziones
@@ -64,6 +69,7 @@ public class CenterTurns
     {
         foreach (var position in positions)
         {
+            if(Shifts.Any(s=>s.Data.Equals(date)&&s.Slot==shift&&s.IdPostazione.Equals(position.IdPostazione))) break;
             var involvedSectors = dbContext.Settores
                 .Where(s => s.IdPostaziones.Contains(position))
                 .Select(s => s.IdSettore).ToList();
@@ -83,6 +89,7 @@ public class CenterTurns
                 IdPostazione = position.IdPostazione,
                 CentroStandBy = null,
             };
+            Shifts.Add(newShift);
             dbContext.Turnos.Add(newShift);
             this.controllersShifts[newShift.IdControllore].Add(newShift);
         }
@@ -139,9 +146,9 @@ public class CenterTurns
             return false;
         }
 
-        var shiftDate = date.AddSeconds(0);
-        int shiftNumber = shift - 1;
-        for (int i = 0; i <= MandatoryOffShifts; i++)
+        var shiftDate = date.AddDays(Math.Truncate((double)(CenterTurns.MandatoryOffShifts/3)));
+        int shiftNumber = (shift + MandatoryOffShifts) % CenterTurns.MandatoryOffShifts + 1 ;
+        for (int i = 0; i <= MandatoryOffShifts*2+1; i++)
         {
             if (shiftNumber < 1)
             {
