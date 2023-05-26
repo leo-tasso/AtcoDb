@@ -18,8 +18,6 @@ namespace AtcoDbPopulator
     /// </summary>
     public partial class Manager : Form
     {
-        private readonly CenterTurns centerShifts = new CenterTurns();
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Manager"/> class.
         /// </summary>
@@ -57,16 +55,21 @@ namespace AtcoDbPopulator
         private void TurnsGenerator_Click(object sender, EventArgs e)
         {
             using var dbContext = new AtctablesContext();
+
+            // wipe previous data
+            dbContext.RemoveRange(dbContext.Turnos.Where(t => t.Data.Month == (int)this.numericUpDown1.Value && t.Data.Year == (int)this.numericUpDown2.Value));
+            dbContext.SaveChanges();
             var totCenters = dbContext.Centros.Count();
             int done = 0;
-
+            var centerTurns = new CenterTurns();
             foreach (var center in dbContext.Centros)
             {
                 this.progressBarTurnGeneration.Value = done * 100 / totCenters;
-                this.centerShifts.CenterTurnsGenerator(
+                centerTurns.CenterTurnsGenerator(
                     center,
                     (int)this.numericUpDown1.Value,
-                    (int)this.numericUpDown2.Value);
+                    (int)this.numericUpDown2.Value,
+                    this.OccupancyCheckCheckBox.CheckState == CheckState.Checked);
                 done++;
             }
 

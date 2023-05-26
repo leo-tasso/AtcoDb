@@ -33,6 +33,7 @@
             this.comboBox1 = new ComboBox();
             this.dataGridView1 = new DataGridView();
             this.tabPage2 = new TabPage();
+            this.ExportButton = new Button();
             this.dataGridView2 = new DataGridView();
             this.progressBarTurnGeneration = new ProgressBar();
             this.TurnsGenerator = new Button();
@@ -41,7 +42,7 @@
             this.numericUpDown2 = new NumericUpDown();
             this.numericUpDown1 = new NumericUpDown();
             this.tabPage3 = new TabPage();
-            this.ExportButton = new Button();
+            this.OccupancyCheckCheckBox = new CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
@@ -99,6 +100,7 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.OccupancyCheckCheckBox);
             this.tabPage2.Controls.Add(this.ExportButton);
             this.tabPage2.Controls.Add(this.dataGridView2);
             this.tabPage2.Controls.Add(this.progressBarTurnGeneration);
@@ -114,6 +116,16 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Generatore Turni";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // ExportButton
+            // 
+            this.ExportButton.Location = new Point(1209, 35);
+            this.ExportButton.Name = "ExportButton";
+            this.ExportButton.Size = new Size(140, 23);
+            this.ExportButton.TabIndex = 7;
+            this.ExportButton.Text = "Esporta come xlsx";
+            this.ExportButton.UseVisualStyleBackColor = true;
+            this.ExportButton.Click += this.ExportButton_Click;
             // 
             // dataGridView2
             // 
@@ -193,15 +205,17 @@
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // ExportButton
+            // OccupancyCheckCheckBox
             // 
-            this.ExportButton.Location = new Point(1209, 35);
-            this.ExportButton.Name = "ExportButton";
-            this.ExportButton.Size = new Size(140, 23);
-            this.ExportButton.TabIndex = 7;
-            this.ExportButton.Text = "Esporta come xlsx";
-            this.ExportButton.UseVisualStyleBackColor = true;
-            this.ExportButton.Click += this.ExportButton_Click;
+            this.OccupancyCheckCheckBox.AutoSize = true;
+            this.OccupancyCheckCheckBox.Checked = true;
+            this.OccupancyCheckCheckBox.CheckState = CheckState.Checked;
+            this.OccupancyCheckCheckBox.Location = new Point(403, 38);
+            this.OccupancyCheckCheckBox.Name = "OccupancyCheckCheckBox";
+            this.OccupancyCheckCheckBox.Size = new Size(151, 19);
+            this.OccupancyCheckCheckBox.TabIndex = 8;
+            this.OccupancyCheckCheckBox.Text = "Considera Occupazione";
+            this.OccupancyCheckCheckBox.UseVisualStyleBackColor = true;
             // 
             // Manager
             // 
@@ -241,5 +255,9 @@
         private ProgressBar progressBarTurnGeneration;
         private DataGridView dataGridView2;
         private Button ExportButton;
+        /// <summary>
+        /// Occupancy check checkbox.
+        /// </summary>
+        public CheckBox OccupancyCheckCheckBox;
     }
 }

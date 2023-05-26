@@ -43,7 +43,8 @@ public class CenterTurns
     /// <param name="center">The relative center.</param>
     /// <param name="month">The relative Month.</param>
     /// <param name="year">The relative year.</param>
-    public void CenterTurnsGenerator(AtcoDbPopulator.Models.Centro center, int month, int year)
+    /// <param name="checkOccupation"></param>
+    public void CenterTurnsGenerator(AtcoDbPopulator.Models.Centro center, int month, int year, bool checkOccupation)
     {
         var i = new DateTime(year, month, 1);
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
@@ -51,11 +52,16 @@ public class CenterTurns
         {
             for (var slot = 1; slot <= NumTurns; slot++)
             {
-                IList<AtcoDbPopulator.Models.Postazione>? ponderedPosition = this.PonderedPositions(center, year, month, i.Day, slot, dbContext);
+                IList<AtcoDbPopulator.Models.Postazione>? ponderedPosition = this.PonderedPositions(center, year, month, i.Day, slot, dbContext, checkOccupation);
 
                 if (ponderedPosition == null || ponderedPosition.Count == 0)
                 {
                     throw new Exception("No set of position is valid");
+                }
+
+                if (ponderedPosition.Count > 2)
+                {
+                    ;
                 }
 
                 this.PopulatePositions(dbContext, i, slot, ponderedPosition);
@@ -68,20 +74,37 @@ public class CenterTurns
         dbContext.SaveChanges();
     }
 
-    private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(AtcoDbPopulator.Models.Centro center, int year, int month, int day, int slot, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(
+        AtcoDbPopulator.Models.Centro center,
+        int year,
+        int month,
+        int day,
+        int slot,
+        AtcoDbPopulator.Models.AtctablesContext dbContext,
+        bool checkOccupation)
 {
     var positions = dbContext.Postaziones
         .Where(p => p.NomeCentro.Equals(center.NomeCentro))
         .ToList();
-    if (positions.Count == 1 && !this.PositionOverCapacity(positions.First(), year, month, day, slot))
+
+    if (positions.Count == 1)
     {
+        if (checkOccupation && this.PositionOverCapacity(positions.First(), year, month, day, slot))
+        {
+            return null;
+        }
+
         return positions;
     }
 
     var sectors = dbContext.Postaziones
         .Where(p => p.NomeCentro.Equals(center.NomeCentro)).SelectMany(p => p.IdSettores).Distinct();
-    var poss = positions.Where(p => !this.PositionOverCapacity(p, year, month, day, slot)).ToList();
-    return this.RecursivePositionSearch(poss, sectors.Select(s => s.IdSettore).ToList(), dbContext);
+    if (checkOccupation)
+    {
+        positions = positions.Where(p => !this.PositionOverCapacity(p, year, month, day, slot)).ToList();
+    }
+
+    return this.RecursivePositionSearch(positions, sectors.Select(s => s.IdSettore).ToList(), dbContext);
 }
 
     private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<string> remainingSectors, AtcoDbPopulator.Models.AtctablesContext dbContext)
@@ -185,14 +208,10 @@ public class CenterTurns
             var involvedSectors = dbContext.Settores
                 .Where(s => s.IdPostaziones.Contains(position))
                 .Select(s => s.IdSettore).ToList();
-            var suitableController = this.GetSuitableController(involvedSectors, date, shift, dbContext);
-            if (suitableController == null)
-            {
-                throw new InvalidOperationException("No Controller available for the shift."
+            var suitableController = this.GetSuitableController(involvedSectors, date, shift, dbContext) ?? throw new InvalidOperationException("No Controller available for the shift."
                                                     + involvedSectors
                                                     + date
                                                     + shift);
-            }
 
             // create shift
             var newShift = new AtcoDbPopulator.Models.Turno()
