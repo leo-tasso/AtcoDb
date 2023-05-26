@@ -102,6 +102,15 @@ namespace AtcoDbPopulator
                 dataTable.Columns.Add(date);
             }
 
+            var headerRow = dataTable.NewRow();
+            headerRow["Position"] = "Postazioni:";
+            foreach (var date in dates)
+            {
+                headerRow[date] = date;
+            }
+
+            dataTable.Rows.Add(headerRow);
+
             foreach (var position in positions)
             {
                 var row = dataTable.NewRow();
@@ -129,6 +138,8 @@ namespace AtcoDbPopulator
 
             this.dataGridView2.DataSource = dataTable;
             this.dataGridView2.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
+            this.dataGridView2.Columns[0].Frozen = true;
+            this.dataGridView2.Rows[0].Frozen = true;
 
             for (int i = 0; i < this.dataGridView2.Columns.Count - 1; i++)
             {
@@ -161,12 +172,14 @@ namespace AtcoDbPopulator
                     var workbook = new XLWorkbook();
                     var worksheet =
                         workbook.Worksheets.Add("Turni " + this.numericUpDown2.Value + " " + this.numericUpDown2.Value);
+                    /*not needed, copied header on first row
 
-                    // Copy the first row with dates
+                    // Copy the first row with dates if decommenting  set "i + 2" in worksheet.cell(...
                     for (int j = 0; j < this.dataGridView2.Columns.Count; j++)
                     {
                         worksheet.Cell(1, j + 1).Value = this.dataGridView2.Columns[j].HeaderText;
                     }
+                    */
 
                     // Set the column colors
                     for (int j = 1; j <= this.dataGridView2.Columns.Count; j++)
@@ -181,7 +194,7 @@ namespace AtcoDbPopulator
                         for (int j = 0; j < this.dataGridView2.Columns.Count; j++)
                         {
                             var cellValue = this.dataGridView2.Rows[i].Cells[j].Value;
-                            worksheet.Cell(i + 2, j + 1).Value =
+                            worksheet.Cell(i + 1, j + 1).Value =
                                 (cellValue != null) ? cellValue.ToString() : string.Empty;
                         }
                     }

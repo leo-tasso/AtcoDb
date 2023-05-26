@@ -33,6 +33,7 @@
             this.comboBox1 = new ComboBox();
             this.dataGridView1 = new DataGridView();
             this.tabPage2 = new TabPage();
+            this.OccupancyCheckCheckBox = new CheckBox();
             this.ExportButton = new Button();
             this.dataGridView2 = new DataGridView();
             this.progressBarTurnGeneration = new ProgressBar();
@@ -42,7 +43,6 @@
             this.numericUpDown2 = new NumericUpDown();
             this.numericUpDown1 = new NumericUpDown();
             this.tabPage3 = new TabPage();
-            this.OccupancyCheckCheckBox = new CheckBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
@@ -117,6 +117,18 @@
             this.tabPage2.Text = "Generatore Turni";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // OccupancyCheckCheckBox
+            // 
+            this.OccupancyCheckCheckBox.AutoSize = true;
+            this.OccupancyCheckCheckBox.Checked = true;
+            this.OccupancyCheckCheckBox.CheckState = CheckState.Checked;
+            this.OccupancyCheckCheckBox.Location = new Point(403, 38);
+            this.OccupancyCheckCheckBox.Name = "OccupancyCheckCheckBox";
+            this.OccupancyCheckCheckBox.Size = new Size(151, 19);
+            this.OccupancyCheckCheckBox.TabIndex = 8;
+            this.OccupancyCheckCheckBox.Text = "Considera Occupazione";
+            this.OccupancyCheckCheckBox.UseVisualStyleBackColor = true;
+            // 
             // ExportButton
             // 
             this.ExportButton.Location = new Point(1209, 35);
@@ -133,9 +145,11 @@
             this.dataGridView2.AllowUserToDeleteRows = false;
             this.dataGridView2.AllowUserToOrderColumns = true;
             this.dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.ColumnHeadersVisible = false;
             this.dataGridView2.Location = new Point(6, 64);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.ReadOnly = true;
+            this.dataGridView2.RowHeadersVisible = false;
             this.dataGridView2.RowTemplate.Height = 25;
             this.dataGridView2.Size = new Size(1343, 585);
             this.dataGridView2.TabIndex = 6;
@@ -204,18 +218,6 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "tabPage3";
             this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // OccupancyCheckCheckBox
-            // 
-            this.OccupancyCheckCheckBox.AutoSize = true;
-            this.OccupancyCheckCheckBox.Checked = true;
-            this.OccupancyCheckCheckBox.CheckState = CheckState.Checked;
-            this.OccupancyCheckCheckBox.Location = new Point(403, 38);
-            this.OccupancyCheckCheckBox.Name = "OccupancyCheckCheckBox";
-            this.OccupancyCheckCheckBox.Size = new Size(151, 19);
-            this.OccupancyCheckCheckBox.TabIndex = 8;
-            this.OccupancyCheckCheckBox.Text = "Considera Occupazione";
-            this.OccupancyCheckCheckBox.UseVisualStyleBackColor = true;
             // 
             // Manager
             // 
