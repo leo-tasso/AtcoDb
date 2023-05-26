@@ -15,7 +15,7 @@ namespace AtcoDbPopulator
     public partial class MainForm : Form
     {
         private const string FilePath = "Models/Airports.txt";
-        private const int NumControllersEachCenter = 20;
+        private const int NumControllersEachCenter = 30;
         private const int LongestFlightSectors = 10;
         private readonly Player player;
         private readonly Random random = new Random();

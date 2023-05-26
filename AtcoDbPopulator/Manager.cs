@@ -57,11 +57,11 @@ namespace AtcoDbPopulator
         private void TurnsGenerator_Click(object sender, EventArgs e)
         {
             using var dbContext = new AtctablesContext();
-            var totCenters = dbContext.Centros.Count(c => c.Postaziones.Count == 1);
+            var totCenters = dbContext.Centros.Count();
             int done = 0;
             /* TODO expand with all centers */
 
-            foreach (var center in dbContext.Centros.Where(c => c.Postaziones.Count == 1))
+            foreach (var center in dbContext.Centros)
             {
                 this.progressBarTurnGeneration.Value = done * 100 / totCenters;
                 this.centerShifts.CenterTurnsGenerator(
