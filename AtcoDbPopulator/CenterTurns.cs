@@ -20,6 +20,7 @@ public class CenterTurns
     private const int MaxShiftsPerYear = 300;
     private const int StandardPay = 80;
     private const int NumTurns = 3;
+    private const double BaseCapacity = 30;
 
     private readonly Dictionary<string, ICollection<string>> controllersSkills = new ();
     private readonly Dictionary<string, ICollection<AtcoDbPopulator.Models.Turno>> controllersShifts = new ();
@@ -50,10 +51,9 @@ public class CenterTurns
         {
             for (var slot = 1; slot <= NumTurns; slot++)
             {
-                IList<AtcoDbPopulator.Models.Postazione>? ponderedPosition = this.PonderedPositions(center, year, month, slot, dbContext);
+                IList<AtcoDbPopulator.Models.Postazione>? ponderedPosition = this.PonderedPositions(center, year, month, i.Day, slot, dbContext);
 
-                // TODO allocating only airports, expand with centers, evaluate positions.
-                if (ponderedPosition == null)
+                if (ponderedPosition == null || ponderedPosition.Count == 0)
                 {
                     throw new Exception("No set of position is valid");
                 }
@@ -68,27 +68,28 @@ public class CenterTurns
         dbContext.SaveChanges();
     }
 
-    private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(AtcoDbPopulator.Models.Centro center, int year, int month, int slot, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(AtcoDbPopulator.Models.Centro center, int year, int month, int day, int slot, AtcoDbPopulator.Models.AtctablesContext dbContext)
 {
     var positions = dbContext.Postaziones
         .Where(p => p.NomeCentro.Equals(center.NomeCentro))
         .ToList();
-    if (positions.Count == 1)
+    if (positions.Count == 1 && !this.PositionOverCapacity(positions.First(), year, month, day, slot))
     {
         return positions;
     }
 
     var sectors = dbContext.Postaziones
-        .Where(p => p.NomeCentro.Equals(center.NomeCentro)).SelectMany(p => p.IdSettores);
-    return this.RecursivePositionSearch(positions, sectors.ToList(), dbContext);
+        .Where(p => p.NomeCentro.Equals(center.NomeCentro)).SelectMany(p => p.IdSettores).Distinct();
+    var poss = positions.Where(p => !this.PositionOverCapacity(p, year, month, day, slot)).ToList();
+    return this.RecursivePositionSearch(poss, sectors.Select(s => s.IdSettore).ToList(), dbContext);
 }
 
-    private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<AtcoDbPopulator.Models.Settore> remainingSectors, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<string> remainingSectors, AtcoDbPopulator.Models.AtctablesContext dbContext)
 {
     if (remainingSectors.Count == 0)
     {
         // Base case: all sectors have been covered, return the current list of positions
-        return positions;
+        return new List<AtcoDbPopulator.Models.Postazione>();
     }
 
     // Initialize variables to track the best combination of positions
@@ -97,27 +98,75 @@ public class CenterTurns
 
     foreach (var position in positions!)
     {
-        // TODO check position Occupancy
         var newPositions = new List<AtcoDbPopulator.Models.Postazione>(positions);
         newPositions.Remove(position);
 
         var sectorsInPosition = dbContext.Settores
-            .Where(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione))
+            .Where(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione)).Select(s => s.IdSettore)
             .ToList();
+        if (!sectorsInPosition.All(remainingSectors.Contains))
+        {
+            continue;
+        }
+
         var remainingSectorsForPosition = remainingSectors.Except(sectorsInPosition).ToList();
 
         var recursiveCombination = this.RecursivePositionSearch(newPositions, remainingSectorsForPosition, dbContext);
-
+        recursiveCombination?.Add(position);
         if (recursiveCombination != null && recursiveCombination.Count < minPositionsCount)
         {
-            // Found a better combination of positions
-            bestCombination = recursiveCombination;
-            minPositionsCount = recursiveCombination.Count;
+                // Found a better combination of positions
+                bestCombination = recursiveCombination;
+                minPositionsCount = recursiveCombination.Count;
         }
     }
 
     return bestCombination;
 }
+
+    private bool PositionOverCapacity(AtcoDbPopulator.Models.Postazione position, int year, int month, int day, int slot)
+    {
+        return this.PositionLoad(position, year, month, day, slot) >= this.PositionCapacity(position);
+    }
+
+    private int PositionLoad(AtcoDbPopulator.Models.Postazione position, int year, int month, int day, int slot)
+    {
+        using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
+
+        // Query the estimates table to count the number of matching records
+        // ReSharper disable once RemoveToList.2
+        // It's not possible to remove to list, it's not able to create a query otherwise.
+        int estimatesCount = dbContext.Stimatis
+            .Where(s => s.OrarioStimato.Month == month && s.OrarioStimato.Year == year && s.OrarioStimato.Day == day &&
+                        s.NomePuntoNavigation.IdSettoreNavigation.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione))
+            .ToList()
+            .Count(s => this.SlotOfTime(s.OrarioStimato.TimeOfDay) == slot);
+
+        return estimatesCount;
+    }
+
+    private int SlotOfTime(TimeSpan time)
+    {
+        int totalMinutes = (time.Hours * 60) + time.Minutes;
+        int minutesPerPart = 24 * 60 / ShiftsInDays;
+
+        int partIndex = totalMinutes / minutesPerPart;
+
+        return partIndex;
+    }
+
+    private int PositionCapacity(AtcoDbPopulator.Models.Postazione position)
+    {
+        // TODO might be adjusted
+        using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
+        int sectorsInPosition = dbContext.Settores.Count(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione));
+        if (sectorsInPosition > 1)
+        {
+            return 1;
+        }
+
+        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInPosition - 1));
+    }
 
     private void PopulatePositions(
         AtcoDbPopulator.Models.AtctablesContext dbContext,

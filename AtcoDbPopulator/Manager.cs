@@ -59,7 +59,6 @@ namespace AtcoDbPopulator
             using var dbContext = new AtctablesContext();
             var totCenters = dbContext.Centros.Count();
             int done = 0;
-            /* TODO expand with all centers */
 
             foreach (var center in dbContext.Centros)
             {
