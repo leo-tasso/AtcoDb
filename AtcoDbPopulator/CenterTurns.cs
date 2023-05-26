@@ -48,16 +48,17 @@ public class CenterTurns
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         while (i.Month == month)
         {
-            var positions = dbContext.Postaziones
-                .Where(p => p.NomeCentro.Equals(center.NomeCentro))
-                .Distinct()
-                .ToList();
             for (var slot = 1; slot <= NumTurns; slot++)
             {
-                IList<AtcoDbPopulator.Models.Postazione> ponderedPosition = PonderedPositions(center, year, month, slot, dbContext);
+                IList<AtcoDbPopulator.Models.Postazione>? ponderedPosition = this.PonderedPositions(center, year, month, slot, dbContext);
 
                 // TODO allocating only airports, expand with centers, evaluate positions.
-                this.PopulatePositions(dbContext, i, slot, positions);
+                if (ponderedPosition == null)
+                {
+                    throw new Exception("No set of position is valid");
+                }
+
+                this.PopulatePositions(dbContext, i, slot, ponderedPosition);
             }
 
             // TODO addStandby
@@ -67,56 +68,56 @@ public class CenterTurns
         dbContext.SaveChanges();
     }
 
-    private IList<AtcoDbPopulator.Models.Postazione> PonderedPositions(AtcoDbPopulator.Models.Centro center, int year, int month, int slot, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(AtcoDbPopulator.Models.Centro center, int year, int month, int slot, AtcoDbPopulator.Models.AtctablesContext dbContext)
+{
+    var positions = dbContext.Postaziones
+        .Where(p => p.NomeCentro.Equals(center.NomeCentro))
+        .ToList();
+    if (positions.Count == 1)
     {
-        var positions = dbContext.Postaziones
-            .Where(p => p.NomeCentro.Equals(center.NomeCentro));
-        var sectors = positions.SelectMany(p => p.IdSettores);
-        return this.RecursivePositionSearch(
-            positions.ToList(),
-            sectors.ToList());
+        return positions;
     }
 
+    var sectors = dbContext.Postaziones
+        .Where(p => p.NomeCentro.Equals(center.NomeCentro)).SelectMany(p => p.IdSettores);
+    return this.RecursivePositionSearch(positions, sectors.ToList(), dbContext);
+}
 
-    private IList<AtcoDbPopulator.Models.Postazione> RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione> positions, List<AtcoDbPopulator.Models.Settore> remainingSettores)
+    private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<AtcoDbPopulator.Models.Settore> remainingSectors, AtcoDbPopulator.Models.AtctablesContext dbContext)
+{
+    if (remainingSectors.Count == 0)
     {
-        if (remainingSettores.Count == 0)
-        {
-            // Base case: all settores have been covered, return the current list of positions
-            return positions;
-        }
-
-        // Initialize variables to track the best combination of positions
-        IList<AtcoDbPopulator.Models.Postazione> bestCombination = null;
-        int minPositionsCount = int.MaxValue;
-
-        foreach (var position in positions)
-        {
-            //TODO Add check for occupancy.
-            var newPositions = new List<AtcoDbPopulator.Models.Postazione>(positions);
-            newPositions.Remove(position);
-
-            var settoresInPosition = position.IdSettores.ToList();
-            var remainingSettoresForPosition = remainingSettores.Except(settoresInPosition).ToList();
-
-            if (settoresInPosition.Count != position.IdSettores.Count)
-            {
-                // Skip positions that don't cover any remaining settores
-                continue;
-            }
-
-            var recursiveCombination = RecursivePositionSearch(newPositions, remainingSettoresForPosition);
-
-            if (recursiveCombination != null && recursiveCombination.Count < minPositionsCount)
-            {
-                // Found a better combination of positions
-                bestCombination = recursiveCombination;
-                minPositionsCount = recursiveCombination.Count;
-            }
-        }
-
-        return bestCombination;
+        // Base case: all sectors have been covered, return the current list of positions
+        return positions;
     }
+
+    // Initialize variables to track the best combination of positions
+    IList<AtcoDbPopulator.Models.Postazione>? bestCombination = null;
+    int minPositionsCount = int.MaxValue;
+
+    foreach (var position in positions!)
+    {
+        // TODO check position Occupancy
+        var newPositions = new List<AtcoDbPopulator.Models.Postazione>(positions);
+        newPositions.Remove(position);
+
+        var sectorsInPosition = dbContext.Settores
+            .Where(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione))
+            .ToList();
+        var remainingSectorsForPosition = remainingSectors.Except(sectorsInPosition).ToList();
+
+        var recursiveCombination = this.RecursivePositionSearch(newPositions, remainingSectorsForPosition, dbContext);
+
+        if (recursiveCombination != null && recursiveCombination.Count < minPositionsCount)
+        {
+            // Found a better combination of positions
+            bestCombination = recursiveCombination;
+            minPositionsCount = recursiveCombination.Count;
+        }
+    }
+
+    return bestCombination;
+}
 
     private void PopulatePositions(
         AtcoDbPopulator.Models.AtctablesContext dbContext,
