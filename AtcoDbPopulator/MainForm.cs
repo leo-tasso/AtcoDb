@@ -15,7 +15,7 @@ namespace AtcoDbPopulator
     public partial class MainForm : Form
     {
         private const string FilePath = "Models/Airports.txt";
-        private const int NumControllersEachCenter = 15;
+        private const int NumControllersEachCenter = 30;
         private readonly Player player;
         private readonly Random random = new Random();
         private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);

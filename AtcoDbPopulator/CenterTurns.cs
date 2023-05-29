@@ -20,7 +20,8 @@ public class CenterTurns
     private const int MaxShiftsPerYear = 300;
     private const int StandardPay = 80;
     private const int NumTurns = 3;
-    private const double BaseCapacity = 30;
+    private const int BaseCapacity = 30;
+    private const float StandByRate = 0.3f;
 
     private readonly Dictionary<string, ICollection<string>> controllersSkills = new ();
     private readonly Dictionary<string, ICollection<string>> sectorsInPosition = new ();
@@ -61,13 +62,48 @@ public class CenterTurns
                 }
 
                 this.PopulatePositions(dbContext, i, slot, ponderedPosition);
+
+                this.PopulateStandbyCenter(dbContext, center.NomeCentro, (int)(ponderedPosition.Count * StandByRate) + 1, i, slot);
             }
 
-            // TODO addStandby
             i = i.AddDays(1);
         }
 
         dbContext.SaveChanges();
+    }
+
+    private void PopulateStandbyCenter(AtcoDbPopulator.Models.AtctablesContext dbContext, string center, int requiredPositions, DateTime date, int slot)
+    {
+        for (int i = 0; i < requiredPositions; i++)
+        {
+            var suitableController = this.GetSuitableController(center, date, slot, dbContext) ?? throw new InvalidOperationException("No Controller available for the shift."
+                + center
+                + date
+                + slot);
+
+            // create shift
+            var newShift = new AtcoDbPopulator.Models.Turno()
+            {
+                IdControllore = suitableController.IdControllore,
+                Retribuzione = StandardPay,
+                Data = date,
+                Slot = slot,
+                IdPostazione = null,
+                CentroStandBy = center,
+            };
+            this.shifts.Add(newShift);
+            dbContext.Turnos.Add(newShift);
+            this.controllersShifts[newShift.IdControllore].Add(newShift);
+        }
+    }
+
+    private AtcoDbPopulator.Models.Controllore? GetSuitableController(string centerName, DateTime date, int shift, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    {
+        var suitableControllers = this.controllers.Where(c =>
+            c.NomeCentro.Equals(centerName)
+            && this.ControllerIsNotTired(c, date, shift, dbContext));
+
+        return suitableControllers.MinBy(this.ShiftsWorked);
     }
 
     private IList<AtcoDbPopulator.Models.Postazione>? PonderedPositions(

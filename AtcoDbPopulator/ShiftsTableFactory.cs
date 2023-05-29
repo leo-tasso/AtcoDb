@@ -11,6 +11,25 @@ namespace AtcoDbPopulator;
 public class ShiftsTableFactory
 {
     private readonly Dictionary<string, AtcoDbPopulator.Models.Controllore> controllers = new ();
+    private readonly Dictionary<string, ISet<AtcoDbPopulator.Models.Turno>> standByPositions = new ();
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ShiftsTableFactory"/> class.
+    /// </summary>
+    public ShiftsTableFactory()
+    {
+        using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
+        var standByShifts = dbContext.Turnos.Where(s => s.CentroStandBy != null).ToHashSet();
+        foreach (var shift in standByShifts)
+        {
+            if (!this.standByPositions.ContainsKey(shift.CentroStandBy!))
+            {
+                this.standByPositions.Add(shift.CentroStandBy!, new HashSet<AtcoDbPopulator.Models.Turno>());
+            }
+
+            this.standByPositions[shift.CentroStandBy!].Add(shift);
+        }
+    }
 
     /// <summary>
     /// Method to create a table for the shift of a specific month.
@@ -23,7 +42,6 @@ public class ShiftsTableFactory
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         var positions = dbContext.Postaziones.Select(p => p.IdPostazione);
 
-        // TODO add also standby centers
         List<string> dates = new List<string>();
         DateTime startDate = new DateTime(year, month, 1);
         var shifts = dbContext.Turnos
@@ -74,6 +92,37 @@ public class ShiftsTableFactory
                     row[date] = controller != null
                         ? turno.IdControllore + " " + controller.Nome + " " + controller.Cognome
                         : string.Empty;
+                }
+                else
+                {
+                    row[date] = string.Empty;
+                }
+            }
+
+            dataTable.Rows.Add(row);
+        }
+
+        // Fill standby rows
+        foreach (var position in this.standByPositions.Keys)
+        {
+            var row = dataTable.NewRow();
+            row["Position"] = position + " STBY";
+
+            // Fill the row with data for each date
+            foreach (var date in dates)
+            {
+                var stbyShifts = this.standByPositions[position].Where(s => date.Equals(s.Data.ToShortDateString() + ", turno " + s.Slot)).ToHashSet();
+                if (stbyShifts.Any())
+                {
+                    string resString = string.Empty;
+                    foreach (var shift in stbyShifts)
+                    {
+                        AtcoDbPopulator.Models.Controllore? controller = this.FindController(shift.IdControllore);
+                        resString += controller != null ? shift.IdControllore + " " + controller.Nome + " " + controller.Cognome + "\n"
+                            : string.Empty;
+                    }
+
+                    row[date] = resString;
                 }
                 else
                 {
