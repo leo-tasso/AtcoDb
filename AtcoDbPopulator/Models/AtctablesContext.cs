@@ -3,13 +3,20 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace AtcoDbPopulator.Models;
 
 public partial class AtctablesContext : DbContext
 {
+    private string connectionString;
     public AtctablesContext()
     {
+        var config = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        connectionString = config.GetConnectionString("LocalMysql");
     }
 
     public AtctablesContext(DbContextOptions<AtctablesContext> options)
@@ -46,8 +53,7 @@ public partial class AtctablesContext : DbContext
     public virtual DbSet<Turno> Turnos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("Server=localhost;Database=atctables;Uid=root;Pwd=rasberry;");
+        => optionsBuilder.UseMySQL(connectionString);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
