@@ -15,8 +15,7 @@ namespace AtcoDbPopulator
     public partial class MainForm : Form
     {
         private const string FilePath = "Models/Airports.txt";
-        private const int NumControllersEachCenter = 30;
-        private const int LongestFlightSectors = 10;
+        private const int NumControllersEachCenter = 15;
         private readonly Player player;
         private readonly Random random = new Random();
         private readonly string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, FilePath);
@@ -152,75 +151,7 @@ namespace AtcoDbPopulator
             this.trafficPopulatorButton.Enabled = false;
             this.trafficNum.Enabled = false;
             this.controllerNum.Enabled = false;
-            IList<string> types = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Aircrafts.txt");
-            IList<string> companies = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Airlines.txt");
-            DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
-            DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
-
-            TimeSpan timeSpan = endDate - startDate;
-            int totalDays = timeSpan.Days;
-            using (var dbContext = new AtctablesContext())
-            {
-                var aerodromos = dbContext.Aerodromos.ToList();
-                for (int i = 0; i < this.trafficNum.Value; i++)
-                {
-                    this.progressBar1.Value = (int)(i / this.trafficNum.Value * 100);
-                    Application.DoEvents();
-                    var adTakeOff = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
-                    var adLanding = aerodromos[this.random.Next(0, dbContext.Aerodromos.Count())];
-
-                    var newPlane = new Aereomobile()
-                    {
-                        Tipo = types[this.random.Next(0, types.Count)],
-                        NumeroDiCoda = AtcoDbPopulator.Utils.RandomStringGenerator.GenerateRandomString(1) + "-" + AtcoDbPopulator.Utils.RandomStringGenerator.GenerateRandomString(4),
-                    };
-                    var newFlightPlan = new Pianodivolo()
-                    {
-                        Callsign = this.random.NextDouble() > 0.8
-                            ? newPlane.NumeroDiCoda
-                            : (companies[this.random.Next(0, companies.Count)] + this.random.Next(100, 10000).ToString()),
-                        Dof = startDate.AddDays(this.random.Next(totalDays)),
-                        NumeroDiCoda = newPlane.NumeroDiCoda,
-                        CodAdDecollo = adTakeOff.CodiceIcao,
-                        CodAdAtterraggio = adLanding.CodiceIcao,
-                        OrientamentoPistaDecollo = dbContext.Pista.First(p => p.CodAd.Equals(adTakeOff.CodiceIcao)).Orientamento,
-                        OrientamentoPistaAtterraggio = dbContext.Pista.First(p => p.CodAd.Equals(adLanding.CodiceIcao)).Orientamento,
-                    };
-                    dbContext.Aereomobiles.Add(newPlane);
-                    dbContext.Pianodivolos.Add(newFlightPlan);
-                    dbContext.SaveChanges();
-
-                    foreach (var crossingSector in dbContext.Settores.Where(s => s.CodAd == null).Take(this.random.Next(LongestFlightSectors / 2, LongestFlightSectors)).ToList())
-                    {
-                        var pointsInSector = dbContext.Puntos.Count(p => p.IdSettore.Equals(crossingSector.IdSettore));
-                        IList<Stimati> newEstimates = new List<Stimati>();
-                        IList<Punto> newEstimatesNames = dbContext.Puntos
-                            .Where(p => p.IdSettore.Equals(crossingSector.IdSettore))
-                            .Take(this.random.Next(pointsInSector / 2))
-                            .ToList();
-
-                        for (int k = 0; k < newEstimatesNames.Count; k++)
-                        {
-                            string newEstimatesName = newEstimatesNames[0].NomePunto;
-                            newEstimatesNames.RemoveAt(0);
-                            var newEstimate = new Stimati()
-                            {
-                                Callsign = newFlightPlan.Callsign,
-                                Dof = newFlightPlan.Dof,
-                                NomePunto = newEstimatesName,
-                                OrarioStimato = newEstimates.Any() ? newEstimates.Max(s => s.OrarioStimato).AddSeconds(this.random.Next(100, 1000)) : newFlightPlan.Dof.AddSeconds(this.random.Next(86400)),
-                            };
-                            newEstimates.Add(newEstimate);
-                        }
-
-                        dbContext.Stimatis.AddRange(newEstimates);
-                        dbContext.SaveChanges();
-                    }
-                }
-
-                this.progressBar1.Value = 0;
-            }
-
+            new TrafficPopulator().PopulateTraffic((int)this.trafficNum.Value, this.progressBar1, DateTime.Now.Year);
             Cursor.Current = Cursors.Default;
             this.randomstateButton.Enabled = true;
             this.dateTimePicker.Enabled = true;

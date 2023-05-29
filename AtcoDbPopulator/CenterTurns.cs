@@ -23,9 +23,10 @@ public class CenterTurns
     private const double BaseCapacity = 30;
 
     private readonly Dictionary<string, ICollection<string>> controllersSkills = new ();
+    private readonly Dictionary<string, ICollection<string>> sectorsInPosition = new ();
     private readonly Dictionary<string, ICollection<AtcoDbPopulator.Models.Turno>> controllersShifts = new ();
-    private readonly List<AtcoDbPopulator.Models.Controllore> controllers;
-    private readonly ICollection<AtcoDbPopulator.Models.Turno> shifts;
+    private readonly ISet<AtcoDbPopulator.Models.Controllore> controllers;
+    private readonly ISet<AtcoDbPopulator.Models.Turno> shifts;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CenterTurns"/> class.
@@ -33,8 +34,8 @@ public class CenterTurns
     public CenterTurns()
     {
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
-        this.controllers = dbContext.Controllores.ToList();
-        this.shifts = dbContext.Turnos.ToList();
+        this.controllers = dbContext.Controllores.ToHashSet();
+        this.shifts = dbContext.Turnos.ToHashSet();
     }
 
     /// <summary>
@@ -43,7 +44,7 @@ public class CenterTurns
     /// <param name="center">The relative center.</param>
     /// <param name="month">The relative Month.</param>
     /// <param name="year">The relative year.</param>
-    /// <param name="checkOccupation"></param>
+    /// <param name="checkOccupation">If the algorithm should analyze occupation and fill controllers accordingly.</param>
     public void CenterTurnsGenerator(AtcoDbPopulator.Models.Centro center, int month, int year, bool checkOccupation)
     {
         var i = new DateTime(year, month, 1);
@@ -57,11 +58,6 @@ public class CenterTurns
                 if (ponderedPosition == null || ponderedPosition.Count == 0)
                 {
                     throw new Exception("No set of position is valid");
-                }
-
-                if (ponderedPosition.Count > 2)
-                {
-                    ;
                 }
 
                 this.PopulatePositions(dbContext, i, slot, ponderedPosition);
@@ -97,17 +93,17 @@ public class CenterTurns
         return positions;
     }
 
-    var sectors = dbContext.Postaziones
+    var sectorsInCenter = dbContext.Postaziones
         .Where(p => p.NomeCentro.Equals(center.NomeCentro)).SelectMany(p => p.IdSettores).Distinct();
     if (checkOccupation)
     {
         positions = positions.Where(p => !this.PositionOverCapacity(p, year, month, day, slot)).ToList();
     }
 
-    return this.RecursivePositionSearch(positions, sectors.Select(s => s.IdSettore).ToList(), dbContext);
+    return this.RecursivePositionSearch(positions, sectorsInCenter.Select(s => s.IdSettore).ToList());
 }
 
-    private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<string> remainingSectors, AtcoDbPopulator.Models.AtctablesContext dbContext)
+    private IList<AtcoDbPopulator.Models.Postazione>? RecursivePositionSearch(List<AtcoDbPopulator.Models.Postazione>? positions, List<string> remainingSectors)
 {
     if (remainingSectors.Count == 0)
     {
@@ -124,17 +120,15 @@ public class CenterTurns
         var newPositions = new List<AtcoDbPopulator.Models.Postazione>(positions);
         newPositions.Remove(position);
 
-        var sectorsInPosition = dbContext.Settores
-            .Where(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione)).Select(s => s.IdSettore)
-            .ToList();
-        if (!sectorsInPosition.All(remainingSectors.Contains))
+        var sectorsInCurrentPosition = this.SectorsInPosition(position.IdPostazione);
+        if (!sectorsInCurrentPosition.All(remainingSectors.Contains))
         {
             continue;
         }
 
-        var remainingSectorsForPosition = remainingSectors.Except(sectorsInPosition).ToList();
+        var remainingSectorsForPosition = remainingSectors.Except(sectorsInCurrentPosition).ToList();
 
-        var recursiveCombination = this.RecursivePositionSearch(newPositions, remainingSectorsForPosition, dbContext);
+        var recursiveCombination = this.RecursivePositionSearch(newPositions, remainingSectorsForPosition);
         recursiveCombination?.Add(position);
         if (recursiveCombination != null && recursiveCombination.Count < minPositionsCount)
         {
@@ -146,6 +140,23 @@ public class CenterTurns
 
     return bestCombination;
 }
+
+    private ICollection<string> SectorsInPosition(string position)
+    {
+        if (this.sectorsInPosition.TryGetValue(position, out ICollection<string>? dictResult))
+        {
+            return dictResult;
+        }
+
+        using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
+
+        dictResult = dbContext.Settores
+            .Where(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position)).Select(s => s.IdSettore)
+            .ToList();
+        this.sectorsInPosition.Add(position, dictResult);
+
+        return dictResult;
+    }
 
     private bool PositionOverCapacity(AtcoDbPopulator.Models.Postazione position, int year, int month, int day, int slot)
     {
@@ -182,13 +193,13 @@ public class CenterTurns
     {
         // TODO might be adjusted
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
-        int sectorsInPosition = dbContext.Settores.Count(s => s.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione));
-        if (sectorsInPosition > 1)
+        int sectorsInCurrentPosition = this.SectorsInPosition(position.IdPostazione).Count;
+        if (sectorsInCurrentPosition > 1)
         {
             return 1;
         }
 
-        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInPosition - 1));
+        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInCurrentPosition - 1));
     }
 
     private void PopulatePositions(
@@ -205,9 +216,7 @@ public class CenterTurns
                 break;
             }
 
-            var involvedSectors = dbContext.Settores
-                .Where(s => s.IdPostaziones.Contains(position))
-                .Select(s => s.IdSettore).ToList();
+            var involvedSectors = this.SectorsInPosition(position.IdPostazione);
             var suitableController = this.GetSuitableController(involvedSectors, date, shift, dbContext) ?? throw new InvalidOperationException("No Controller available for the shift."
                                                     + involvedSectors
                                                     + date

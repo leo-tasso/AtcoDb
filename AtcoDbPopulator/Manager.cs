@@ -7,7 +7,6 @@ namespace AtcoDbPopulator
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
     using System.Windows.Forms;
     using AtcoDbPopulator.Models;
@@ -27,12 +26,6 @@ namespace AtcoDbPopulator
             using var dbContext = new AtctablesContext();
             this.comboBox1.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
             this.dataGridView1.DataSource = this.DataSource();
-        }
-
-        private static Controllore? FindController(string idController)
-        {
-            using var dbContext = new AtctablesContext();
-            return dbContext.Controllores.Find(idController);
         }
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -75,66 +68,7 @@ namespace AtcoDbPopulator
 
             this.progressBarTurnGeneration.Value = 0;
 
-            var positions = dbContext.Postaziones.Select(p => p.IdPostazione);
-
-            // TODO add also standby centers
-            List<string> dates = new List<string>();
-            DateTime startDate = new DateTime((int)this.numericUpDown2.Value, (int)this.numericUpDown1.Value, 1);
-            var shifts = dbContext.Turnos
-                .Where(t =>
-                    t.Data.Year == (int)this.numericUpDown2.Value && t.Data.Month == (int)this.numericUpDown1.Value)
-                .ToList();
-
-            while (startDate.Month == (int)this.numericUpDown1.Value)
-            {
-                for (int i = 1; i <= CenterTurns.ShiftsInDays; i++)
-                {
-                    dates.Add(startDate.ToShortDateString() + ", turno " + i);
-                }
-
-                startDate = startDate.AddDays(1);
-            }
-
-            var dataTable = new DataTable();
-            dataTable.Columns.Add("Position", typeof(string));
-            foreach (var date in dates)
-            {
-                dataTable.Columns.Add(date);
-            }
-
-            var headerRow = dataTable.NewRow();
-            headerRow["Position"] = "Postazioni:";
-            foreach (var date in dates)
-            {
-                headerRow[date] = date;
-            }
-
-            dataTable.Rows.Add(headerRow);
-
-            foreach (var position in positions)
-            {
-                var row = dataTable.NewRow();
-                row["Position"] = position;
-
-                // Fill the row with data for each date
-                foreach (var date in dates)
-                {
-                    var turno = shifts.FirstOrDefault(t =>
-                        t.IdPostazione == position &&
-                        date == t.Data.ToShortDateString() + ", turno " + t.Slot);
-                    if (turno != null)
-                    {
-                        Controllore? controller = Manager.FindController(turno.IdControllore);
-                        row[date] = controller != null ? turno.IdControllore + " " + controller.Nome + " " + controller.Cognome : string.Empty;
-                    }
-                    else
-                    {
-                        row[date] = string.Empty;
-                    }
-                }
-
-                dataTable.Rows.Add(row);
-            }
+            var dataTable = new ShiftsTableFactory().CreateDataTable((int)this.numericUpDown1.Value, (int)this.numericUpDown2.Value);
 
             this.dataGridView2.DataSource = dataTable;
             this.dataGridView2.Columns[1].SortMode = DataGridViewColumnSortMode.NotSortable;
@@ -174,7 +108,7 @@ namespace AtcoDbPopulator
                         workbook.Worksheets.Add("Turni " + this.numericUpDown2.Value + " " + this.numericUpDown2.Value);
                     /*not needed, copied header on first row
 
-                    // Copy the first row with dates if decommenting  set "i + 2" in worksheet.cell(...
+                    // Copy the first row with dates if de-commenting  set "i + 2" in worksheet.cell(...
                     for (int j = 0; j < this.dataGridView2.Columns.Count; j++)
                     {
                         worksheet.Cell(1, j + 1).Value = this.dataGridView2.Columns[j].HeaderText;
