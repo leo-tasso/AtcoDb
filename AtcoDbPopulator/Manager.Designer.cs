@@ -28,222 +28,306 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new TabControl();
-            this.tabPage1 = new TabPage();
-            this.comboBox1 = new ComboBox();
-            this.dataGridView1 = new DataGridView();
-            this.tabPage2 = new TabPage();
-            this.OccupancyCheckCheckBox = new CheckBox();
-            this.ExportButton = new Button();
-            this.dataGridView2 = new DataGridView();
-            this.progressBarTurnGeneration = new ProgressBar();
-            this.TurnsGenerator = new Button();
-            this.label2 = new Label();
-            this.label1 = new Label();
-            this.numericUpDown2 = new NumericUpDown();
-            this.numericUpDown1 = new NumericUpDown();
-            this.tabPage3 = new TabPage();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.dataGridView1).BeginInit();
-            this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)this.dataGridView2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDown2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).BeginInit();
+            tabSelector = new TabControl();
+            tabPage1 = new TabPage();
+            comboBox1 = new ComboBox();
+            dataGridView1 = new DataGridView();
+            tabPage2 = new TabPage();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            label1 = new Label();
+            numericUpDown1 = new NumericUpDown();
+            label2 = new Label();
+            numericUpDown2 = new NumericUpDown();
+            TurnsGenerator = new Button();
+            OccupancyCheckCheckBox = new CheckBox();
+            flowLayoutPanel2 = new FlowLayoutPanel();
+            ExportButton = new Button();
+            dataGridView2 = new DataGridView();
+            progressBarTurnGeneration = new ProgressBar();
+            tabPage3 = new TabPage();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            tabSelector.SuspendLayout();
+            tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            tabPage2.SuspendLayout();
+            tableLayoutPanel1.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
+            flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
+            flowLayoutPanel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // tabSelector
             // 
-            this.tabControl1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Location = new Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new Size(1363, 680);
-            this.tabControl1.TabIndex = 0;
+            tabSelector.Controls.Add(tabPage1);
+            tabSelector.Controls.Add(tabPage2);
+            tabSelector.Controls.Add(tabPage3);
+            tabSelector.Dock = DockStyle.Fill;
+            tabSelector.Location = new Point(0, 0);
+            tabSelector.Name = "tabSelector";
+            tabSelector.SelectedIndex = 0;
+            tabSelector.Size = new Size(1386, 704);
+            tabSelector.TabIndex = 0;
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.comboBox1);
-            this.tabPage1.Controls.Add(this.dataGridView1);
-            this.tabPage1.Location = new Point(4, 24);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new Padding(3);
-            this.tabPage1.Size = new Size(1355, 652);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            tabPage1.Controls.Add(tableLayoutPanel3);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1378, 676);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Controllori in Centro";
+            tabPage1.UseVisualStyleBackColor = true;
             // 
             // comboBox1
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new Point(127, 6);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new Size(121, 23);
-            this.comboBox1.TabIndex = 1;
-            this.comboBox1.SelectedIndexChanged += this.ComboBox1_SelectedIndexChanged;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(3, 3);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(234, 23);
+            comboBox1.TabIndex = 1;
+            comboBox1.SelectedIndexChanged += this.ComboBox1_SelectedIndexChanged;
             // 
             // dataGridView1
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new Point(3, 33);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowTemplate.Height = 25;
-            this.dataGridView1.Size = new Size(827, 616);
-            this.dataGridView1.TabIndex = 0;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToOrderColumns = true;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(3, 32);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(1366, 635);
+            dataGridView1.TabIndex = 0;
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.OccupancyCheckCheckBox);
-            this.tabPage2.Controls.Add(this.ExportButton);
-            this.tabPage2.Controls.Add(this.dataGridView2);
-            this.tabPage2.Controls.Add(this.progressBarTurnGeneration);
-            this.tabPage2.Controls.Add(this.TurnsGenerator);
-            this.tabPage2.Controls.Add(this.label2);
-            this.tabPage2.Controls.Add(this.label1);
-            this.tabPage2.Controls.Add(this.numericUpDown2);
-            this.tabPage2.Controls.Add(this.numericUpDown1);
-            this.tabPage2.Location = new Point(4, 24);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new Padding(3);
-            this.tabPage2.Size = new Size(1355, 652);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Generatore Turni";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            tabPage2.Controls.Add(tableLayoutPanel1);
+            tabPage2.Location = new Point(4, 24);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(1378, 676);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "Generatore Turni";
+            tabPage2.UseVisualStyleBackColor = true;
             // 
-            // OccupancyCheckCheckBox
+            // tableLayoutPanel1
             // 
-            this.OccupancyCheckCheckBox.AutoSize = true;
-            this.OccupancyCheckCheckBox.Checked = true;
-            this.OccupancyCheckCheckBox.CheckState = CheckState.Checked;
-            this.OccupancyCheckCheckBox.Location = new Point(403, 38);
-            this.OccupancyCheckCheckBox.Name = "OccupancyCheckCheckBox";
-            this.OccupancyCheckCheckBox.Size = new Size(151, 19);
-            this.OccupancyCheckCheckBox.TabIndex = 8;
-            this.OccupancyCheckCheckBox.Text = "Considera Occupazione";
-            this.OccupancyCheckCheckBox.UseVisualStyleBackColor = true;
+            tableLayoutPanel1.ColumnCount = 1;
+            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Controls.Add(tableLayoutPanel2, 0, 1);
+            tableLayoutPanel1.Controls.Add(dataGridView2, 0, 2);
+            tableLayoutPanel1.Controls.Add(progressBarTurnGeneration, 0, 0);
+            tableLayoutPanel1.Dock = DockStyle.Fill;
+            tableLayoutPanel1.Location = new Point(3, 3);
+            tableLayoutPanel1.Name = "tableLayoutPanel1";
+            tableLayoutPanel1.RowCount = 3;
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle());
+            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel1.Size = new Size(1372, 670);
+            tableLayoutPanel1.TabIndex = 9;
             // 
-            // ExportButton
+            // tableLayoutPanel2
             // 
-            this.ExportButton.Location = new Point(1209, 35);
-            this.ExportButton.Name = "ExportButton";
-            this.ExportButton.Size = new Size(140, 23);
-            this.ExportButton.TabIndex = 7;
-            this.ExportButton.Text = "Esporta come xlsx";
-            this.ExportButton.UseVisualStyleBackColor = true;
-            this.ExportButton.Click += this.ExportButton_Click;
+            tableLayoutPanel2.AutoSize = true;
+            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 67.49634F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 32.5036621F));
+            tableLayoutPanel2.Controls.Add(flowLayoutPanel1, 0, 0);
+            tableLayoutPanel2.Controls.Add(flowLayoutPanel2, 1, 0);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(3, 32);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(1366, 41);
+            tableLayoutPanel2.TabIndex = 12;
             // 
-            // dataGridView2
+            // flowLayoutPanel1
             // 
-            this.dataGridView2.AllowUserToAddRows = false;
-            this.dataGridView2.AllowUserToDeleteRows = false;
-            this.dataGridView2.AllowUserToOrderColumns = true;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.ColumnHeadersVisible = false;
-            this.dataGridView2.Location = new Point(6, 64);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.ReadOnly = true;
-            this.dataGridView2.RowHeadersVisible = false;
-            this.dataGridView2.RowTemplate.Height = 25;
-            this.dataGridView2.Size = new Size(1343, 585);
-            this.dataGridView2.TabIndex = 6;
-            // 
-            // progressBarTurnGeneration
-            // 
-            this.progressBarTurnGeneration.Location = new Point(6, 6);
-            this.progressBarTurnGeneration.Name = "progressBarTurnGeneration";
-            this.progressBarTurnGeneration.Size = new Size(1343, 23);
-            this.progressBarTurnGeneration.TabIndex = 5;
-            // 
-            // TurnsGenerator
-            // 
-            this.TurnsGenerator.Location = new Point(292, 35);
-            this.TurnsGenerator.Name = "TurnsGenerator";
-            this.TurnsGenerator.Size = new Size(105, 23);
-            this.TurnsGenerator.TabIndex = 4;
-            this.TurnsGenerator.Text = "Genera Turni";
-            this.TurnsGenerator.UseVisualStyleBackColor = true;
-            this.TurnsGenerator.Click += this.TurnsGenerator_Click;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new Point(105, 37);
-            this.label2.Name = "label2";
-            this.label2.Size = new Size(39, 15);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Anno:";
+            flowLayoutPanel1.Controls.Add(label1);
+            flowLayoutPanel1.Controls.Add(numericUpDown1);
+            flowLayoutPanel1.Controls.Add(label2);
+            flowLayoutPanel1.Controls.Add(numericUpDown2);
+            flowLayoutPanel1.Controls.Add(TurnsGenerator);
+            flowLayoutPanel1.Controls.Add(OccupancyCheckCheckBox);
+            flowLayoutPanel1.Dock = DockStyle.Fill;
+            flowLayoutPanel1.Location = new Point(3, 3);
+            flowLayoutPanel1.Name = "flowLayoutPanel1";
+            flowLayoutPanel1.Size = new Size(916, 35);
+            flowLayoutPanel1.TabIndex = 10;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new Point(6, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new Size(38, 15);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "Mese:";
-            // 
-            // numericUpDown2
-            // 
-            this.numericUpDown2.Location = new Point(150, 35);
-            this.numericUpDown2.Maximum = new decimal(new int[] { 2050, 0, 0, 0 });
-            this.numericUpDown2.Minimum = new decimal(new int[] { 2023, 0, 0, 0 });
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new Size(120, 23);
-            this.numericUpDown2.TabIndex = 1;
-            this.numericUpDown2.Value = new decimal(new int[] { 2023, 0, 0, 0 });
+            label1.AutoSize = true;
+            label1.Location = new Point(3, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(38, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Mese:";
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new Point(50, 35);
-            this.numericUpDown1.Maximum = new decimal(new int[] { 12, 0, 0, 0 });
-            this.numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new Size(40, 23);
-            this.numericUpDown1.TabIndex = 0;
-            this.numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown1.Location = new Point(47, 3);
+            numericUpDown1.Maximum = new decimal(new int[] { 12, 0, 0, 0 });
+            numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new Size(40, 23);
+            numericUpDown1.TabIndex = 0;
+            numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(93, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(39, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Anno:";
+            // 
+            // numericUpDown2
+            // 
+            numericUpDown2.Location = new Point(138, 3);
+            numericUpDown2.Maximum = new decimal(new int[] { 2050, 0, 0, 0 });
+            numericUpDown2.Minimum = new decimal(new int[] { 2023, 0, 0, 0 });
+            numericUpDown2.Name = "numericUpDown2";
+            numericUpDown2.Size = new Size(120, 23);
+            numericUpDown2.TabIndex = 1;
+            numericUpDown2.Value = new decimal(new int[] { 2023, 0, 0, 0 });
+            // 
+            // TurnsGenerator
+            // 
+            TurnsGenerator.Location = new Point(264, 3);
+            TurnsGenerator.Name = "TurnsGenerator";
+            TurnsGenerator.Size = new Size(105, 23);
+            TurnsGenerator.TabIndex = 4;
+            TurnsGenerator.Text = "Genera Turni";
+            TurnsGenerator.UseVisualStyleBackColor = true;
+            TurnsGenerator.Click += this.TurnsGenerator_Click;
+            // 
+            // OccupancyCheckCheckBox
+            // 
+            OccupancyCheckCheckBox.AutoSize = true;
+            OccupancyCheckCheckBox.Checked = true;
+            OccupancyCheckCheckBox.CheckState = CheckState.Checked;
+            OccupancyCheckCheckBox.Location = new Point(375, 3);
+            OccupancyCheckCheckBox.Name = "OccupancyCheckCheckBox";
+            OccupancyCheckCheckBox.Size = new Size(151, 19);
+            OccupancyCheckCheckBox.TabIndex = 8;
+            OccupancyCheckCheckBox.Text = "Considera Occupazione";
+            OccupancyCheckCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel2
+            // 
+            flowLayoutPanel2.AutoSize = true;
+            flowLayoutPanel2.Controls.Add(ExportButton);
+            flowLayoutPanel2.Dock = DockStyle.Fill;
+            flowLayoutPanel2.FlowDirection = FlowDirection.RightToLeft;
+            flowLayoutPanel2.Location = new Point(925, 3);
+            flowLayoutPanel2.Name = "flowLayoutPanel2";
+            flowLayoutPanel2.Size = new Size(438, 35);
+            flowLayoutPanel2.TabIndex = 11;
+            // 
+            // ExportButton
+            // 
+            ExportButton.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            ExportButton.Location = new Point(295, 3);
+            ExportButton.Name = "ExportButton";
+            ExportButton.Size = new Size(140, 23);
+            ExportButton.TabIndex = 7;
+            ExportButton.Text = "Esporta come xlsx";
+            ExportButton.UseVisualStyleBackColor = true;
+            ExportButton.Click += this.ExportButton_Click;
+            // 
+            // dataGridView2
+            // 
+            dataGridView2.AllowUserToAddRows = false;
+            dataGridView2.AllowUserToDeleteRows = false;
+            dataGridView2.AllowUserToOrderColumns = true;
+            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView2.ColumnHeadersVisible = false;
+            dataGridView2.Dock = DockStyle.Fill;
+            dataGridView2.Location = new Point(3, 79);
+            dataGridView2.Name = "dataGridView2";
+            dataGridView2.ReadOnly = true;
+            dataGridView2.RowHeadersVisible = false;
+            dataGridView2.RowTemplate.Height = 25;
+            dataGridView2.Size = new Size(1366, 588);
+            dataGridView2.TabIndex = 6;
+            // 
+            // progressBarTurnGeneration
+            // 
+            progressBarTurnGeneration.Dock = DockStyle.Fill;
+            progressBarTurnGeneration.Location = new Point(3, 3);
+            progressBarTurnGeneration.Name = "progressBarTurnGeneration";
+            progressBarTurnGeneration.Size = new Size(1366, 23);
+            progressBarTurnGeneration.TabIndex = 5;
             // 
             // tabPage3
             // 
-            this.tabPage3.Location = new Point(4, 24);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new Padding(3);
-            this.tabPage3.Size = new Size(1355, 652);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "tabPage3";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            tabPage3.Location = new Point(4, 24);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1378, 676);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "tabPage3";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Controls.Add(comboBox1, 0, 0);
+            tableLayoutPanel3.Controls.Add(dataGridView1, 0, 1);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(1372, 670);
+            tableLayoutPanel3.TabIndex = 2;
             // 
             // Manager
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.BackColor = SystemColors.ControlLight;
             this.ClientSize = new Size(1386, 704);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(tabSelector);
             this.Name = "Manager";
             this.Text = "Manager";
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)this.dataGridView1).EndInit();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)this.dataGridView2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDown2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)this.numericUpDown1).EndInit();
+            tabSelector.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tabPage2.ResumeLayout(false);
+            tableLayoutPanel1.ResumeLayout(false);
+            tableLayoutPanel1.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            flowLayoutPanel1.ResumeLayout(false);
+            flowLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
+            flowLayoutPanel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            tableLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
         #endregion
 
-        private TabControl tabControl1;
+        private TabControl tabSelector;
         private TabPage tabPage1;
         private TabPage tabPage2;
         private DataGridView dataGridView1;
@@ -261,5 +345,10 @@
         /// Occupancy check checkbox.
         /// </summary>
         public CheckBox OccupancyCheckCheckBox;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel3;
     }
 }
