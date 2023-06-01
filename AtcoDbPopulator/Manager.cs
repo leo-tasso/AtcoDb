@@ -42,6 +42,7 @@ namespace AtcoDbPopulator
                     Nome = s.Nome,
                     Cognome = s.Cognome,
                     Id = s.IdControllore,
+                    TurniLavorati = dbContext.Turnos.Count(t => t.IdControllore.Equals(s.IdControllore)),
                 }).ToList();
         }
 

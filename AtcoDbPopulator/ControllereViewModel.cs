@@ -24,4 +24,9 @@ public class ControlloreViewModel
     /// Gets or sets the Surname of the controller.
     /// </summary>
     public string? Cognome { get; set; }
+
+    /// <summary>
+    /// Gets or sets the total worked shifts.
+    /// </summary>
+    public int? TurniLavorati { get; set; }
 }
