@@ -51,7 +51,7 @@ public class ShiftsTableFactory
 
         while (startDate.Month == month)
         {
-            for (int i = 1; i <= CenterTurns.ShiftsInDays; i++)
+            for (int i = 1; i <= PositionsUtils.ShiftsInDays; i++)
             {
                 dates.Add(startDate.ToShortDateString() + ", turno " + i);
             }
