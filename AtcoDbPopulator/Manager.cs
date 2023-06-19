@@ -202,7 +202,7 @@ namespace AtcoDbPopulator
         {
             var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
-            Controllore controller = dbContext.Controllores.Find(selected) !;
+            Controllore? controller = dbContext.Controllores.Find(selected);
             if (controller != null)
             {
                 controller.Nome = this.NameBox.Text;
