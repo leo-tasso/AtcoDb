@@ -30,6 +30,7 @@
         {
             tabSelector = new TabControl();
             tabPage1 = new TabPage();
+            tableLayoutPanel3 = new TableLayoutPanel();
             comboBox1 = new ComboBox();
             dataGridView1 = new DataGridView();
             tabPage2 = new TabPage();
@@ -47,9 +48,22 @@
             dataGridView2 = new DataGridView();
             progressBarTurnGeneration = new ProgressBar();
             tabPage3 = new TabPage();
-            tableLayoutPanel3 = new TableLayoutPanel();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            NameBox = new TextBox();
+            ControllerManagerSelector = new ComboBox();
+            label3 = new Label();
+            flowLayoutPanel3 = new FlowLayoutPanel();
+            AggiornaButton = new Button();
+            LicenziaButton = new Button();
+            Cognome = new Label();
+            Id = new Label();
+            SurnameBox = new TextBox();
+            IdBox = new TextBox();
+            Centro = new Label();
+            CenterComboBox = new ComboBox();
             tabSelector.SuspendLayout();
             tabPage1.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             tabPage2.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -59,7 +73,9 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            tableLayoutPanel3.SuspendLayout();
+            tabPage3.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
+            flowLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabSelector
@@ -84,6 +100,21 @@
             tabPage1.TabIndex = 0;
             tabPage1.Text = "Controllori in Centro";
             tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Controls.Add(comboBox1, 0, 0);
+            tableLayoutPanel3.Controls.Add(dataGridView1, 0, 1);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(1372, 670);
+            tableLayoutPanel3.TabIndex = 2;
             // 
             // comboBox1
             // 
@@ -274,28 +305,160 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(tableLayoutPanel4);
             tabPage3.Location = new Point(4, 24);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
             tabPage3.Size = new Size(1378, 676);
             tabPage3.TabIndex = 2;
-            tabPage3.Text = "tabPage3";
+            tabPage3.Text = "Gestore Controllori";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // tableLayoutPanel3
+            // tableLayoutPanel4
             // 
-            tableLayoutPanel3.ColumnCount = 1;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Controls.Add(comboBox1, 0, 0);
-            tableLayoutPanel3.Controls.Add(dataGridView1, 0, 1);
-            tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(3, 3);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 2;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(1372, 670);
-            tableLayoutPanel3.TabIndex = 2;
+            tableLayoutPanel4.ColumnCount = 2;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
+            tableLayoutPanel4.Controls.Add(NameBox, 1, 1);
+            tableLayoutPanel4.Controls.Add(ControllerManagerSelector, 1, 0);
+            tableLayoutPanel4.Controls.Add(label3, 0, 1);
+            tableLayoutPanel4.Controls.Add(flowLayoutPanel3, 0, 0);
+            tableLayoutPanel4.Controls.Add(Cognome, 0, 2);
+            tableLayoutPanel4.Controls.Add(Id, 0, 3);
+            tableLayoutPanel4.Controls.Add(SurnameBox, 1, 2);
+            tableLayoutPanel4.Controls.Add(IdBox, 1, 3);
+            tableLayoutPanel4.Controls.Add(Centro, 0, 4);
+            tableLayoutPanel4.Controls.Add(CenterComboBox, 1, 4);
+            tableLayoutPanel4.Dock = DockStyle.Fill;
+            tableLayoutPanel4.Location = new Point(3, 3);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 6;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel4.Size = new Size(1372, 670);
+            tableLayoutPanel4.TabIndex = 0;
+            // 
+            // NameBox
+            // 
+            NameBox.Dock = DockStyle.Fill;
+            NameBox.Location = new Point(277, 38);
+            NameBox.Name = "NameBox";
+            NameBox.Size = new Size(1092, 23);
+            NameBox.TabIndex = 2;
+            // 
+            // ControllerManagerSelector
+            // 
+            ControllerManagerSelector.Dock = DockStyle.Fill;
+            ControllerManagerSelector.FormattingEnabled = true;
+            ControllerManagerSelector.Location = new Point(277, 3);
+            ControllerManagerSelector.Name = "ControllerManagerSelector";
+            ControllerManagerSelector.Size = new Size(1092, 23);
+            ControllerManagerSelector.TabIndex = 3;
+            ControllerManagerSelector.SelectionChangeCommitted += this.ControllerManagerSelectorSelectionChangeCommitted;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Fill;
+            label3.Location = new Point(3, 35);
+            label3.Name = "label3";
+            label3.Size = new Size(268, 29);
+            label3.TabIndex = 1;
+            label3.Text = "Nome:";
+            label3.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // flowLayoutPanel3
+            // 
+            flowLayoutPanel3.AutoSize = true;
+            flowLayoutPanel3.Controls.Add(AggiornaButton);
+            flowLayoutPanel3.Controls.Add(LicenziaButton);
+            flowLayoutPanel3.Dock = DockStyle.Fill;
+            flowLayoutPanel3.Location = new Point(3, 3);
+            flowLayoutPanel3.Name = "flowLayoutPanel3";
+            flowLayoutPanel3.Size = new Size(268, 29);
+            flowLayoutPanel3.TabIndex = 4;
+            // 
+            // AggiornaButton
+            // 
+            AggiornaButton.Location = new Point(3, 3);
+            AggiornaButton.Name = "AggiornaButton";
+            AggiornaButton.Size = new Size(75, 23);
+            AggiornaButton.TabIndex = 0;
+            AggiornaButton.Text = "Aggiorna";
+            AggiornaButton.UseVisualStyleBackColor = true;
+            AggiornaButton.Click += this.AggiornaButton_Click;
+            // 
+            // LicenziaButton
+            // 
+            LicenziaButton.Location = new Point(84, 3);
+            LicenziaButton.Name = "LicenziaButton";
+            LicenziaButton.Size = new Size(75, 23);
+            LicenziaButton.TabIndex = 1;
+            LicenziaButton.Text = "Licenzia";
+            LicenziaButton.UseVisualStyleBackColor = true;
+            LicenziaButton.Click += this.LicenziaButton_Click;
+            // 
+            // Cognome
+            // 
+            Cognome.AutoSize = true;
+            Cognome.Dock = DockStyle.Fill;
+            Cognome.Location = new Point(3, 64);
+            Cognome.Name = "Cognome";
+            Cognome.Size = new Size(268, 29);
+            Cognome.TabIndex = 5;
+            Cognome.Text = "Cognome:";
+            Cognome.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // Id
+            // 
+            Id.AutoSize = true;
+            Id.Dock = DockStyle.Fill;
+            Id.Location = new Point(3, 93);
+            Id.Name = "Id";
+            Id.Size = new Size(268, 29);
+            Id.TabIndex = 6;
+            Id.Text = "Id:";
+            Id.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // SurnameBox
+            // 
+            SurnameBox.Dock = DockStyle.Fill;
+            SurnameBox.Location = new Point(277, 67);
+            SurnameBox.Name = "SurnameBox";
+            SurnameBox.Size = new Size(1092, 23);
+            SurnameBox.TabIndex = 7;
+            // 
+            // IdBox
+            // 
+            IdBox.Dock = DockStyle.Fill;
+            IdBox.Location = new Point(277, 96);
+            IdBox.Name = "IdBox";
+            IdBox.Size = new Size(1092, 23);
+            IdBox.TabIndex = 8;
+            // 
+            // Centro
+            // 
+            Centro.AutoSize = true;
+            Centro.Dock = DockStyle.Fill;
+            Centro.Location = new Point(3, 122);
+            Centro.Name = "Centro";
+            Centro.Size = new Size(268, 29);
+            Centro.TabIndex = 11;
+            Centro.Text = "Centro:";
+            Centro.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // CenterComboBox
+            // 
+            CenterComboBox.Dock = DockStyle.Fill;
+            CenterComboBox.FormattingEnabled = true;
+            CenterComboBox.Location = new Point(277, 125);
+            CenterComboBox.Name = "CenterComboBox";
+            CenterComboBox.Size = new Size(1092, 23);
+            CenterComboBox.TabIndex = 12;
             // 
             // Manager
             // 
@@ -309,6 +472,7 @@
             this.Text = "Manager";
             tabSelector.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             tabPage2.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
@@ -321,7 +485,10 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            tableLayoutPanel3.ResumeLayout(false);
+            tabPage3.ResumeLayout(false);
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
+            flowLayoutPanel3.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -350,5 +517,18 @@
         private FlowLayoutPanel flowLayoutPanel2;
         private FlowLayoutPanel flowLayoutPanel1;
         private TableLayoutPanel tableLayoutPanel3;
+        private TableLayoutPanel tableLayoutPanel4;
+        private Label label3;
+        private TextBox NameBox;
+        private ComboBox ControllerManagerSelector;
+        private FlowLayoutPanel flowLayoutPanel3;
+        private Button AggiornaButton;
+        private Button LicenziaButton;
+        private Label Cognome;
+        private Label Id;
+        private TextBox SurnameBox;
+        private TextBox IdBox;
+        private Label Centro;
+        private ComboBox CenterComboBox;
     }
 }

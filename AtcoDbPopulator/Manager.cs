@@ -11,6 +11,7 @@ namespace AtcoDbPopulator
     using System.Windows.Forms;
     using AtcoDbPopulator.Models;
     using ClosedXML.Excel;
+    using Microsoft.EntityFrameworkCore;
 
     /// <summary>
     /// Window to manage the controllers.
@@ -26,6 +27,25 @@ namespace AtcoDbPopulator
             using var dbContext = new AtctablesContext();
             this.comboBox1.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
             this.dataGridView1.DataSource = this.DataSource();
+            this.UpdateControllerManagerList();
+            this.CenterComboBox.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
+        }
+
+        private void UpdateControllerManagerList()
+        {
+            using var dbContext = new AtctablesContext();
+            var controllersDropDown =
+                dbContext.Controllores.Select(c => c.IdControllore + " " + c.Cognome + " " + c.Nome).ToList();
+            controllersDropDown.Insert(0, "Assumi nuovo");
+            this.ControllerManagerSelector.DataSource = controllersDropDown;
+            if (this.IdBox.Text != string.Empty)
+            {
+                var controller = dbContext.Controllores.Find(this.IdBox.Text);
+                if (controller != null)
+                {
+                    this.ControllerManagerSelector.SelectedItem = controller.IdControllore + " " + controller.Cognome + " " + controller.Nome;
+                }
+            }
         }
 
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -149,6 +169,69 @@ namespace AtcoDbPopulator
             });
             exportThread.SetApartmentState(ApartmentState.STA);
             exportThread.Start();
+        }
+
+        private void ControllerManagerSelectorSelectionChangeCommitted(object sender, EventArgs e)
+        {
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            using var dbContext = new AtctablesContext();
+            var controller = dbContext.Controllores.Find(selected);
+            if (controller != null)
+            {
+                this.IdBox.Text = controller.IdControllore;
+                this.IdBox.Enabled = false;
+                this.NameBox.Text = controller.Nome;
+                this.SurnameBox.Text = controller.Cognome;
+                this.CenterComboBox.SelectedItem = controller.NomeCentro;
+            }
+            else
+            {
+                this.FlushFields();
+            }
+        }
+
+        private void FlushFields()
+        {
+            this.IdBox.Text = string.Empty;
+            this.IdBox.Enabled = true;
+            this.NameBox.Text = string.Empty;
+            this.SurnameBox.Text = string.Empty;
+        }
+
+        private void AggiornaButton_Click(object sender, EventArgs e)
+        {
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            using var dbContext = new AtctablesContext();
+            Controllore controller = dbContext.Controllores.Find(selected) !;
+            if (controller != null)
+            {
+                controller.Nome = this.NameBox.Text;
+                controller.Cognome = this.SurnameBox.Text;
+                controller.NomeCentro = this.CenterComboBox.SelectedItem.ToString();
+                dbContext.Update(controller);
+            }
+
+            dbContext.SaveChanges();
+            this.UpdateControllerManagerList();
+        }
+
+        private void LicenziaButton_Click(object sender, EventArgs e)
+        {
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            using var dbContext = new AtctablesContext();
+            var controller = dbContext.Controllores.Find(selected);
+            if (controller != null)
+            {
+                dbContext.Database.ExecuteSqlRaw("DELETE FROM AbilitazioneSettori WHERE MatricolaAbilitazione =" + controller.IdControllore);
+                dbContext.Abilitaziones.RemoveRange(
+                    dbContext.Abilitaziones.Where(a => a.IdControllore.Equals(controller.IdControllore)));
+                dbContext.Feries.RemoveRange(
+                    dbContext.Feries.Where(a => a.IdControllore.Equals(controller.IdControllore)));
+                dbContext.Controllores.Remove(controller);
+                dbContext.SaveChanges();
+                this.FlushFields();
+                this.UpdateControllerManagerList();
+            }
         }
     }
 }
