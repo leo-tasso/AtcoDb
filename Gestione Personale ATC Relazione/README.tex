@@ -1,0 +1,160 @@
+%   This is the template for the Smart Contract Lab.
+
+%   If you have any questions you can reach out to me:
+%   lazaronicolas.hofmann@uzh.ch
+
+%   This file serves as an orientation giude for anyone deciding to use
+%   this template. Read this before making any changes to the other files.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   STRUCTURE   %
+
+%   The structure and sequence is defined in main.tex
+
+%%%%    CHAPTER
+    
+%%%%    To add new chapters you need to first \input{chapter_file_name}
+%%%%    in main.tex and start a new chapter inside chapter_file_name.tex
+%%%%    using \chapter{Chapter Title}
+
+%%%%%%%%%   SECTION
+
+%%%%%%%%%   To add a new section use \section{Section Title} under the
+%%%%%%%%%   corresponding chapter
+
+%%%%%%%%%%%%%   SUB-SECTION
+
+%%%%%%%%%%%%%   To add a sub-section use \subsection{Sub-Section Title}
+%%%%%%%%%%%%%   under the corresponding section
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   TITLEPAGE   %
+
+% The title is modifyable inside the file 0a_titlepage.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   ABSTRACT   %
+
+% The abstract is modifyable inside the file 0b_abstract.tex
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                        %   TABLE OF CONTENTS   %
+
+% The TOC is automatically updated
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   FIGURES   %
+
+% The list of figures is automatically updated
+
+% To add a figure use the following command:
+
+\begin{figure}[H]
+    \centering
+    \captionsetup{font=bf}
+    \caption{Blockchain data structure} % Title of Figure %
+    \includegraphics[width=14cm]{figures/blockchain.png} % Path to image %
+    \label{fig:myfigure} % % must be unique % %
+    \begin{tablenotes}
+        \item \textit{Source:} Raikwar et al. (2019, p. 148553) % Source %
+    \end{tablenotes}
+\end{figure}
+
+% The file for the figure must be stored in the folder figures and
+% therefore the image must be defined as follows: figures/figure_file
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   TABLES   %
+
+% The list of tables is automatically updated
+
+% To add a table use the following command:
+
+\begin{table}[H]
+    \centering
+    \captionsetup{font=bf}
+    \caption{Some random numbers} % Title of Table %
+    \begin{tabular}{|c|c|c|c|c|c|} % Define Number of Columns %
+        \hline
+        \textbf{AA} & \textbf{BB} & \textbf{CC} & \textbf{DD} & \textbf{EE} & \textbf{FF} \\ % First Row %
+        \hline
+        1 & 2 & 3 & 4 & 5 & 6 \\ % Second Row %
+        \hline
+    \end{tabular}
+    \label{tab:mytable}
+    \begin{tablenotes}
+        \centering
+        \item \textit{Source:} Backes-Gellner et al. (2001) % Source %
+    \end{tablenotes}
+\end{table}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+                            %   ABBREVIATIONS   %
+
+%   Edit and add abbreviations in the 0c_abbreviations.tex file
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                            %   CITATIONS   %
+
+% The bibliography is automatically and alphabetically updated
+
+% To reference a source you must find the BibTeX of a scientific paper
+
+%%% Example: Google Scholar
+
+%%% 1.  Look for Paper
+%%% 2.  Press "Cite" / "Zitieren"
+%%% 3.  Press "BibTeX"
+%%% 4.  Copy BibTeX-string
+%%% 5.  Paste string to sources.bib
+%%% 6.  Copy identifier after @article / @inproceedings etc.                      e.g.,  "adam2020blockchain"
+%%% 7.  Go to chapter where you want to cite
+%%% 8.  a) Parenthical: \citep{adam2020blockchain}
+%%%     b) Narrative:   \citet{adam2020blockchain}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+                            %   AUTHORS   %
+
+% Authors must be manually updated using the following command. Leave the
+% format in 10_Xauthors.tex untouched
+
+\begin{tikzpicture}[remember picture,overlay]
+    \node[circle,clip,inner sep=-36pt] at ([xshift=4.8cm, yshift=-4.8cm]current page.north west)
+    {\includegraphics[width=3cm, trim=0 0 0 -560pt, clip]{portraits/portrait1.jpg}}; % % % % % Define File here % % % % %
+    \node[below=1.75cm, align=center, font=\bfseries] at ([xshift=4.8cm, yshift=-4.8cm]current page.north west)
+    {John Doe}; % % % % % Change Name here % % % % %
+    \node[below=2.5cm, align=center, font=\bfseries] at ([xshift=4.8cm, yshift=-4.8cm]current page.north west)
+    {Manager}; % % % % % Change Function here % % % % %
+\end{tikzpicture}
+
+% To insert the portrait image upload the image to portraits folder. To
+% define the path use portraits/file_name
+
+% % % Please note, that you must use the same jpg-file sent to you by
+% % % Daniel in order to have the right cropping and clipping. The size
+% % % is around 2MB. Or find it on Teams
+% % % Publication/2_Video&Visuals/Profile pictures.
+
+% There are two author files. One is for a team of five and the other for
+% a team of six members. whichever you need, you must define it in the
+% main.tex file
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
