@@ -214,6 +214,7 @@ namespace AtcoDbPopulator
             this.IdBox.Enabled = true;
             this.NameBox.Text = string.Empty;
             this.SurnameBox.Text = string.Empty;
+            this.dataGridViewHolidays.DataSource = null;
         }
 
         private void AggiornaButton_Click(object sender, EventArgs e)
@@ -228,9 +229,22 @@ namespace AtcoDbPopulator
                 controller.NomeCentro = this.CenterComboBox.SelectedItem.ToString();
                 dbContext.Update(controller);
             }
+            else
+            {
+                var newController = new Controllore()
+                {
+                    IdControllore = this.IdBox.Text,
+                    Nome = this.NameBox.Text,
+                    Cognome = this.SurnameBox.Text,
+                    NomeCentro = this.CenterComboBox.SelectedItem.ToString(),
+                };
+                dbContext.Controllores.Add(newController);
+                dbContext.SaveChanges();
+            }
 
             dbContext.SaveChanges();
             this.UpdateControllerManagerList();
+            this.RefreshController();
         }
 
         private void LicenziaButton_Click(object sender, EventArgs e)
@@ -254,42 +268,58 @@ namespace AtcoDbPopulator
 
         private void AddHolidayButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
-            using var dbContext = new AtctablesContext();
-            var controller = dbContext.Controllores.Find(selected);
-            if (controller != null)
+            if (this.dataGridViewHolidays.DataSource != null)
             {
-                int newDays = (this.dateTimePickerEndHoliday.Value - this.dateTimePickerBeginHoliday.Value).Days;
-                if (newDays + Manager.GetTotalHolidayDays(controller.IdControllore) < MaxHolidayDays)
+                var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+                using var dbContext = new AtctablesContext();
+                var controller = dbContext.Controllores.Find(selected);
+                if (controller != null)
                 {
-                    var newHoliday = new Ferie()
+                    int newDays = (this.dateTimePickerEndHoliday.Value - this.dateTimePickerBeginHoliday.Value).Days;
+                    if (newDays + Manager.GetTotalHolidayDays(controller.IdControllore) < MaxHolidayDays &&
+                        this.CompatibleHoliday(
+                            controller.IdControllore,
+                            this.dateTimePickerEndHoliday.Value,
+                            this.dateTimePickerBeginHoliday.Value))
                     {
-                        IdControllore = controller.IdControllore,
-                        Inizio = this.dateTimePickerBeginHoliday.Value.Date,
-                        Fine = this.dateTimePickerEndHoliday.Value.Date,
-                    };
-                    dbContext.Feries.Add(newHoliday);
-                    dbContext.SaveChanges();
-                    this.RefreshController();
-                }
-                else
-                {
-                    throw new OverflowException("Too many holiday days");
+                        var newHoliday = new Ferie()
+                        {
+                            IdControllore = controller.IdControllore,
+                            Inizio = this.dateTimePickerBeginHoliday.Value.Date,
+                            Fine = this.dateTimePickerEndHoliday.Value.Date,
+                        };
+                        dbContext.Feries.Add(newHoliday);
+                        dbContext.SaveChanges();
+                        this.RefreshController();
+                    }
+                    else
+                    {
+                        throw new OverflowException("Incompatible holiday days");
+                    }
                 }
             }
         }
 
+        private bool CompatibleHoliday(string controllerId, DateTime begin, DateTime end)
+        {
+            using var dbContext = new AtctablesContext();
+            var holidays = dbContext.Feries.Where(f => f.IdControllore.Equals(controllerId));
+            return !holidays.Any(h => (h.Inizio > begin && h.Inizio < end) || (h.Fine > begin && h.Fine < end) || (begin < h.Inizio && end > h.Fine));
+        }
+
         private void RemoveHolidayButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
-            using var dbContext = new AtctablesContext();
-            var controller = dbContext.Controllores.Find(selected);
-            if (controller != null)
+            if (this.dataGridViewHolidays.DataSource != null)
             {
-                var selectedHoliday = this.dataGridViewHolidays.SelectedCells;
-                if (selectedHoliday != null)
+                var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+                using var dbContext = new AtctablesContext();
+                var controller = dbContext.Controllores.Find(selected);
+                if (controller != null)
                 {
-                    dbContext.Feries.Remove(dbContext.Feries.Find(controller.IdControllore, DateTime.Parse(selectedHoliday[0].Value.ToString() !)) !);
+                    var selectedHoliday = this.dataGridViewHolidays.SelectedCells;
+                    dbContext.Feries.Remove(dbContext.Feries.Find(
+                        controller.IdControllore,
+                        DateTime.Parse(selectedHoliday[0].Value.ToString() !)) !);
                     dbContext.SaveChanges();
                     this.RefreshController();
                 }
