@@ -173,7 +173,7 @@ namespace AtcoDbPopulator
 
         private void ControllerManagerSelectorSelectionChangeCommitted(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             var controller = dbContext.Controllores.Find(selected);
             if (controller != null)
@@ -183,6 +183,9 @@ namespace AtcoDbPopulator
                 this.NameBox.Text = controller.Nome;
                 this.SurnameBox.Text = controller.Cognome;
                 this.CenterComboBox.SelectedItem = controller.NomeCentro;
+                this.dataGridViewHolidays.DataSource =
+                    dbContext.Feries.Where(f => f.IdControllore.Equals(controller.IdControllore))
+                        .Select(f => new { f.Inizio, f.Fine }).ToList();
             }
             else
             {
@@ -200,7 +203,7 @@ namespace AtcoDbPopulator
 
         private void AggiornaButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             Controllore? controller = dbContext.Controllores.Find(selected);
             if (controller != null)
@@ -217,7 +220,7 @@ namespace AtcoDbPopulator
 
         private void LicenziaButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             var controller = dbContext.Controllores.Find(selected);
             if (controller != null)

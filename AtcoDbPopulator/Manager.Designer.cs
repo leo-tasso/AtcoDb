@@ -28,25 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            tabSelector = new TabControl();
-            tabPage1 = new TabPage();
-            tableLayoutPanel3 = new TableLayoutPanel();
-            comboBox1 = new ComboBox();
-            dataGridView1 = new DataGridView();
-            tabPage2 = new TabPage();
-            tableLayoutPanel1 = new TableLayoutPanel();
-            tableLayoutPanel2 = new TableLayoutPanel();
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            label1 = new Label();
-            numericUpDown1 = new NumericUpDown();
-            label2 = new Label();
-            numericUpDown2 = new NumericUpDown();
-            TurnsGenerator = new Button();
-            OccupancyCheckCheckBox = new CheckBox();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            ExportButton = new Button();
-            dataGridView2 = new DataGridView();
-            progressBarTurnGeneration = new ProgressBar();
             tabPage3 = new TabPage();
             tableLayoutPanel4 = new TableLayoutPanel();
             NameBox = new TextBox();
@@ -61,10 +42,37 @@
             IdBox = new TextBox();
             Centro = new Label();
             CenterComboBox = new ComboBox();
-            tabSelector.SuspendLayout();
-            tabPage1.SuspendLayout();
-            tableLayoutPanel3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            dataGridViewHolidays = new DataGridView();
+            label4 = new Label();
+            flowLayoutPanel4 = new FlowLayoutPanel();
+            RemoveHolidayButton = new Button();
+            AddHolidayButton = new Button();
+            dateTimePicker1 = new DateTimePicker();
+            dateTimePicker2 = new DateTimePicker();
+            tabPage2 = new TabPage();
+            tableLayoutPanel1 = new TableLayoutPanel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            flowLayoutPanel1 = new FlowLayoutPanel();
+            label1 = new Label();
+            numericUpDown1 = new NumericUpDown();
+            label2 = new Label();
+            numericUpDown2 = new NumericUpDown();
+            TurnsGenerator = new Button();
+            OccupancyCheckCheckBox = new CheckBox();
+            flowLayoutPanel2 = new FlowLayoutPanel();
+            ExportButton = new Button();
+            dataGridView2 = new DataGridView();
+            progressBarTurnGeneration = new ProgressBar();
+            tabPage1 = new TabPage();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            comboBox1 = new ComboBox();
+            dataGridView1 = new DataGridView();
+            tabSelector = new TabControl();
+            tabPage3.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
+            flowLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridViewHolidays).BeginInit();
+            flowLayoutPanel4.SuspendLayout();
             tabPage2.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -73,71 +81,243 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).BeginInit();
             flowLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            tabPage3.SuspendLayout();
-            tableLayoutPanel4.SuspendLayout();
-            flowLayoutPanel3.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tableLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            tabSelector.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabSelector
+            // tabPage3
             // 
-            tabSelector.Controls.Add(tabPage1);
-            tabSelector.Controls.Add(tabPage2);
-            tabSelector.Controls.Add(tabPage3);
-            tabSelector.Dock = DockStyle.Fill;
-            tabSelector.Location = new Point(0, 0);
-            tabSelector.Name = "tabSelector";
-            tabSelector.SelectedIndex = 0;
-            tabSelector.Size = new Size(1386, 704);
-            tabSelector.TabIndex = 0;
+            tabPage3.Controls.Add(tableLayoutPanel4);
+            tabPage3.Location = new Point(4, 24);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(1378, 676);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "Gestore Controllori";
+            tabPage3.UseVisualStyleBackColor = true;
             // 
-            // tabPage1
+            // tableLayoutPanel4
             // 
-            tabPage1.Controls.Add(tableLayoutPanel3);
-            tabPage1.Location = new Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(1378, 676);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "Controllori in Centro";
-            tabPage1.UseVisualStyleBackColor = true;
+            tableLayoutPanel4.ColumnCount = 2;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
+            tableLayoutPanel4.Controls.Add(NameBox, 1, 1);
+            tableLayoutPanel4.Controls.Add(ControllerManagerSelector, 1, 0);
+            tableLayoutPanel4.Controls.Add(label3, 0, 1);
+            tableLayoutPanel4.Controls.Add(flowLayoutPanel3, 0, 0);
+            tableLayoutPanel4.Controls.Add(Cognome, 0, 2);
+            tableLayoutPanel4.Controls.Add(Id, 0, 3);
+            tableLayoutPanel4.Controls.Add(SurnameBox, 1, 2);
+            tableLayoutPanel4.Controls.Add(IdBox, 1, 3);
+            tableLayoutPanel4.Controls.Add(Centro, 0, 4);
+            tableLayoutPanel4.Controls.Add(CenterComboBox, 1, 4);
+            tableLayoutPanel4.Controls.Add(dataGridViewHolidays, 1, 5);
+            tableLayoutPanel4.Controls.Add(label4, 0, 5);
+            tableLayoutPanel4.Controls.Add(flowLayoutPanel4, 1, 6);
+            tableLayoutPanel4.Dock = DockStyle.Fill;
+            tableLayoutPanel4.Location = new Point(3, 3);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 7;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle());
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 200F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel4.Size = new Size(1372, 670);
+            tableLayoutPanel4.TabIndex = 0;
             // 
-            // tableLayoutPanel3
+            // NameBox
             // 
-            tableLayoutPanel3.ColumnCount = 1;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Controls.Add(comboBox1, 0, 0);
-            tableLayoutPanel3.Controls.Add(dataGridView1, 0, 1);
-            tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(3, 3);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 2;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle());
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel3.Size = new Size(1372, 670);
-            tableLayoutPanel3.TabIndex = 2;
+            NameBox.Dock = DockStyle.Fill;
+            NameBox.Location = new Point(277, 38);
+            NameBox.Name = "NameBox";
+            NameBox.Size = new Size(1092, 23);
+            NameBox.TabIndex = 2;
             // 
-            // comboBox1
+            // ControllerManagerSelector
             // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(3, 3);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(234, 23);
-            comboBox1.TabIndex = 1;
-            comboBox1.SelectedIndexChanged += this.ComboBox1_SelectedIndexChanged;
+            ControllerManagerSelector.Dock = DockStyle.Fill;
+            ControllerManagerSelector.FormattingEnabled = true;
+            ControllerManagerSelector.Location = new Point(277, 3);
+            ControllerManagerSelector.Name = "ControllerManagerSelector";
+            ControllerManagerSelector.Size = new Size(1092, 23);
+            ControllerManagerSelector.TabIndex = 3;
+            ControllerManagerSelector.SelectionChangeCommitted += this.ControllerManagerSelectorSelectionChangeCommitted;
             // 
-            // dataGridView1
+            // label3
             // 
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.AllowUserToDeleteRows = false;
-            dataGridView1.AllowUserToOrderColumns = true;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(3, 32);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
-            dataGridView1.RowTemplate.Height = 25;
-            dataGridView1.Size = new Size(1366, 635);
-            dataGridView1.TabIndex = 0;
+            label3.AutoSize = true;
+            label3.Dock = DockStyle.Fill;
+            label3.Location = new Point(3, 35);
+            label3.Name = "label3";
+            label3.Size = new Size(268, 29);
+            label3.TabIndex = 1;
+            label3.Text = "Nome:";
+            label3.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // flowLayoutPanel3
+            // 
+            flowLayoutPanel3.AutoSize = true;
+            flowLayoutPanel3.Controls.Add(AggiornaButton);
+            flowLayoutPanel3.Controls.Add(LicenziaButton);
+            flowLayoutPanel3.Dock = DockStyle.Fill;
+            flowLayoutPanel3.Location = new Point(3, 3);
+            flowLayoutPanel3.Name = "flowLayoutPanel3";
+            flowLayoutPanel3.Size = new Size(268, 29);
+            flowLayoutPanel3.TabIndex = 4;
+            // 
+            // AggiornaButton
+            // 
+            AggiornaButton.Location = new Point(3, 3);
+            AggiornaButton.Name = "AggiornaButton";
+            AggiornaButton.Size = new Size(75, 23);
+            AggiornaButton.TabIndex = 0;
+            AggiornaButton.Text = "Aggiorna";
+            AggiornaButton.UseVisualStyleBackColor = true;
+            AggiornaButton.Click += this.AggiornaButton_Click;
+            // 
+            // LicenziaButton
+            // 
+            LicenziaButton.Location = new Point(84, 3);
+            LicenziaButton.Name = "LicenziaButton";
+            LicenziaButton.Size = new Size(75, 23);
+            LicenziaButton.TabIndex = 1;
+            LicenziaButton.Text = "Licenzia";
+            LicenziaButton.UseVisualStyleBackColor = true;
+            LicenziaButton.Click += this.LicenziaButton_Click;
+            // 
+            // Cognome
+            // 
+            Cognome.AutoSize = true;
+            Cognome.Dock = DockStyle.Fill;
+            Cognome.Location = new Point(3, 64);
+            Cognome.Name = "Cognome";
+            Cognome.Size = new Size(268, 29);
+            Cognome.TabIndex = 5;
+            Cognome.Text = "Cognome:";
+            Cognome.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // Id
+            // 
+            Id.AutoSize = true;
+            Id.Dock = DockStyle.Fill;
+            Id.Location = new Point(3, 93);
+            Id.Name = "Id";
+            Id.Size = new Size(268, 29);
+            Id.TabIndex = 6;
+            Id.Text = "Id:";
+            Id.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // SurnameBox
+            // 
+            SurnameBox.Dock = DockStyle.Fill;
+            SurnameBox.Location = new Point(277, 67);
+            SurnameBox.Name = "SurnameBox";
+            SurnameBox.Size = new Size(1092, 23);
+            SurnameBox.TabIndex = 7;
+            // 
+            // IdBox
+            // 
+            IdBox.Dock = DockStyle.Fill;
+            IdBox.Location = new Point(277, 96);
+            IdBox.Name = "IdBox";
+            IdBox.Size = new Size(1092, 23);
+            IdBox.TabIndex = 8;
+            // 
+            // Centro
+            // 
+            Centro.AutoSize = true;
+            Centro.Dock = DockStyle.Fill;
+            Centro.Location = new Point(3, 122);
+            Centro.Name = "Centro";
+            Centro.Size = new Size(268, 29);
+            Centro.TabIndex = 11;
+            Centro.Text = "Centro:";
+            Centro.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // CenterComboBox
+            // 
+            CenterComboBox.Dock = DockStyle.Fill;
+            CenterComboBox.FormattingEnabled = true;
+            CenterComboBox.Location = new Point(277, 125);
+            CenterComboBox.Name = "CenterComboBox";
+            CenterComboBox.Size = new Size(1092, 23);
+            CenterComboBox.TabIndex = 12;
+            // 
+            // dataGridViewHolidays
+            // 
+            dataGridViewHolidays.AllowUserToAddRows = false;
+            dataGridViewHolidays.AllowUserToDeleteRows = false;
+            dataGridViewHolidays.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewHolidays.Dock = DockStyle.Fill;
+            dataGridViewHolidays.GridColor = SystemColors.InactiveBorder;
+            dataGridViewHolidays.Location = new Point(277, 154);
+            dataGridViewHolidays.MultiSelect = false;
+            dataGridViewHolidays.Name = "dataGridViewHolidays";
+            dataGridViewHolidays.RowTemplate.Height = 25;
+            dataGridViewHolidays.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridViewHolidays.ShowEditingIcon = false;
+            dataGridViewHolidays.Size = new Size(1092, 194);
+            dataGridViewHolidays.TabIndex = 13;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Dock = DockStyle.Fill;
+            label4.Location = new Point(3, 151);
+            label4.Name = "label4";
+            label4.Size = new Size(268, 200);
+            label4.TabIndex = 14;
+            label4.Text = "Ferie:";
+            label4.TextAlign = ContentAlignment.MiddleRight;
+            // 
+            // flowLayoutPanel4
+            // 
+            flowLayoutPanel4.Controls.Add(RemoveHolidayButton);
+            flowLayoutPanel4.Controls.Add(AddHolidayButton);
+            flowLayoutPanel4.Controls.Add(dateTimePicker1);
+            flowLayoutPanel4.Controls.Add(dateTimePicker2);
+            flowLayoutPanel4.Dock = DockStyle.Fill;
+            flowLayoutPanel4.Location = new Point(277, 354);
+            flowLayoutPanel4.Name = "flowLayoutPanel4";
+            flowLayoutPanel4.Size = new Size(1092, 313);
+            flowLayoutPanel4.TabIndex = 15;
+            // 
+            // RemoveHolidayButton
+            // 
+            RemoveHolidayButton.Location = new Point(3, 3);
+            RemoveHolidayButton.Name = "RemoveHolidayButton";
+            RemoveHolidayButton.Size = new Size(75, 23);
+            RemoveHolidayButton.TabIndex = 0;
+            RemoveHolidayButton.Text = "Rimuovi";
+            RemoveHolidayButton.UseVisualStyleBackColor = true;
+            // 
+            // AddHolidayButton
+            // 
+            AddHolidayButton.Location = new Point(84, 3);
+            AddHolidayButton.Name = "AddHolidayButton";
+            AddHolidayButton.Size = new Size(75, 23);
+            AddHolidayButton.TabIndex = 1;
+            AddHolidayButton.Text = "Aggiungi";
+            AddHolidayButton.UseVisualStyleBackColor = true;
+            // 
+            // dateTimePicker1
+            // 
+            dateTimePicker1.Location = new Point(165, 3);
+            dateTimePicker1.Name = "dateTimePicker1";
+            dateTimePicker1.Size = new Size(200, 23);
+            dateTimePicker1.TabIndex = 2;
+            // 
+            // dateTimePicker2
+            // 
+            dateTimePicker2.Location = new Point(371, 3);
+            dateTimePicker2.Name = "dateTimePicker2";
+            dateTimePicker2.Size = new Size(200, 23);
+            dateTimePicker2.TabIndex = 3;
             // 
             // tabPage2
             // 
@@ -303,162 +483,66 @@
             progressBarTurnGeneration.Size = new Size(1366, 23);
             progressBarTurnGeneration.TabIndex = 5;
             // 
-            // tabPage3
+            // tabPage1
             // 
-            tabPage3.Controls.Add(tableLayoutPanel4);
-            tabPage3.Location = new Point(4, 24);
-            tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(1378, 676);
-            tabPage3.TabIndex = 2;
-            tabPage3.Text = "Gestore Controllori";
-            tabPage3.UseVisualStyleBackColor = true;
+            tabPage1.Controls.Add(tableLayoutPanel3);
+            tabPage1.Location = new Point(4, 24);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(1378, 676);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "Controllori in Centro";
+            tabPage1.UseVisualStyleBackColor = true;
             // 
-            // tableLayoutPanel4
+            // tableLayoutPanel3
             // 
-            tableLayoutPanel4.ColumnCount = 2;
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 80F));
-            tableLayoutPanel4.Controls.Add(NameBox, 1, 1);
-            tableLayoutPanel4.Controls.Add(ControllerManagerSelector, 1, 0);
-            tableLayoutPanel4.Controls.Add(label3, 0, 1);
-            tableLayoutPanel4.Controls.Add(flowLayoutPanel3, 0, 0);
-            tableLayoutPanel4.Controls.Add(Cognome, 0, 2);
-            tableLayoutPanel4.Controls.Add(Id, 0, 3);
-            tableLayoutPanel4.Controls.Add(SurnameBox, 1, 2);
-            tableLayoutPanel4.Controls.Add(IdBox, 1, 3);
-            tableLayoutPanel4.Controls.Add(Centro, 0, 4);
-            tableLayoutPanel4.Controls.Add(CenterComboBox, 1, 4);
-            tableLayoutPanel4.Dock = DockStyle.Fill;
-            tableLayoutPanel4.Location = new Point(3, 3);
-            tableLayoutPanel4.Name = "tableLayoutPanel4";
-            tableLayoutPanel4.RowCount = 6;
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle());
-            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Absolute, 200F));
-            tableLayoutPanel4.Size = new Size(1372, 670);
-            tableLayoutPanel4.TabIndex = 0;
+            tableLayoutPanel3.ColumnCount = 1;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Controls.Add(comboBox1, 0, 0);
+            tableLayoutPanel3.Controls.Add(dataGridView1, 0, 1);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(3, 3);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle());
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel3.Size = new Size(1372, 670);
+            tableLayoutPanel3.TabIndex = 2;
             // 
-            // NameBox
+            // comboBox1
             // 
-            NameBox.Dock = DockStyle.Fill;
-            NameBox.Location = new Point(277, 38);
-            NameBox.Name = "NameBox";
-            NameBox.Size = new Size(1092, 23);
-            NameBox.TabIndex = 2;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(3, 3);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(234, 23);
+            comboBox1.TabIndex = 1;
+            comboBox1.SelectedIndexChanged += this.ComboBox1_SelectedIndexChanged;
             // 
-            // ControllerManagerSelector
+            // dataGridView1
             // 
-            ControllerManagerSelector.Dock = DockStyle.Fill;
-            ControllerManagerSelector.FormattingEnabled = true;
-            ControllerManagerSelector.Location = new Point(277, 3);
-            ControllerManagerSelector.Name = "ControllerManagerSelector";
-            ControllerManagerSelector.Size = new Size(1092, 23);
-            ControllerManagerSelector.TabIndex = 3;
-            ControllerManagerSelector.SelectionChangeCommitted += this.ControllerManagerSelectorSelectionChangeCommitted;
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AllowUserToOrderColumns = true;
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Dock = DockStyle.Fill;
+            dataGridView1.Location = new Point(3, 32);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.ReadOnly = true;
+            dataGridView1.RowTemplate.Height = 25;
+            dataGridView1.Size = new Size(1366, 635);
+            dataGridView1.TabIndex = 0;
             // 
-            // label3
+            // tabSelector
             // 
-            label3.AutoSize = true;
-            label3.Dock = DockStyle.Fill;
-            label3.Location = new Point(3, 35);
-            label3.Name = "label3";
-            label3.Size = new Size(268, 29);
-            label3.TabIndex = 1;
-            label3.Text = "Nome:";
-            label3.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // flowLayoutPanel3
-            // 
-            flowLayoutPanel3.AutoSize = true;
-            flowLayoutPanel3.Controls.Add(AggiornaButton);
-            flowLayoutPanel3.Controls.Add(LicenziaButton);
-            flowLayoutPanel3.Dock = DockStyle.Fill;
-            flowLayoutPanel3.Location = new Point(3, 3);
-            flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(268, 29);
-            flowLayoutPanel3.TabIndex = 4;
-            // 
-            // AggiornaButton
-            // 
-            AggiornaButton.Location = new Point(3, 3);
-            AggiornaButton.Name = "AggiornaButton";
-            AggiornaButton.Size = new Size(75, 23);
-            AggiornaButton.TabIndex = 0;
-            AggiornaButton.Text = "Aggiorna";
-            AggiornaButton.UseVisualStyleBackColor = true;
-            AggiornaButton.Click += this.AggiornaButton_Click;
-            // 
-            // LicenziaButton
-            // 
-            LicenziaButton.Location = new Point(84, 3);
-            LicenziaButton.Name = "LicenziaButton";
-            LicenziaButton.Size = new Size(75, 23);
-            LicenziaButton.TabIndex = 1;
-            LicenziaButton.Text = "Licenzia";
-            LicenziaButton.UseVisualStyleBackColor = true;
-            LicenziaButton.Click += this.LicenziaButton_Click;
-            // 
-            // Cognome
-            // 
-            Cognome.AutoSize = true;
-            Cognome.Dock = DockStyle.Fill;
-            Cognome.Location = new Point(3, 64);
-            Cognome.Name = "Cognome";
-            Cognome.Size = new Size(268, 29);
-            Cognome.TabIndex = 5;
-            Cognome.Text = "Cognome:";
-            Cognome.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // Id
-            // 
-            Id.AutoSize = true;
-            Id.Dock = DockStyle.Fill;
-            Id.Location = new Point(3, 93);
-            Id.Name = "Id";
-            Id.Size = new Size(268, 29);
-            Id.TabIndex = 6;
-            Id.Text = "Id:";
-            Id.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // SurnameBox
-            // 
-            SurnameBox.Dock = DockStyle.Fill;
-            SurnameBox.Location = new Point(277, 67);
-            SurnameBox.Name = "SurnameBox";
-            SurnameBox.Size = new Size(1092, 23);
-            SurnameBox.TabIndex = 7;
-            // 
-            // IdBox
-            // 
-            IdBox.Dock = DockStyle.Fill;
-            IdBox.Location = new Point(277, 96);
-            IdBox.Name = "IdBox";
-            IdBox.Size = new Size(1092, 23);
-            IdBox.TabIndex = 8;
-            // 
-            // Centro
-            // 
-            Centro.AutoSize = true;
-            Centro.Dock = DockStyle.Fill;
-            Centro.Location = new Point(3, 122);
-            Centro.Name = "Centro";
-            Centro.Size = new Size(268, 29);
-            Centro.TabIndex = 11;
-            Centro.Text = "Centro:";
-            Centro.TextAlign = ContentAlignment.MiddleRight;
-            // 
-            // CenterComboBox
-            // 
-            CenterComboBox.Dock = DockStyle.Fill;
-            CenterComboBox.FormattingEnabled = true;
-            CenterComboBox.Location = new Point(277, 125);
-            CenterComboBox.Name = "CenterComboBox";
-            CenterComboBox.Size = new Size(1092, 23);
-            CenterComboBox.TabIndex = 12;
+            tabSelector.Controls.Add(tabPage1);
+            tabSelector.Controls.Add(tabPage2);
+            tabSelector.Controls.Add(tabPage3);
+            tabSelector.Dock = DockStyle.Fill;
+            tabSelector.Location = new Point(0, 0);
+            tabSelector.Name = "tabSelector";
+            tabSelector.SelectedIndex = 0;
+            tabSelector.Size = new Size(1386, 704);
+            tabSelector.TabIndex = 0;
             // 
             // Manager
             // 
@@ -470,10 +554,12 @@
             this.Controls.Add(tabSelector);
             this.Name = "Manager";
             this.Text = "Manager";
-            tabSelector.ResumeLayout(false);
-            tabPage1.ResumeLayout(false);
-            tableLayoutPanel3.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tabPage3.ResumeLayout(false);
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
+            flowLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridViewHolidays).EndInit();
+            flowLayoutPanel4.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -485,42 +571,20 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown2).EndInit();
             flowLayoutPanel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            tabPage3.ResumeLayout(false);
-            tableLayoutPanel4.ResumeLayout(false);
-            tableLayoutPanel4.PerformLayout();
-            flowLayoutPanel3.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            tabSelector.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
         #endregion
 
-        private TabControl tabSelector;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
-        private DataGridView dataGridView1;
         private TabPage tabPage3;
-        private ComboBox comboBox1;
-        private Button TurnsGenerator;
-        private Label label2;
-        private Label label1;
-        private NumericUpDown numericUpDown2;
-        private NumericUpDown numericUpDown1;
-        private ProgressBar progressBarTurnGeneration;
-        private DataGridView dataGridView2;
-        private Button ExportButton;
-        /// <summary>
-        /// Occupancy check checkbox.
-        /// </summary>
-        public CheckBox OccupancyCheckCheckBox;
-        private TableLayoutPanel tableLayoutPanel1;
-        private TableLayoutPanel tableLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel2;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private TableLayoutPanel tableLayoutPanel3;
         private TableLayoutPanel tableLayoutPanel4;
-        private Label label3;
         private TextBox NameBox;
         private ComboBox ControllerManagerSelector;
+        private Label label3;
         private FlowLayoutPanel flowLayoutPanel3;
         private Button AggiornaButton;
         private Button LicenziaButton;
@@ -530,5 +594,31 @@
         private TextBox IdBox;
         private Label Centro;
         private ComboBox CenterComboBox;
+        private DataGridView dataGridViewHolidays;
+        private Label label4;
+        private TabPage tabPage2;
+        private TableLayoutPanel tableLayoutPanel1;
+        private TableLayoutPanel tableLayoutPanel2;
+        private FlowLayoutPanel flowLayoutPanel1;
+        private Label label1;
+        private NumericUpDown numericUpDown1;
+        private Label label2;
+        private NumericUpDown numericUpDown2;
+        private Button TurnsGenerator;
+        public CheckBox OccupancyCheckCheckBox;
+        private FlowLayoutPanel flowLayoutPanel2;
+        private Button ExportButton;
+        private DataGridView dataGridView2;
+        private ProgressBar progressBarTurnGeneration;
+        private TabPage tabPage1;
+        private TableLayoutPanel tableLayoutPanel3;
+        private ComboBox comboBox1;
+        private DataGridView dataGridView1;
+        private TabControl tabSelector;
+        private FlowLayoutPanel flowLayoutPanel4;
+        private Button RemoveHolidayButton;
+        private Button AddHolidayButton;
+        private DateTimePicker dateTimePicker1;
+        private DateTimePicker dateTimePicker2;
     }
 }
