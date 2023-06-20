@@ -315,7 +315,7 @@
             dateTimePickerBeginHoliday.Name = "dateTimePickerBeginHoliday";
             dateTimePickerBeginHoliday.Size = new Size(200, 23);
             dateTimePickerBeginHoliday.TabIndex = 2;
-            dateTimePickerBeginHoliday.Value = new DateTime(2022, 1, 1, 0, 0, 0, 0);
+            dateTimePickerBeginHoliday.Value = new DateTime(2023, 1, 1, 0, 0, 0, 0);
             // 
             // dateTimePickerEndHoliday
             // 
@@ -324,6 +324,7 @@
             dateTimePickerEndHoliday.Name = "dateTimePickerEndHoliday";
             dateTimePickerEndHoliday.Size = new Size(200, 23);
             dateTimePickerEndHoliday.TabIndex = 3;
+            dateTimePickerEndHoliday.Value = new DateTime(2023, 1, 1, 0, 0, 0, 0);
             // 
             // tabPage2
             // 

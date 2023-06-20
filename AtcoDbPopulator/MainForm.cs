@@ -35,6 +35,8 @@ namespace AtcoDbPopulator
             this.centerFactory = new AtcoDbPopulator.Factories.CenterFactory();
         }
 
+        public DateTime ActualTime => this.player.ActualDateTime;
+
         /// <inheritdoc/>
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
@@ -194,6 +196,11 @@ namespace AtcoDbPopulator
         private void LaunchManagerButton_Click(object sender, EventArgs e)
         {
             new Thread(() => Application.Run(new Manager())).Start();
+        }
+
+        private void LaunchTwr_Click(object sender, EventArgs e)
+        {
+            new Thread(() => Application.Run(new TowerControl(this))).Start();
         }
     }
 }

@@ -32,7 +32,7 @@ public class Player : IPlayer
 
     private bool Cont { get; set; }
 
-    private DateTime ActualDateTime { get; set; }
+    public DateTime ActualDateTime { get; set; }
 
     /// <inheritdoc/>
     public void UpdateTill(DateTime selectedDateTime)

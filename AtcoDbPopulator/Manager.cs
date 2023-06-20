@@ -188,7 +188,7 @@ namespace AtcoDbPopulator
 
         private void RefreshController()
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             var controller = dbContext.Controllores.Find(selected);
             if (controller != null)
@@ -219,7 +219,7 @@ namespace AtcoDbPopulator
 
         private void AggiornaButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             Controllore? controller = dbContext.Controllores.Find(selected);
             if (controller != null)
@@ -249,7 +249,7 @@ namespace AtcoDbPopulator
 
         private void LicenziaButton_Click(object sender, EventArgs e)
         {
-            var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+            var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
             using var dbContext = new AtctablesContext();
             var controller = dbContext.Controllores.Find(selected);
             if (controller != null)
@@ -270,7 +270,7 @@ namespace AtcoDbPopulator
         {
             if (this.dataGridViewHolidays.DataSource != null)
             {
-                var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+                var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
                 using var dbContext = new AtctablesContext();
                 var controller = dbContext.Controllores.Find(selected);
                 if (controller != null)
@@ -311,7 +311,7 @@ namespace AtcoDbPopulator
         {
             if (this.dataGridViewHolidays.DataSource != null)
             {
-                var selected = this.ControllerManagerSelector.SelectedItem.ToString() !.Split(' ').ToArray()[0];
+                var selected = this.ControllerManagerSelector.SelectedItem.ToString()!.Split(' ').ToArray()[0];
                 using var dbContext = new AtctablesContext();
                 var controller = dbContext.Controllores.Find(selected);
                 if (controller != null)
@@ -319,7 +319,7 @@ namespace AtcoDbPopulator
                     var selectedHoliday = this.dataGridViewHolidays.SelectedCells;
                     dbContext.Feries.Remove(dbContext.Feries.Find(
                         controller.IdControllore,
-                        DateTime.Parse(selectedHoliday[0].Value.ToString() !)) !);
+                        DateTime.Parse(selectedHoliday[0].Value.ToString()!))!);
                     dbContext.SaveChanges();
                     this.RefreshController();
                 }

@@ -80,7 +80,7 @@ public class ControllersUtils
     /// <param name="sectors">The required sectors.</param>
     /// <param name="dbContext">The relative db.</param>
     /// <returns>If the controller is able.</returns>
-    private bool ControllerIsAble(
+    public bool ControllerIsAble(
         AtcoDbPopulator.Models.Controllore controller,
         ICollection<string> sectors,
         AtcoDbPopulator.Models.AtctablesContext dbContext)
