@@ -41,6 +41,13 @@ namespace AtcoDbPopulator
                 .Aggregate(0, (sum, holiday) => sum + (holiday.Fine.Date - holiday.Inizio.Date).Days);
         }
 
+        private static bool CompatibleHoliday(string controllerId, DateTime begin, DateTime end)
+        {
+            using var dbContext = new AtctablesContext();
+            var holidays = dbContext.Feries.Where(f => f.IdControllore.Equals(controllerId));
+            return !holidays.Any(h => (h.Inizio > begin && h.Inizio < end) || (h.Fine > begin && h.Fine < end) || (begin < h.Inizio && end > h.Fine));
+        }
+
         private void UpdateControllerManagerList()
         {
             using var dbContext = new AtctablesContext();
@@ -298,13 +305,6 @@ namespace AtcoDbPopulator
                     }
                 }
             }
-        }
-
-        private static bool CompatibleHoliday(string controllerId, DateTime begin, DateTime end)
-        {
-            using var dbContext = new AtctablesContext();
-            var holidays = dbContext.Feries.Where(f => f.IdControllore.Equals(controllerId));
-            return !holidays.Any(h => (h.Inizio > begin && h.Inizio < end) || (h.Fine > begin && h.Fine < end) || (begin < h.Inizio && end > h.Fine));
         }
 
         private void RemoveHolidayButton_Click(object sender, EventArgs e)

@@ -81,7 +81,7 @@ namespace AtcoDbPopulator
                     this.dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)
                         && p.OrarioAtterraggio == null
                         && p.Dof >= this.mf.ActualTime.Date.AddDays(-2)
-                        && p.Dof <= this.mf.ActualTime.Date.AddDays(1)).OrderByDescending(p=>p.OrarioDecollo).ToList();
+                        && p.Dof <= this.mf.ActualTime.Date.AddDays(1)).OrderByDescending(p => p.OrarioDecollo).ToList();
                 });
                 Thread.Sleep(1000);
             }

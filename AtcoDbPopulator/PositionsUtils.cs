@@ -15,7 +15,7 @@ public class PositionsUtils
     /// </summary>
     public const int ShiftsInDays = 3;
 
-    private const int BaseCapacity = 30;
+    private const int BaseCapacity = 100;
 
     private readonly Dictionary<string, ICollection<string>> sectorsInPosition = new ();
     private readonly CenterTurns centerTurns;
@@ -209,11 +209,11 @@ public class PositionsUtils
         // TODO might be adjusted
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         int sectorsInCurrentPosition = this.SectorsInPosition(position.IdPostazione).Count;
-        if (sectorsInCurrentPosition > 1)
+        /*if (sectorsInCurrentPosition > 1)
         {
             return 1;
         }
-
-        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInCurrentPosition - 1));
+        */
+        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInCurrentPosition - 1)); // 12 with 2 sectors
     }
 }

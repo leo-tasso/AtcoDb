@@ -73,10 +73,9 @@ public class CenterTurns
                 this.PopulateStandbyCenter(dbContext, center.NomeCentro, (int)(ponderedPosition.Count * StandByRate) + 1, i, slot);
             }
 
+            dbContext.SaveChanges();
             i = i.AddDays(1);
         }
-
-        dbContext.SaveChanges();
     }
 
     private void PopulateStandbyCenter(AtcoDbPopulator.Models.AtctablesContext dbContext, string center, int requiredPositions, DateTime date, int slot)
