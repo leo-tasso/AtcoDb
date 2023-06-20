@@ -47,8 +47,8 @@
             flowLayoutPanel4 = new FlowLayoutPanel();
             RemoveHolidayButton = new Button();
             AddHolidayButton = new Button();
-            dateTimePicker1 = new DateTimePicker();
-            dateTimePicker2 = new DateTimePicker();
+            dateTimePickerBeginHoliday = new DateTimePicker();
+            dateTimePickerEndHoliday = new DateTimePicker();
             tabPage2 = new TabPage();
             tableLayoutPanel1 = new TableLayoutPanel();
             tableLayoutPanel2 = new TableLayoutPanel();
@@ -279,8 +279,8 @@
             // 
             flowLayoutPanel4.Controls.Add(RemoveHolidayButton);
             flowLayoutPanel4.Controls.Add(AddHolidayButton);
-            flowLayoutPanel4.Controls.Add(dateTimePicker1);
-            flowLayoutPanel4.Controls.Add(dateTimePicker2);
+            flowLayoutPanel4.Controls.Add(dateTimePickerBeginHoliday);
+            flowLayoutPanel4.Controls.Add(dateTimePickerEndHoliday);
             flowLayoutPanel4.Dock = DockStyle.Fill;
             flowLayoutPanel4.Location = new Point(277, 354);
             flowLayoutPanel4.Name = "flowLayoutPanel4";
@@ -295,6 +295,7 @@
             RemoveHolidayButton.TabIndex = 0;
             RemoveHolidayButton.Text = "Rimuovi";
             RemoveHolidayButton.UseVisualStyleBackColor = true;
+            RemoveHolidayButton.Click += this.RemoveHolidayButton_Click;
             // 
             // AddHolidayButton
             // 
@@ -304,20 +305,25 @@
             AddHolidayButton.TabIndex = 1;
             AddHolidayButton.Text = "Aggiungi";
             AddHolidayButton.UseVisualStyleBackColor = true;
+            AddHolidayButton.Click += this.AddHolidayButton_Click;
             // 
-            // dateTimePicker1
+            // dateTimePickerBeginHoliday
             // 
-            dateTimePicker1.Location = new Point(165, 3);
-            dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(200, 23);
-            dateTimePicker1.TabIndex = 2;
+            dateTimePickerBeginHoliday.Location = new Point(165, 3);
+            dateTimePickerBeginHoliday.MaxDate = new DateTime(2050, 1, 1, 0, 0, 0, 0);
+            dateTimePickerBeginHoliday.MinDate = new DateTime(2022, 1, 1, 0, 0, 0, 0);
+            dateTimePickerBeginHoliday.Name = "dateTimePickerBeginHoliday";
+            dateTimePickerBeginHoliday.Size = new Size(200, 23);
+            dateTimePickerBeginHoliday.TabIndex = 2;
+            dateTimePickerBeginHoliday.Value = new DateTime(2022, 1, 1, 0, 0, 0, 0);
             // 
-            // dateTimePicker2
+            // dateTimePickerEndHoliday
             // 
-            dateTimePicker2.Location = new Point(371, 3);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(200, 23);
-            dateTimePicker2.TabIndex = 3;
+            dateTimePickerEndHoliday.Location = new Point(371, 3);
+            dateTimePickerEndHoliday.MinDate = new DateTime(2022, 1, 1, 0, 0, 0, 0);
+            dateTimePickerEndHoliday.Name = "dateTimePickerEndHoliday";
+            dateTimePickerEndHoliday.Size = new Size(200, 23);
+            dateTimePickerEndHoliday.TabIndex = 3;
             // 
             // tabPage2
             // 
@@ -605,6 +611,9 @@
         private Label label2;
         private NumericUpDown numericUpDown2;
         private Button TurnsGenerator;
+        /// <summary>
+        /// To check if you want that occupancy is checked during the shift allocation.
+        /// </summary>
         public CheckBox OccupancyCheckCheckBox;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button ExportButton;
@@ -618,7 +627,7 @@
         private FlowLayoutPanel flowLayoutPanel4;
         private Button RemoveHolidayButton;
         private Button AddHolidayButton;
-        private DateTimePicker dateTimePicker1;
-        private DateTimePicker dateTimePicker2;
+        private DateTimePicker dateTimePickerBeginHoliday;
+        private DateTimePicker dateTimePickerEndHoliday;
     }
 }
