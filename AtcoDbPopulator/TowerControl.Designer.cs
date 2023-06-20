@@ -97,7 +97,7 @@
             comboBoxAirports.Name = "comboBoxAirports";
             comboBoxAirports.Size = new Size(316, 23);
             comboBoxAirports.TabIndex = 1;
-            comboBoxAirports.SelectionChangeCommitted += this.comboBoxAirports_SelectionChangeCommitted;
+            comboBoxAirports.SelectionChangeCommitted += this.ComboBoxAirports_SelectionChangeCommitted;
             // 
             // labelId
             // 
@@ -125,7 +125,7 @@
             buttonLogIn.TabIndex = 4;
             buttonLogIn.Text = "LogIn";
             buttonLogIn.UseVisualStyleBackColor = true;
-            buttonLogIn.Click += this.buttonLogIn_Click;
+            buttonLogIn.Click += this.ButtonLogIn_Click;
             // 
             // buttonLogOut
             // 
@@ -135,7 +135,7 @@
             buttonLogOut.TabIndex = 5;
             buttonLogOut.Text = "LogOut";
             buttonLogOut.UseVisualStyleBackColor = true;
-            buttonLogOut.Click += this.buttonLogOut_Click;
+            buttonLogOut.Click += this.ButtonLogOut_Click;
             // 
             // DateTimeLabel
             // 

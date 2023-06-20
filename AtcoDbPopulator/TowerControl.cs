@@ -1,101 +1,111 @@
-﻿using AtcoDbPopulator.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿// <copyright file="TowerControl.cs" company="Leonardo Tassinari">
+// Copyright (c) Leonardo Tassinari. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace AtcoDbPopulator
 {
+    using System;
+    using System.Linq;
+    using System.Windows.Forms;
+    using AtcoDbPopulator.Models;
+
+    /// <summary>
+    /// Class to manage a tower.
+    /// </summary>
     public partial class TowerControl : Form
     {
-        private MainForm mf;
+        private readonly MainForm mf;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TowerControl"/> class.
+        /// </summary>
+        /// <param name="mf">The MainForm Launcher.</param>
         public TowerControl(MainForm mf)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             using var dbContext = new AtctablesContext();
             this.comboBoxAirports.DataSource = dbContext.Postaziones.Where(p => p.IdSettores.Any(s => s.CodAd != null)).Select(p => p.IdPostazione).ToList();
-            this.controllersUtils = new ControllersUtils();
-            RefreshControllerBox();
-            this.mf=mf;
+            this.ControllersUtils = new ControllersUtils();
+            this.RefreshControllerBox();
+            this.mf = mf;
         }
 
+        private ControllersUtils ControllersUtils { get; }
 
-        private void comboBoxAirports_SelectionChangeCommitted(object sender, EventArgs e)
+        private bool Running { get; set; }
+
+        private Thread? CyclicChecker { get; set; }
+
+        private void ComboBoxAirports_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            RefreshControllerBox();
+            this.RefreshControllerBox();
         }
 
         private void RefreshControllerBox()
         {
             using var dbContext = new AtctablesContext();
             this.comboBoxControllers.DataSource = dbContext.Controllores.ToList()
-                .Where(c => controllersUtils.ControllerIsAble(c,
+                .Where(c => this.ControllersUtils.ControllerIsAble(
+                    c,
                     dbContext.Settores
-                        .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(comboBoxAirports.SelectedItem)))
-                        .Select(s => s.IdSettore).ToList()
-                    , dbContext))
+                        .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
+                        .Select(s => s.IdSettore).ToList(),
+                    dbContext))
                 .Select(c => c.IdControllore + " " + c.Cognome + " " + c.Nome).ToList();
         }
 
-        private void buttonLogIn_Click(object sender, EventArgs e)
+        private void ButtonLogIn_Click(object sender, EventArgs e)
         {
             using var dbContext = new AtctablesContext();
 
-            var apt = dbContext.Settores
-                .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(comboBoxAirports.SelectedItem)))
-                .Select(s => s.CodAd).First();
+            string apt = dbContext.Settores
+                .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
+                .Select(s => s.CodAd).First() !;
 
-
-            running = true;
+            this.Running = true;
             this.comboBoxAirports.Enabled = false;
             this.comboBoxControllers.Enabled = false;
-            CyclicCkecker = new Thread(() => CyclicCheckTraffic(apt));
-            CyclicCkecker.Start();
+            this.CyclicChecker = new Thread(() => this.CyclicCheckTraffic(apt));
+            this.CyclicChecker.Start();
         }
-
-        public Thread CyclicCkecker { get; set; }
 
         private void CyclicCheckTraffic(string aptPos)
         {
-            while (running)
+            while (this.Running)
             {
-                this.Invoke(new Action(() =>
+                this.Invoke(() =>
                 {
                     using var dbContext = new AtctablesContext();
-                    DateTimeLabel.Text = mf.ActualTime.ToString();
-                    dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)).ToList();
-                }));
+                    this.DateTimeLabel.Text = this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
+                    this.dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)).ToList();
+                });
                 Thread.Sleep(1000);
             }
-
         }
 
         private void TowerControl_FormClosing(object sender, FormClosingEventArgs e)
         {
-            running = false;
-            if (CyclicCkecker != null) CyclicCkecker.Join();
+            this.Running = false;
+            if (this.CyclicChecker != null)
+            {
+                this.CyclicChecker.Join();
+            }
         }
 
-        private void buttonLogOut_Click(object sender, EventArgs e)
+        private void ButtonLogOut_Click(object sender, EventArgs e)
         {
-            running = false;
+            this.Running = false;
             this.comboBoxAirports.Enabled = true;
             this.comboBoxControllers.Enabled = true;
-            DateTimeLabel.Text = string.Empty;
-            if (CyclicCkecker != null) CyclicCkecker.Join();
-            this.dataGridViewArrivals.DataSource=null;
-            this.dataGridViewDepartures.DataSource=null;
+            this.DateTimeLabel.Text = string.Empty;
+            if (this.CyclicChecker != null)
+            {
+                this.CyclicChecker.Join();
+            }
+
+            this.dataGridViewArrivals.DataSource = null;
+            this.dataGridViewDepartures.DataSource = null;
         }
-
-        public ControllersUtils controllersUtils { get; }
-        public bool running { get; set; }
-
     }
-
 }

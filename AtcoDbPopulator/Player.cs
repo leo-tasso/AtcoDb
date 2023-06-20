@@ -28,11 +28,14 @@ public class Player : IPlayer
         this.Mf = mf;
     }
 
+/// <summary>
+/// Gets or sets the time of the simulation.
+/// </summary>
+    public DateTime ActualDateTime { get; set; }
+
     private MainForm Mf { get; set; }
 
     private bool Cont { get; set; }
-
-    public DateTime ActualDateTime { get; set; }
 
     /// <inheritdoc/>
     public void UpdateTill(DateTime selectedDateTime)

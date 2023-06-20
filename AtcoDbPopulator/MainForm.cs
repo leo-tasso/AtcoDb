@@ -35,6 +35,9 @@ namespace AtcoDbPopulator
             this.centerFactory = new AtcoDbPopulator.Factories.CenterFactory();
         }
 
+/// <summary>
+/// Gets the actual time of the simulation.
+/// </summary>
         public DateTime ActualTime => this.player.ActualDateTime;
 
         /// <inheritdoc/>
