@@ -35,9 +35,9 @@ namespace AtcoDbPopulator
             this.centerFactory = new AtcoDbPopulator.Factories.CenterFactory();
         }
 
-/// <summary>
-/// Gets the actual time of the simulation.
-/// </summary>
+        /// <summary>
+        /// Gets the actual time of the simulation.
+        /// </summary>
         public DateTime ActualTime => this.player.ActualDateTime;
 
         /// <inheritdoc/>
@@ -156,7 +156,7 @@ namespace AtcoDbPopulator
             this.trafficPopulatorButton.Enabled = false;
             this.trafficNum.Enabled = false;
             this.controllerNum.Enabled = false;
-            new TrafficPopulator().PopulateTraffic((int)this.trafficNum.Value, this.progressBar1, DateTime.Now.Year);
+            new TrafficPopulator().PopulateTraffic((int)this.trafficNum.Value, this.progressBar1, DateTime.Now);
             Cursor.Current = Cursors.Default;
             this.randomstateButton.Enabled = true;
             this.dateTimePicker.Enabled = true;

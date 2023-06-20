@@ -42,6 +42,8 @@
             dataGridViewDepartures = new DataGridView();
             labelArrivals = new Label();
             labelDepartures = new Label();
+            buttonLanded = new Button();
+            buttonTookOff = new Button();
             tableLayoutPanel1.SuspendLayout();
             flowLayoutPanel1.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
@@ -77,7 +79,7 @@
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(1676, 29);
+            flowLayoutPanel1.Size = new Size(1676, 37);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // labelAirport
@@ -140,9 +142,10 @@
             // DateTimeLabel
             // 
             DateTimeLabel.AutoSize = true;
+            DateTimeLabel.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             DateTimeLabel.Location = new Point(842, 0);
             DateTimeLabel.Name = "DateTimeLabel";
-            DateTimeLabel.Size = new Size(0, 15);
+            DateTimeLabel.Size = new Size(0, 37);
             DateTimeLabel.TabIndex = 6;
             // 
             // tableLayoutPanel2
@@ -154,34 +157,42 @@
             tableLayoutPanel2.Controls.Add(dataGridViewDepartures, 1, 1);
             tableLayoutPanel2.Controls.Add(labelArrivals, 0, 0);
             tableLayoutPanel2.Controls.Add(labelDepartures, 1, 0);
+            tableLayoutPanel2.Controls.Add(buttonLanded, 0, 2);
+            tableLayoutPanel2.Controls.Add(buttonTookOff, 1, 2);
             tableLayoutPanel2.Dock = DockStyle.Fill;
-            tableLayoutPanel2.Location = new Point(3, 38);
+            tableLayoutPanel2.Location = new Point(3, 46);
             tableLayoutPanel2.Name = "tableLayoutPanel2";
             tableLayoutPanel2.RowCount = 3;
             tableLayoutPanel2.RowStyles.Add(new RowStyle());
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Size = new Size(1676, 707);
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle());
+            tableLayoutPanel2.Size = new Size(1676, 699);
             tableLayoutPanel2.TabIndex = 1;
             // 
             // dataGridViewArrivals
             // 
+            dataGridViewArrivals.AllowUserToAddRows = false;
+            dataGridViewArrivals.AllowUserToDeleteRows = false;
             dataGridViewArrivals.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewArrivals.Dock = DockStyle.Fill;
             dataGridViewArrivals.Location = new Point(3, 18);
             dataGridViewArrivals.Name = "dataGridViewArrivals";
             dataGridViewArrivals.RowTemplate.Height = 25;
-            dataGridViewArrivals.Size = new Size(832, 340);
+            dataGridViewArrivals.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridViewArrivals.Size = new Size(832, 649);
             dataGridViewArrivals.TabIndex = 0;
             // 
             // dataGridViewDepartures
             // 
+            dataGridViewDepartures.AllowUserToAddRows = false;
+            dataGridViewDepartures.AllowUserToDeleteRows = false;
             dataGridViewDepartures.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewDepartures.Dock = DockStyle.Fill;
             dataGridViewDepartures.Location = new Point(841, 18);
             dataGridViewDepartures.Name = "dataGridViewDepartures";
             dataGridViewDepartures.RowTemplate.Height = 25;
-            dataGridViewDepartures.Size = new Size(832, 340);
+            dataGridViewDepartures.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridViewDepartures.Size = new Size(832, 649);
             dataGridViewDepartures.TabIndex = 1;
             // 
             // labelArrivals
@@ -201,6 +212,26 @@
             labelDepartures.Size = new Size(55, 15);
             labelDepartures.TabIndex = 3;
             labelDepartures.Text = "Partenze:";
+            // 
+            // buttonLanded
+            // 
+            buttonLanded.Dock = DockStyle.Fill;
+            buttonLanded.Location = new Point(3, 673);
+            buttonLanded.Name = "buttonLanded";
+            buttonLanded.Size = new Size(832, 23);
+            buttonLanded.TabIndex = 4;
+            buttonLanded.Text = "Segna come Atterrato";
+            buttonLanded.UseVisualStyleBackColor = true;
+            // 
+            // buttonTookOff
+            // 
+            buttonTookOff.Dock = DockStyle.Fill;
+            buttonTookOff.Location = new Point(841, 673);
+            buttonTookOff.Name = "buttonTookOff";
+            buttonTookOff.Size = new Size(832, 23);
+            buttonTookOff.TabIndex = 5;
+            buttonTookOff.Text = "Segna Come Decollato";
+            buttonTookOff.UseVisualStyleBackColor = true;
             // 
             // TowerControl
             // 
@@ -238,5 +269,7 @@
         private Label labelArrivals;
         private Label labelDepartures;
         private Label DateTimeLabel;
+        private Button buttonLanded;
+        private Button buttonTookOff;
     }
 }

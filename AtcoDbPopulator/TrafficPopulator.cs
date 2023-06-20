@@ -30,13 +30,13 @@ public class TrafficPopulator
     /// </summary>
     /// <param name="trafficNumValue">The number of traffic to create.</param>
     /// <param name="progressBar">The progressbar to update.</param>
-    /// <param name="year">The relevant year.</param>
-    public void PopulateTraffic(decimal trafficNumValue, ProgressBar progressBar, int year)
+    /// <param name="date">The relevant date.</param>
+    public void PopulateTraffic(decimal trafficNumValue, ProgressBar progressBar, DateTime date)
     {
         IList<string> types = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Aircrafts.txt");
         IList<string> companies = AtcoDbPopulator.Utils.FileToList.ReadFileToList("Models/Airlines.txt");
-        DateTime startDate = new DateTime(year, 1, 1);
-        DateTime endDate = new DateTime(year, 12, 31);
+        DateTime startDate = new DateTime(date.Year, date.Month, 1);
+        DateTime endDate = new DateTime(date.Year, date.Month, DateTime.DaysInMonth(date.Year, date.Month));
 
         TimeSpan timeSpan = endDate - startDate;
         int totalDays = timeSpan.Days;
@@ -69,10 +69,13 @@ public class TrafficPopulator
                 OrientamentoPistaAtterraggio =
                     dbContext.Pista.First(p => p.CodAd.Equals(adLanding.CodiceIcao)).Orientamento,
             };
+            if (dbContext.Aereomobiles.Find(newPlane.NumeroDiCoda) != null || dbContext.Pianodivolos.Find(newFlightPlan.Callsign, newFlightPlan.Dof) != null)
+            {
+                continue;
+            }
+
             dbContext.Aereomobiles.Add(newPlane);
             dbContext.Pianodivolos.Add(newFlightPlan);
-            dbContext.SaveChanges();
-
             foreach (var crossingSector in this.airBornSectors)
             {
                 var pointsInCurrentSector = this.PointsInSector(crossingSector.IdSettore).Count;
@@ -98,9 +101,10 @@ public class TrafficPopulator
                 }
 
                 dbContext.Stimatis.AddRange(newEstimates);
-                dbContext.SaveChanges();
             }
         }
+
+        dbContext.SaveChanges();
 
         progressBar.Value = 0;
     }

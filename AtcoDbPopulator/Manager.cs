@@ -277,7 +277,7 @@ namespace AtcoDbPopulator
                 {
                     int newDays = (this.dateTimePickerEndHoliday.Value - this.dateTimePickerBeginHoliday.Value).Days;
                     if (newDays + Manager.GetTotalHolidayDays(controller.IdControllore) < MaxHolidayDays &&
-                        this.CompatibleHoliday(
+                        Manager.CompatibleHoliday(
                             controller.IdControllore,
                             this.dateTimePickerEndHoliday.Value,
                             this.dateTimePickerBeginHoliday.Value))
@@ -300,7 +300,7 @@ namespace AtcoDbPopulator
             }
         }
 
-        private bool CompatibleHoliday(string controllerId, DateTime begin, DateTime end)
+        private static bool CompatibleHoliday(string controllerId, DateTime begin, DateTime end)
         {
             using var dbContext = new AtctablesContext();
             var holidays = dbContext.Feries.Where(f => f.IdControllore.Equals(controllerId));

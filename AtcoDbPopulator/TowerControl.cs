@@ -78,7 +78,10 @@ namespace AtcoDbPopulator
                 {
                     using var dbContext = new AtctablesContext();
                     this.DateTimeLabel.Text = this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
-                    this.dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)).ToList();
+                    this.dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)
+                        && p.OrarioAtterraggio == null
+                        && p.Dof >= this.mf.ActualTime.Date.AddDays(-2)
+                        && p.Dof <= this.mf.ActualTime.Date.AddDays(1)).OrderByDescending(p=>p.OrarioDecollo).ToList();
                 });
                 Thread.Sleep(1000);
             }
@@ -87,10 +90,7 @@ namespace AtcoDbPopulator
         private void TowerControl_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.Running = false;
-            if (this.CyclicChecker != null)
-            {
-                this.CyclicChecker.Join();
-            }
+            this.CyclicChecker?.Join();
         }
 
         private void ButtonLogOut_Click(object sender, EventArgs e)
@@ -99,11 +99,7 @@ namespace AtcoDbPopulator
             this.comboBoxAirports.Enabled = true;
             this.comboBoxControllers.Enabled = true;
             this.DateTimeLabel.Text = string.Empty;
-            if (this.CyclicChecker != null)
-            {
-                this.CyclicChecker.Join();
-            }
-
+            this.CyclicChecker?.Join();
             this.dataGridViewArrivals.DataSource = null;
             this.dataGridViewDepartures.DataSource = null;
         }

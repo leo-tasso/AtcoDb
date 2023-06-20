@@ -128,7 +128,7 @@
             trafficNum.Enabled = false;
             trafficNum.Increment = new decimal(new int[] { 25, 0, 0, 0 });
             trafficNum.Location = new Point(425, 49);
-            trafficNum.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            trafficNum.Maximum = new decimal(new int[] { 1000000, 0, 0, 0 });
             trafficNum.Minimum = new decimal(new int[] { 10, 0, 0, 0 });
             trafficNum.Name = "trafficNum";
             trafficNum.Size = new Size(83, 23);
