@@ -78,10 +78,27 @@ namespace AtcoDbPopulator
                 {
                     using var dbContext = new AtctablesContext();
                     this.DateTimeLabel.Text = this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
+                    int selectedIndex = 0;
+                    int firstDisplayedScrollingColumnIndex = 0;
+                    if (this.dataGridViewArrivals.DataSource != null && this.dataGridViewArrivals.RowCount > 0)
+                    {
+                        selectedIndex = this.dataGridViewArrivals.CurrentRow.Index;
+                        firstDisplayedScrollingColumnIndex = this.dataGridViewArrivals.FirstDisplayedScrollingColumnIndex;
+                    }
+
                     this.dataGridViewArrivals.DataSource = dbContext.Pianodivolos.Where(p => p.CodAdAtterraggio.Equals(aptPos)
                         && p.OrarioAtterraggio == null
                         && p.Dof >= this.mf.ActualTime.Date.AddDays(-2)
                         && p.Dof <= this.mf.ActualTime.Date.AddDays(1)).OrderByDescending(p => p.OrarioDecollo).ToList();
+                    if (selectedIndex >= 0 && selectedIndex < this.dataGridViewArrivals.Rows.Count)
+                    {
+                        this.dataGridViewArrivals.CurrentCell = this.dataGridViewArrivals.Rows[selectedIndex].Cells[0];
+                    }
+
+                    if (firstDisplayedScrollingColumnIndex >= 0 && firstDisplayedScrollingColumnIndex < this.dataGridViewArrivals.ColumnCount)
+                    {
+                        this.dataGridViewArrivals.FirstDisplayedScrollingColumnIndex = firstDisplayedScrollingColumnIndex;
+                    }
                 });
                 Thread.Sleep(1000);
             }
