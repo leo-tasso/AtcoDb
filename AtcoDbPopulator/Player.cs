@@ -33,6 +33,11 @@ public class Player : IPlayer
 /// </summary>
     public DateTime ActualDateTime { get; set; }
 
+    /// <summary>
+    /// Gets or Sets the active tower.
+    /// </summary>
+    public string? ActiveTwr { get; set; }
+
     private MainForm Mf { get; set; }
 
     private bool Cont { get; set; }
@@ -124,7 +129,6 @@ public class Player : IPlayer
 
         this.futureOverpass.AddRange(newFutureOverpasses);
 
-        // Create a TakeOff Time
         foreach (var firstNewOverpass in newFutureOverpasses.GroupBy(f => new { f.Dof, f.Callsign })
                      .Select(g => g.OrderBy(f => f.OrarioDiSorvolo).First())
                      .ToList())
@@ -135,7 +139,6 @@ public class Player : IPlayer
                 (int)this.normalDistribution.GenerateNormalRandomNumber(120, 10))));
         }
 
-        // Create a Landing Time
         foreach (var latestNewOverpass in newFutureOverpasses.GroupBy(f => new { f.Dof, f.Callsign })
                      .Select(g => g.OrderByDescending(f => f.OrarioDiSorvolo).First())
                      .ToList())
@@ -155,18 +158,25 @@ public class Player : IPlayer
         var tookOff = this.futureTakeOffTimes.Where(p => p.Value < this.ActualDateTime).ToList();
         foreach (var ongoingTakeOff in tookOff)
         {
-            dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2) !.OrarioDecollo =
-                ongoingTakeOff.Value;
-            this.futureTakeOffTimes.Remove(ongoingTakeOff);
+            if (!dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2).CodAdDecollo.Equals(ActiveTwr))
+            {
+                dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2) !.OrarioDecollo =
+                    ongoingTakeOff.Value;
+                this.futureTakeOffTimes.Remove(ongoingTakeOff);
+            }
         }
 
         // Update Landings.
         var landed = this.futureLandingsTimes.Where(p => p.Value < this.ActualDateTime).ToList();
         foreach (var ongoingLanding in landed)
         {
-            dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2) !.OrarioAtterraggio =
-                ongoingLanding.Value;
-            this.futureLandingsTimes.Remove(ongoingLanding);
+            if (!dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2).CodAdAtterraggio
+                    .Equals(ActiveTwr))
+            {
+                dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2) !.OrarioAtterraggio =
+                    ongoingLanding.Value;
+                this.futureLandingsTimes.Remove(ongoingLanding);
+            }
         }
 
         dbContext.SaveChanges();

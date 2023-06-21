@@ -222,6 +222,7 @@
             buttonLanded.TabIndex = 4;
             buttonLanded.Text = "Segna come Atterrato";
             buttonLanded.UseVisualStyleBackColor = true;
+            buttonLanded.Click += this.buttonLanded_Click;
             // 
             // buttonTookOff
             // 
@@ -232,6 +233,7 @@
             buttonTookOff.TabIndex = 5;
             buttonTookOff.Text = "Segna Come Decollato";
             buttonTookOff.UseVisualStyleBackColor = true;
+            buttonTookOff.Click += this.buttonTookOff_Click;
             // 
             // TowerControl
             // 
