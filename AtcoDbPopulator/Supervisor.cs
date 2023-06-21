@@ -23,7 +23,7 @@ namespace AtcoDbPopulator
         /// <summary>
         /// Initializes a new instance of the <see cref="Supervisor"/> class.
         /// </summary>
-        /// <param name="mf">The calling Mainform.</param>
+        /// <param name="mf">The calling MainForm.</param>
         public Supervisor(MainForm mf)
         {
             this.InitializeComponent();
