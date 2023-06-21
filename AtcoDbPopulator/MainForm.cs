@@ -203,7 +203,7 @@ namespace AtcoDbPopulator
 
         private void LaunchTwr_Click(object sender, EventArgs e)
         {
-            new Thread(() => Application.Run(new TowerControl(this, player))).Start();
+            new Thread(() => Application.Run(new TowerControl(this, this.player))).Start();
         }
     }
 }

@@ -35,7 +35,6 @@ namespace AtcoDbPopulator
             this.player = player;
         }
 
-
         private ControllersUtils ControllersUtils { get; }
 
         private bool Running { get; set; }
@@ -66,13 +65,13 @@ namespace AtcoDbPopulator
 
             string apt = dbContext.Settores
                 .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
-                .Select(s => s.CodAd).First()!;
+                .Select(s => s.CodAd).First() !;
             this.buttonLogOut.Enabled = true;
             this.buttonLogIn.Enabled = false;
             this.Running = true;
             this.player.ActiveTwr = dbContext.Settores
                 .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
-                .Select(s => s.CodAd).First()!;
+                .Select(s => s.CodAd).First() !;
             this.comboBoxAirports.Enabled = false;
             this.comboBoxControllers.Enabled = false;
             this.CyclicChecker = new Thread(() => this.CyclicCheckTraffic(apt));
@@ -88,7 +87,6 @@ namespace AtcoDbPopulator
                     using var dbContext = new AtctablesContext();
                     this.DateTimeLabel.Text = this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
 
-
                     this.UpdateTables(aptPos, dbContext);
                 });
                 Thread.Sleep(200);
@@ -101,7 +99,7 @@ namespace AtcoDbPopulator
             int firstDisplayedScrollingColumnIndex = 0;
             if (this.dataGridViewArrivals.DataSource != null && this.dataGridViewArrivals.RowCount > 0)
             {
-                selectedIndex = this.dataGridViewArrivals.CurrentRow.Index;
+                selectedIndex = this.dataGridViewArrivals.CurrentRow!.Index;
                 firstDisplayedScrollingColumnIndex = this.dataGridViewArrivals.FirstDisplayedScrollingColumnIndex;
             }
 
@@ -123,13 +121,11 @@ namespace AtcoDbPopulator
                 this.dataGridViewArrivals.FirstDisplayedScrollingColumnIndex = firstDisplayedScrollingColumnIndex;
             }
 
-
-
             selectedIndex = 0;
             firstDisplayedScrollingColumnIndex = 0;
             if (this.dataGridViewDepartures.DataSource != null && this.dataGridViewDepartures.RowCount > 0)
             {
-                selectedIndex = this.dataGridViewDepartures.CurrentRow.Index;
+                selectedIndex = this.dataGridViewDepartures.CurrentRow!.Index;
                 firstDisplayedScrollingColumnIndex = this.dataGridViewDepartures.FirstDisplayedScrollingColumnIndex;
             }
 
@@ -170,18 +166,17 @@ namespace AtcoDbPopulator
             this.dataGridViewDepartures.DataSource = null;
             this.buttonLogOut.Enabled = false;
             this.buttonLogIn.Enabled = true;
-
         }
 
-        private void buttonLanded_Click(object sender, EventArgs e)
+        private void ButtonLanded_Click(object sender, EventArgs e)
         {
             if (this.dataGridViewArrivals.SelectedCells.Count != 0)
             {
-                string callsign = this.dataGridViewArrivals.SelectedCells[1].Value.ToString();
-                DateTime dof = DateTime.Parse(this.dataGridViewArrivals.SelectedCells[2].Value.ToString());
+                string callSign = this.dataGridViewArrivals.SelectedCells[1].Value.ToString() !;
+                DateTime dof = DateTime.Parse(this.dataGridViewArrivals.SelectedCells[2].Value.ToString() !);
                 using var dbContext = new AtctablesContext();
-                var flightPlan = dbContext.Pianodivolos.Find(callsign, dof);
-                if (flightPlan.OrarioDecollo != null)
+                var flightPlan = dbContext.Pianodivolos.Find(callSign, dof);
+                if (flightPlan!.OrarioDecollo != null)
                 {
                     flightPlan.OrarioAtterraggio = this.mf.ActualTime;
                     dbContext.SaveChanges();
@@ -189,15 +184,15 @@ namespace AtcoDbPopulator
             }
         }
 
-        private void buttonTookOff_Click(object sender, EventArgs e)
+        private void ButtonTookOff_Click(object sender, EventArgs e)
         {
             if (this.dataGridViewDepartures.SelectedCells.Count != 0)
             {
-                string callSign = this.dataGridViewDepartures.SelectedCells[0].Value.ToString();
-                DateTime dof = DateTime.Parse(this.dataGridViewDepartures.SelectedCells[1].Value.ToString());
+                string callSign = this.dataGridViewDepartures.SelectedCells[0].Value.ToString() !;
+                DateTime dof = DateTime.Parse(this.dataGridViewDepartures.SelectedCells[1].Value.ToString() !);
                 using var dbContext = new AtctablesContext();
                 var flightPlan = dbContext.Pianodivolos.Find(callSign, dof);
-                flightPlan.OrarioDecollo = this.mf.ActualTime;
+                flightPlan!.OrarioDecollo = this.mf.ActualTime;
                 dbContext.SaveChanges();
             }
         }

@@ -158,7 +158,7 @@ public class Player : IPlayer
         var tookOff = this.futureTakeOffTimes.Where(p => p.Value < this.ActualDateTime).ToList();
         foreach (var ongoingTakeOff in tookOff)
         {
-            if (!dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2).CodAdDecollo.Equals(ActiveTwr))
+            if (!dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2) !.CodAdDecollo.Equals(this.ActiveTwr))
             {
                 dbContext.Pianodivolos.Find(ongoingTakeOff.Key.Item1, ongoingTakeOff.Key.Item2) !.OrarioDecollo =
                     ongoingTakeOff.Value;
@@ -170,8 +170,8 @@ public class Player : IPlayer
         var landed = this.futureLandingsTimes.Where(p => p.Value < this.ActualDateTime).ToList();
         foreach (var ongoingLanding in landed)
         {
-            if (!dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2).CodAdAtterraggio
-                    .Equals(ActiveTwr))
+            if (!dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2) !.CodAdAtterraggio
+                    .Equals(this.ActiveTwr))
             {
                 dbContext.Pianodivolos.Find(ongoingLanding.Key.Item1, ongoingLanding.Key.Item2) !.OrarioAtterraggio =
                     ongoingLanding.Value;
