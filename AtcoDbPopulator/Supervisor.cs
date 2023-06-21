@@ -21,10 +21,11 @@ namespace AtcoDbPopulator
             InitializeComponent();
             this.mf = mf;
             using var dbContext = new AtctablesContext();
-            comboBoxCenter.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
-            UpdateView();
             running = true;
             this.mf = mf;
+            this.ControllersUtils = new ControllersUtils();
+            UpdateView();
+            comboBoxCenter.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
             this.continuousThread = new Thread(() =>
             {
                 while (this.running)
@@ -38,12 +39,16 @@ namespace AtcoDbPopulator
                 }
             });
             this.continuousThread.Start();
+
         }
+
+        private ControllersUtils ControllersUtils { get; }
 
         private Thread? continuousThread { get; set; }
         private bool running { get; set; }
-        public static TableLayoutPanel CreatePositionTable(string positionName)
+        public TableLayoutPanel CreatePositionTable(string positionName)
         {
+            using var dbContext = new AtctablesContext();
             // Create the table layout panel
             TableLayoutPanel tableLayoutPanel = new TableLayoutPanel();
             tableLayoutPanel.RowCount = 2;
@@ -62,10 +67,20 @@ namespace AtcoDbPopulator
             flowLayoutPanel.Controls.Add(label);
 
             ComboBox comboBox = new ComboBox();
-            comboBox.Items.AddRange(new string[] { "Option 1", "Option 2", "Option 3" });
+            comboBox.DataSource = dbContext.Controllores.ToList()
+                /*.Where(c => this.ControllersUtils.ControllerIsAble(
+                    c,
+                    dbContext.Settores
+                        .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(positionName)))
+                        .Select(s => s.IdSettore).ToList(),
+                    dbContext))*/
+                .Where(c=>c.NomeCentro.Equals(dbContext.Postaziones.Find(positionName).NomeCentro))
+                .Select(c => c.IdControllore + " " + c.Cognome + " " + c.Nome).ToList();
+
             flowLayoutPanel.Controls.Add(comboBox);
 
             CheckBox checkBox = new CheckBox();
+            
             checkBox.Text = "Attivo";
             flowLayoutPanel.Controls.Add(checkBox);
 
@@ -101,7 +116,7 @@ namespace AtcoDbPopulator
             var positionSelected = dbContext.Postaziones.Where(p => p.NomeCentro.Equals(comboBoxCenter.SelectedItem)).ToList();
             foreach (var position in positionSelected)
             {
-                flowLayoutPanelGraphs.Controls.Add(Supervisor.CreatePositionTable(position.IdPostazione));
+                flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
             }
         }
 
