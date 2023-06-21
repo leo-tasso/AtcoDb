@@ -189,12 +189,17 @@ public class PositionsUtils
             .Where(s => s.OrarioStimato.Month == month && s.OrarioStimato.Year == year && s.OrarioStimato.Day == day &&
                         s.NomePuntoNavigation.IdSettoreNavigation.IdPostaziones.Select(p => p.IdPostazione).Contains(position.IdPostazione))
             .ToList()
-            .Count(s => this.SlotOfTime(s.OrarioStimato.TimeOfDay) == slot);
+            .Count(s => SlotOfTime(s.OrarioStimato.TimeOfDay) == slot);
 
         return estimatesCount;
     }
 
-    private int SlotOfTime(TimeSpan time)
+    /// <summary>
+    /// Method to get the number of slot corresponding to the time.
+    /// </summary>
+    /// <param name="time">The time to convert.</param>
+    /// <returns>The slot number.</returns>
+    public static int SlotOfTime(TimeSpan time)
     {
         int totalMinutes = (time.Hours * 60) + time.Minutes;
         int minutesPerPart = 24 * 60 / ShiftsInDays;

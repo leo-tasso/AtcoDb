@@ -30,11 +30,26 @@ namespace AtcoDbPopulator
             {
                 while (this.running)
                 {
-                    this.Invoke(() =>
-                    {
-                        using var dbContext = new AtctablesContext();
-                        this.labelActualTime.Text = this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
-                    });
+                    try
+                    { this.Invoke(() =>
+                        {
+
+                            using var dbContext = new AtctablesContext();
+                            this.labelActualTime.Text =
+                                this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
+                            foreach (TableLayoutPanel table in flowLayoutPanelGraphs.Controls)
+                            {
+                                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1);
+                                plot.Plot.Clear();
+                                plot.Plot.AddSignal(DataGen.Sin(mf.ActualTime.Second + 2));
+                                plot.Refresh();
+                            }
+                        });
+                    }
+                    catch (System.ObjectDisposedException e) {}
+                    catch(System.InvalidOperationException e){}
+
+                    
                     Thread.Sleep(200);
                 }
             });
@@ -45,7 +60,7 @@ namespace AtcoDbPopulator
         private ControllersUtils ControllersUtils { get; }
 
         private Thread? continuousThread { get; set; }
-        private bool running { get; set; }
+        private volatile bool running = false;
         public TableLayoutPanel CreatePositionTable(string positionName)
         {
             using var dbContext = new AtctablesContext();
@@ -63,25 +78,28 @@ namespace AtcoDbPopulator
             flowLayoutPanel.AutoSize = true;
 
             Label label = new Label();
-            label.Text = positionName;
+            label.AutoSize = true;
+            label.Text = positionName + ": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName))).Select(s => s.IdSettore)
+                .ToList());
             flowLayoutPanel.Controls.Add(label);
 
             ComboBox comboBox = new ComboBox();
-            comboBox.DataSource = dbContext.Controllores.ToList()
-                /*.Where(c => this.ControllersUtils.ControllerIsAble(
-                    c,
-                    dbContext.Settores
-                        .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(positionName)))
-                        .Select(s => s.IdSettore).ToList(),
-                    dbContext))*/
-                .Where(c=>c.NomeCentro.Equals(dbContext.Postaziones.Find(positionName).NomeCentro))
-                .Select(c => c.IdControllore + " " + c.Cognome + " " + c.Nome).ToList();
-
+            // Fill box with controllers on duty.
+            comboBox.DataSource = dbContext.Turnos.Where(t =>
+                t.Data.Equals(mf.ActualTime.Date)
+                && t.Slot == PositionsUtils.SlotOfTime(mf.ActualTime.TimeOfDay)
+                && (t.CentroStandBy.Equals(comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation.NomeCentro.Equals(comboBoxCenter.SelectedItem)))
+                .Select(t => t.IdControlloreNavigation.IdControllore + " " + t.IdControlloreNavigation.Nome + " " + t.IdControlloreNavigation.Cognome)
+                .ToList();
             flowLayoutPanel.Controls.Add(comboBox);
-
             CheckBox checkBox = new CheckBox();
-            
             checkBox.Text = "Attivo";
+
+            // Fill checkbox if position is active.
+            checkBox.Checked = dbContext.Turnos.Any(t =>
+                t.Data.Equals(mf.ActualTime.Date)
+                && t.Slot == PositionsUtils.SlotOfTime(mf.ActualTime.TimeOfDay)
+                && t.IdPostazione.Equals(positionName));
             flowLayoutPanel.Controls.Add(checkBox);
 
             // Create the ScottPlot control for the second row
@@ -119,11 +137,14 @@ namespace AtcoDbPopulator
                 flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
             }
         }
-
+        
         private void Supervisor_FormClosing(object sender, FormClosingEventArgs e)
         {
             running = false;
-            continuousThread.Join();
+            if (continuousThread != null && continuousThread.IsAlive)
+            {
+                //continuousThread.Join();
+            }
         }
     }
 }
