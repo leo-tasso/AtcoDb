@@ -1,69 +1,76 @@
-﻿using AtcoDbPopulator.Models;
-using ScottPlot;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿// <copyright file="Supervisor.cs" company="Leonardo Tassinari">
+// Copyright (c) Leonardo Tassinari. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+// </copyright>
 
 namespace AtcoDbPopulator
 {
+    using System;
+    using System.Drawing;
+    using System.Linq;
+    using System.Windows.Forms;
+    using AtcoDbPopulator.Models;
+    using ScottPlot;
+
+    /// <summary>
+    /// Class to manage a supervisor window.
+    /// </summary>
     public partial class Supervisor : Form
     {
-        private MainForm mf;
+        private readonly MainForm mf;
+        private volatile bool running;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Supervisor"/> class.
+        /// </summary>
+        /// <param name="mf">The calling Mainform.</param>
         public Supervisor(MainForm mf)
         {
-            InitializeComponent();
+            this.InitializeComponent();
             this.mf = mf;
             using var dbContext = new AtctablesContext();
-            running = true;
+            this.running = true;
             this.mf = mf;
-            this.ControllersUtils = new ControllersUtils();
-            UpdateView();
-            comboBoxCenter.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
-            this.continuousThread = new Thread(() =>
+            this.UpdateView();
+            this.comboBoxCenter.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
+            this.ContinuousThread = new Thread(() =>
             {
                 while (this.running)
                 {
                     try
-                    { this.Invoke(() =>
+                    {
+                        this.Invoke(() =>
                         {
-
-                            using var dbContext = new AtctablesContext();
                             this.labelActualTime.Text =
                                 this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
-                            foreach (TableLayoutPanel table in flowLayoutPanelGraphs.Controls)
+                            foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
                             {
-                                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1);
+                                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1) !;
                                 plot.Plot.Clear();
                                 plot.Plot.AddSignal(DataGen.Sin(mf.ActualTime.Second + 2));
                                 plot.Refresh();
                             }
                         });
                     }
-                    catch (System.ObjectDisposedException e) {}
-                    catch(System.InvalidOperationException e){}
+                    catch (System.ObjectDisposedException)
+                    {
+                    }
+                    catch (System.InvalidOperationException)
+                    {
+                    }
 
-                    
                     Thread.Sleep(200);
                 }
             });
-            this.continuousThread.Start();
-
+            this.ContinuousThread.Start();
         }
 
-        private ControllersUtils ControllersUtils { get; }
+        private Thread? ContinuousThread { get; set; }
 
-        private Thread? continuousThread { get; set; }
-        private volatile bool running = false;
-        public TableLayoutPanel CreatePositionTable(string positionName)
+        private TableLayoutPanel CreatePositionTable(string positionName)
         {
             using var dbContext = new AtctablesContext();
+
             // Create the table layout panel
             TableLayoutPanel tableLayoutPanel = new TableLayoutPanel();
             tableLayoutPanel.RowCount = 2;
@@ -79,27 +86,28 @@ namespace AtcoDbPopulator
 
             Label label = new Label();
             label.AutoSize = true;
-            label.Text = positionName + ": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName))).Select(s => s.IdSettore)
+            label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName) !)).Select(s => s.IdSettore)
                 .ToList());
             flowLayoutPanel.Controls.Add(label);
 
             ComboBox comboBox = new ComboBox();
+
             // Fill box with controllers on duty.
             comboBox.DataSource = dbContext.Turnos.Where(t =>
-                t.Data.Equals(mf.ActualTime.Date)
-                && t.Slot == PositionsUtils.SlotOfTime(mf.ActualTime.TimeOfDay)
-                && (t.CentroStandBy.Equals(comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation.NomeCentro.Equals(comboBoxCenter.SelectedItem)))
+                t.Data.Equals(this.mf.ActualTime.Date)
+                && t.Slot == PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)
+                && (t.CentroStandBy!.Equals(this.comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation!.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)))
                 .Select(t => t.IdControlloreNavigation.IdControllore + " " + t.IdControlloreNavigation.Nome + " " + t.IdControlloreNavigation.Cognome)
                 .ToList();
             flowLayoutPanel.Controls.Add(comboBox);
             CheckBox checkBox = new CheckBox();
-            checkBox.Text = "Attivo";
+            checkBox.Text = @"Attivo";
 
             // Fill checkbox if position is active.
             checkBox.Checked = dbContext.Turnos.Any(t =>
-                t.Data.Equals(mf.ActualTime.Date)
-                && t.Slot == PositionsUtils.SlotOfTime(mf.ActualTime.TimeOfDay)
-                && t.IdPostazione.Equals(positionName));
+                t.Data.Equals(this.mf.ActualTime.Date)
+                && t.Slot == PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)
+                && t.IdPostazione!.Equals(positionName));
             flowLayoutPanel.Controls.Add(checkBox);
 
             // Create the ScottPlot control for the second row
@@ -122,29 +130,25 @@ namespace AtcoDbPopulator
             return tableLayoutPanel;
         }
 
-        private void comboBoxCenter_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxCenter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateView();
+            this.UpdateView();
         }
 
         private void UpdateView()
         {
             using var dbContext = new AtctablesContext();
-            flowLayoutPanelGraphs.Controls.Clear();
-            var positionSelected = dbContext.Postaziones.Where(p => p.NomeCentro.Equals(comboBoxCenter.SelectedItem)).ToList();
+            this.flowLayoutPanelGraphs.Controls.Clear();
+            var positionSelected = dbContext.Postaziones.Where(p => p.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)).ToList();
             foreach (var position in positionSelected)
             {
-                flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
+                this.flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
             }
         }
-        
+
         private void Supervisor_FormClosing(object sender, FormClosingEventArgs e)
         {
-            running = false;
-            if (continuousThread != null && continuousThread.IsAlive)
-            {
-                //continuousThread.Join();
-            }
+            this.running = false;
         }
     }
 }

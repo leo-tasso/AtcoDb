@@ -84,7 +84,7 @@
             comboBoxCenter.Name = "comboBoxCenter";
             comboBoxCenter.Size = new Size(234, 23);
             comboBoxCenter.TabIndex = 1;
-            comboBoxCenter.SelectedIndexChanged += this.comboBoxCenter_SelectedIndexChanged;
+            comboBoxCenter.SelectedIndexChanged += this.ComboBoxCenter_SelectedIndexChanged;
             // 
             // buttonApply
             // 

@@ -194,21 +194,6 @@ public class PositionsUtils
         return estimatesCount;
     }
 
-    /// <summary>
-    /// Method to get the number of slot corresponding to the time.
-    /// </summary>
-    /// <param name="time">The time to convert.</param>
-    /// <returns>The slot number.</returns>
-    public static int SlotOfTime(TimeSpan time)
-    {
-        int totalMinutes = (time.Hours * 60) + time.Minutes;
-        int minutesPerPart = 24 * 60 / ShiftsInDays;
-
-        int partIndex = totalMinutes / minutesPerPart;
-
-        return partIndex;
-    }
-
     private int PositionCapacity(AtcoDbPopulator.Models.Postazione position)
     {
         // TODO might be adjusted
@@ -220,5 +205,22 @@ public class PositionsUtils
         }
         */
         return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInCurrentPosition - 1)); // 12 with 2 sectors
+    }
+
+    /// <summary>
+    /// Method to get the number of slot corresponding to the time.
+    /// </summary>
+    /// <param name="time">The time to convert.</param>
+    /// <returns>The slot number.</returns>
+#pragma warning disable SA1202
+    public static int SlotOfTime(TimeSpan time)
+#pragma warning restore SA1202
+    {
+        int totalMinutes = (time.Hours * 60) + time.Minutes;
+        int minutesPerPart = 24 * 60 / ShiftsInDays;
+
+        int partIndex = totalMinutes / minutesPerPart;
+
+        return partIndex;
     }
 }
