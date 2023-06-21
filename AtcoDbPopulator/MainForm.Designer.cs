@@ -50,6 +50,7 @@
             hourLabel = new Label();
             minuteLabel = new Label();
             LaunchTwr = new Button();
+            buttonSupervisorPanel = new Button();
             ((System.ComponentModel.ISupportInitialize)controllerNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)trafficNum).BeginInit();
             ((System.ComponentModel.ISupportInitialize)hourPicker).BeginInit();
@@ -259,13 +260,23 @@
             // 
             // LaunchTwr
             // 
-            LaunchTwr.Location = new Point(129, 200);
+            LaunchTwr.Location = new Point(200, 202);
             LaunchTwr.Name = "LaunchTwr";
             LaunchTwr.Size = new Size(75, 23);
             LaunchTwr.TabIndex = 21;
             LaunchTwr.Text = "Launch Twr";
             LaunchTwr.UseVisualStyleBackColor = true;
             LaunchTwr.Click += this.LaunchTwr_Click;
+            // 
+            // buttonSupervisorPanel
+            // 
+            buttonSupervisorPanel.Location = new Point(353, 202);
+            buttonSupervisorPanel.Name = "buttonSupervisorPanel";
+            buttonSupervisorPanel.Size = new Size(156, 23);
+            buttonSupervisorPanel.TabIndex = 22;
+            buttonSupervisorPanel.Text = "Launch Supervisor Panel";
+            buttonSupervisorPanel.UseVisualStyleBackColor = true;
+            buttonSupervisorPanel.Click += this.ButtonSupervisorPanel_Click;
             // 
             // MainForm
             // 
@@ -274,6 +285,7 @@
             this.AutoSize = true;
             this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             this.ClientSize = new Size(521, 237);
+            this.Controls.Add(buttonSupervisorPanel);
             this.Controls.Add(LaunchTwr);
             this.Controls.Add(minuteLabel);
             this.Controls.Add(hourLabel);
@@ -344,5 +356,6 @@
         private Label hourLabel;
         private Label minuteLabel;
         private Button LaunchTwr;
+        private Button buttonSupervisorPanel;
     }
 }

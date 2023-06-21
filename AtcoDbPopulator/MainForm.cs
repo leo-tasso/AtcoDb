@@ -205,5 +205,10 @@ namespace AtcoDbPopulator
         {
             new Thread(() => Application.Run(new TowerControl(this, this.player))).Start();
         }
+
+        private void ButtonSupervisorPanel_Click(object sender, EventArgs e)
+        {
+            new Thread(() => Application.Run(new Supervisor(this))).Start();
+        }
     }
 }
