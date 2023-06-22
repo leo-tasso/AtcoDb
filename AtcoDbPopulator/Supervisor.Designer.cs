@@ -94,7 +94,7 @@
             buttonApply.TabIndex = 2;
             buttonApply.Text = "Applica";
             buttonApply.UseVisualStyleBackColor = true;
-            buttonApply.Click += this.buttonApply_Click;
+            buttonApply.Click += this.ButtonApply_Click;
             // 
             // labelActualTime
             // 

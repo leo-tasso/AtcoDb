@@ -75,7 +75,7 @@ public class TrafficPopulator
 
             dbContext.Aereomobiles.Add(newPlane);
             dbContext.Pianodivolos.Add(newFlightPlan);
-            foreach (var crossingSector in this.airBornSectors.OrderBy(item => Guid.NewGuid()).Take(this.random.Next(LongestFlightSectors / 2, LongestFlightSectors)))
+            foreach (var crossingSector in this.airBornSectors.OrderBy(_ => Guid.NewGuid()).Take(this.random.Next(LongestFlightSectors / 2, LongestFlightSectors)))
             {
                 var pointsInCurrentSector = this.PointsInSector(crossingSector.IdSettore).Count;
                 IList<AtcoDbPopulator.Models.Stimati> newEstimates = new List<AtcoDbPopulator.Models.Stimati>();

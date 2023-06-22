@@ -3,8 +3,6 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
-using System.Linq;
-
 namespace AtcoDbPopulator;
 
 /// <summary>
@@ -30,6 +28,32 @@ public class PositionsUtils
     {
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         this.centerTurns = centerTurns;
+    }
+
+    /// <summary>
+    /// Method to get the number of slot corresponding to the time.
+    /// </summary>
+    /// <param name="time">The time to convert.</param>
+    /// <returns>The slot number.</returns>
+    public static int SlotOfTime(TimeSpan time)
+    {
+        int totalMinutes = (time.Hours * 60) + time.Minutes;
+        int minutesPerPart = 24 * 60 / ShiftsInDays;
+
+        int partIndex = totalMinutes / minutesPerPart;
+
+        return partIndex;
+    }
+
+    /// <summary>
+    /// To Get the capacity of a position.
+    /// </summary>
+    /// <param name="nSectors">The number of sectors in the position.</param>
+    /// <returns>The capacity of the position.</returns>
+    public static int PositionCapacityWithSectors(int nSectors)
+    {
+        // TODO might be adjusted
+        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, nSectors - 1)); // 12 with 2 sectors
     }
 
     /// <summary>
@@ -196,39 +220,10 @@ public class PositionsUtils
         return estimatesCount;
     }
 
-    /// <summary>
-    /// To Get the capacity of a position.
-    /// </summary>
-    /// <param name="position">The position.</param>
-    /// <returns>The capacity of the position.</returns>
-    
-    public static int PositionCapacityWithSectors(int nSectors)
-    {
-        // TODO might be adjusted
-        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, nSectors - 1)); // 12 with 2 sectors
-    }
-
     private int PositionCapacity(AtcoDbPopulator.Models.Postazione position)
     {
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         int sectorsInCurrentPosition = this.SectorsInPosition(position.IdPostazione).Count;
         return PositionCapacityWithSectors(sectorsInCurrentPosition);
-    }
-
-    /// <summary>
-    /// Method to get the number of slot corresponding to the time.
-    /// </summary>
-    /// <param name="time">The time to convert.</param>
-    /// <returns>The slot number.</returns>
-#pragma warning disable SA1202
-    public static int SlotOfTime(TimeSpan time)
-#pragma warning restore SA1202
-    {
-        int totalMinutes = (time.Hours * 60) + time.Minutes;
-        int minutesPerPart = 24 * 60 / ShiftsInDays;
-
-        int partIndex = totalMinutes / minutesPerPart;
-
-        return partIndex;
     }
 }
