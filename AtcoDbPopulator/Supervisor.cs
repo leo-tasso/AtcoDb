@@ -21,6 +21,8 @@ namespace AtcoDbPopulator
         private volatile bool running;
         private ISet<Stimati> estim = new HashSet<Stimati>();
         private IList<IList<string>> sectorsList = new List<IList<string>>();
+        private IList<string> positionList = new List<string>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Supervisor"/> class.
         /// </summary>
@@ -34,7 +36,7 @@ namespace AtcoDbPopulator
             this.running = true;
             this.mf = mf;
             this.UpdateView();
-            this.comboBoxCenter.DataSource = dbContext.Centros.Where(c=>c.Postaziones.Count>1).Select(c => c.NomeCentro).ToList();
+            this.comboBoxCenter.DataSource = dbContext.Centros.Where(c => c.Postaziones.Count > 1).Select(c => c.NomeCentro).ToList();
             this.ContinuousThread = new Thread(() =>
             {
                 int minOld = 0;
@@ -72,7 +74,7 @@ namespace AtcoDbPopulator
             int index = 0;
             foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
             {
-                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1) !;
+                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1)!;
                 plot.Plot.Clear();
                 DateTime[] x = new DateTime[10];
                 for (int i = 0; i < 10; i++)
@@ -88,7 +90,7 @@ namespace AtcoDbPopulator
 
                 plot.Plot.AddScatter(x.Select(x => (double)x.Hour).ToArray(),
                     y.Select(y => (double)y).ToArray());
-                plot.Plot.AddHorizontalLine(PositionsUtils.PositionCapacityWithSectors(sectorsList[index].Count)/(24/PositionsUtils.ShiftsInDays), color: System.Drawing.Color.Red);
+                plot.Plot.AddHorizontalLine(PositionsUtils.PositionCapacityWithSectors(sectorsList[index].Count) / (24 / PositionsUtils.ShiftsInDays), color: System.Drawing.Color.Red);
 
                 plot.Refresh();
                 index++;
@@ -124,22 +126,24 @@ namespace AtcoDbPopulator
 
             Label label = new Label();
             label.AutoSize = true;
-            label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName) !)).Select(s => s.IdSettore)
+            label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName)!)).Select(s => s.IdSettore)
                 .ToList());
             sectorsList.Add(new List<string>(dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName)!)).Select(s => s.IdSettore)
                 .ToList()));
+            positionList.Add(positionName);
             flowLayoutPanel.Controls.Add(label);
 
             ComboBox comboBox = new ComboBox();
 
             // Fill box with controllers on duty.
             comboBox.DataSource = dbContext.Turnos.Where(t =>
-                t.Data.Equals(this.mf.ActualTime.Date)
-                && t.Slot == PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)
-                && (t.CentroStandBy!.Equals(this.comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation!.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)))
+                    t.Data.Equals(this.mf.ActualTime.Date)
+                    && t.Slot == PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)
+                    && (t.CentroStandBy!.Equals(this.comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation!.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)))
                 .Select(t => t.IdControlloreNavigation.IdControllore + " " + t.IdControlloreNavigation.Nome + " " + t.IdControlloreNavigation.Cognome)
                 .ToList();
             flowLayoutPanel.Controls.Add(comboBox);
+
             CheckBox checkBox = new CheckBox();
             checkBox.Text = @"Attivo";
 
@@ -179,18 +183,56 @@ namespace AtcoDbPopulator
         {
             using var dbContext = new AtctablesContext();
             this.flowLayoutPanelGraphs.Controls.Clear();
-            var positionSelected = dbContext.Postaziones.Where(p => p.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)).ToList();
+            var positionSelected = dbContext.Postaziones
+                .Where(p => p.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)).ToList();
             sectorsList.Clear();
+            positionList.Clear();
             foreach (var position in positionSelected)
             {
                 this.flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
             }
             UpdatePlots();
+
         }
 
         private void Supervisor_FormClosing(object sender, FormClosingEventArgs e)
         {
             this.running = false;
+        }
+
+        private void buttonApply_Click(object sender, EventArgs e)
+        {
+            using var dbContext = new AtctablesContext();
+            int index = 0;
+            var shift = dbContext.Turnos.Where(t => t.Data.Equals(mf.ActualTime.Date) && t.Slot.Equals(PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)) && positionList.Contains(t.IdPostazione));
+            dbContext.Turnos.RemoveRange(shift);
+            foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
+            {
+                Controllore controller = dbContext.Controllores.Find((((((FlowLayoutPanel)table.GetControlFromPosition(0, 0)!)).Controls[1] as ComboBox)!).SelectedItem.ToString().Split(" ")[0]);
+                if ((((((FlowLayoutPanel)table.GetControlFromPosition(0, 0)!)).Controls[2] as CheckBox) !).Checked)
+                {
+                    // Remove stand by shift if present
+
+                    var sBShift = dbContext.Turnos.Where(t =>
+                        t.Data.Equals(mf.ActualTime.Date) &&
+                        t.Slot.Equals(PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)) &&
+                        t.IdControllore.Equals(controller.IdControllore));
+                    dbContext.Turnos.RemoveRange(sBShift);
+                    var newShift = new Turno()
+                    {
+                        IdControllore = controller.IdControllore,
+                        Retribuzione = CenterTurns.StandardPay,
+                        Data = mf.ActualTime.Date,
+                        Slot = PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay),
+                        IdPostazione = positionList[index],
+                    };
+                    dbContext.Turnos.Add(newShift);
+                }
+                index++;
+            }
+
+            dbContext.SaveChanges();
+            UpdateView();
         }
     }
 }
