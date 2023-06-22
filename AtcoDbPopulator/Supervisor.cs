@@ -19,7 +19,8 @@ namespace AtcoDbPopulator
     {
         private readonly MainForm mf;
         private volatile bool running;
-
+        private ISet<Stimati> estim = new HashSet<Stimati>();
+        private IList<IList<string>> sectorsList = new List<IList<string>>();
         /// <summary>
         /// Initializes a new instance of the <see cref="Supervisor"/> class.
         /// </summary>
@@ -29,26 +30,27 @@ namespace AtcoDbPopulator
             this.InitializeComponent();
             this.mf = mf;
             using var dbContext = new AtctablesContext();
+            estim = dbContext.Stimatis.ToHashSet();
             this.running = true;
             this.mf = mf;
             this.UpdateView();
-            this.comboBoxCenter.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
+            this.comboBoxCenter.DataSource = dbContext.Centros.Where(c=>c.Postaziones.Count>1).Select(c => c.NomeCentro).ToList();
             this.ContinuousThread = new Thread(() =>
             {
+                int minOld = 0;
                 while (this.running)
                 {
+
                     try
                     {
                         this.Invoke(() =>
                         {
                             this.labelActualTime.Text =
                                 this.mf.ActualTime.ToString(System.Globalization.CultureInfo.CurrentCulture);
-                            foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
+                            if (mf.ActualTime.Minute != minOld)
                             {
-                                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1) !;
-                                plot.Plot.Clear();
-                                plot.Plot.AddSignal(DataGen.Sin(mf.ActualTime.Second + 2));
-                                plot.Refresh();
+                                UpdatePlots();
+                                minOld = mf.ActualTime.Minute;
                             }
                         });
                     }
@@ -65,8 +67,44 @@ namespace AtcoDbPopulator
             this.ContinuousThread.Start();
         }
 
+        private void UpdatePlots()
+        {
+            int index = 0;
+            foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
+            {
+                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1) !;
+                plot.Plot.Clear();
+                DateTime[] x = new DateTime[10];
+                for (int i = 0; i < 10; i++)
+                {
+                    x[i] = mf.ActualTime.AddHours(i);
+                }
+
+                int[] y = new int[10];
+                for (int i = 0; i < 10; i++)
+                {
+                    y[i] = occupationInSector(x[i], sectorsList[index]);
+                }
+
+                plot.Plot.AddScatter(x.Select(x => (double)x.Hour).ToArray(),
+                    y.Select(y => (double)y).ToArray());
+                plot.Plot.AddHorizontalLine(PositionsUtils.PositionCapacityWithSectors(sectorsList[index].Count)/(24/PositionsUtils.ShiftsInDays), color: System.Drawing.Color.Red);
+
+                plot.Refresh();
+                index++;
+            }
+        }
+
         private Thread? ContinuousThread { get; set; }
 
+        private int occupationInSector(DateTime time, ICollection<string> sector)
+        {
+            using var dbContext = new AtctablesContext();
+            return estim.Count(s =>
+         s.OrarioStimato.Date.Equals(time.Date)
+         && s.OrarioStimato.Hour == time.Hour
+         && sector.Contains(dbContext.Puntos.Find(s.NomePunto).IdSettore));
+        }
         private TableLayoutPanel CreatePositionTable(string positionName)
         {
             using var dbContext = new AtctablesContext();
@@ -88,6 +126,8 @@ namespace AtcoDbPopulator
             label.AutoSize = true;
             label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName) !)).Select(s => s.IdSettore)
                 .ToList());
+            sectorsList.Add(new List<string>(dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName)!)).Select(s => s.IdSettore)
+                .ToList()));
             flowLayoutPanel.Controls.Add(label);
 
             ComboBox comboBox = new ComboBox();
@@ -140,10 +180,12 @@ namespace AtcoDbPopulator
             using var dbContext = new AtctablesContext();
             this.flowLayoutPanelGraphs.Controls.Clear();
             var positionSelected = dbContext.Postaziones.Where(p => p.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)).ToList();
+            sectorsList.Clear();
             foreach (var position in positionSelected)
             {
                 this.flowLayoutPanelGraphs.Controls.Add(this.CreatePositionTable(position.IdPostazione));
             }
+            UpdatePlots();
         }
 
         private void Supervisor_FormClosing(object sender, FormClosingEventArgs e)

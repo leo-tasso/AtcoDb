@@ -3,6 +3,8 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 // </copyright>
 
+using System.Linq;
+
 namespace AtcoDbPopulator;
 
 /// <summary>
@@ -194,17 +196,23 @@ public class PositionsUtils
         return estimatesCount;
     }
 
-    private int PositionCapacity(AtcoDbPopulator.Models.Postazione position)
+    /// <summary>
+    /// To Get the capacity of a position.
+    /// </summary>
+    /// <param name="position">The position.</param>
+    /// <returns>The capacity of the position.</returns>
+    
+    public static int PositionCapacityWithSectors(int nSectors)
     {
         // TODO might be adjusted
+        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, nSectors - 1)); // 12 with 2 sectors
+    }
+
+    private int PositionCapacity(AtcoDbPopulator.Models.Postazione position)
+    {
         using var dbContext = new AtcoDbPopulator.Models.AtctablesContext();
         int sectorsInCurrentPosition = this.SectorsInPosition(position.IdPostazione).Count;
-        /*if (sectorsInCurrentPosition > 1)
-        {
-            return 1;
-        }
-        */
-        return (int)Math.Truncate(BaseCapacity / Math.Pow(3, sectorsInCurrentPosition - 1)); // 12 with 2 sectors
+        return PositionCapacityWithSectors(sectorsInCurrentPosition);
     }
 
     /// <summary>
