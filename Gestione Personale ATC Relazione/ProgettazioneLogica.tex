@@ -408,3 +408,131 @@ Turno (
   \caption{"Schema destro della relazionale finale"}
 \end{figure}
 \section{Traduzione delle operazioni in query SQL}
+% Define colors
+\definecolor{sqlKeywords}{RGB}{0,0,255}
+\definecolor{sqlStrings}{RGB}{163,21,21}
+\definecolor{sqlComments}{RGB}{0,128,0}
+
+% Define SQL style
+\lstdefinestyle{sqlStyle}{
+  language=SQL,
+  basicstyle=\small\ttfamily,
+  keywordstyle=\color{sqlKeywords},
+  stringstyle=\color{sqlStrings},
+  commentstyle=\color{sqlComments},
+  breaklines=true,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  captionpos=b
+}
+\lstset{style=sqlStyle}
+
+\section*{SQL Queries}
+
+OP1 - Aggiunta e/o rimozione di un nuovo controllore di volo:
+\begin{lstlisting}
+-- Aggiunta di un nuovo controllore di volo
+INSERT INTO Controllore (IdControllore, Nome, Cognome, NomeCentro)
+VALUES ('nuovo_id', 'Nuovo Nome', 'Nuovo Cognome', 'Nome Centro');
+
+-- Rimozione di un controllore di volo
+DELETE FROM Controllore
+WHERE IdControllore = 'id_controllore_da_rimuovere';
+\end{lstlisting}
+
+OP2 - Modifica dei dati personali di un controllore di volo:
+\begin{lstlisting}
+UPDATE Controllore
+SET Nome = 'Nuovo Nome', Cognome = 'Nuovo Cognome'
+WHERE IdControllore = 'id_controllore_da_modificare';
+\end{lstlisting}
+
+OP3 - Assegnazione delle ferie a un controllore di volo:
+\begin{lstlisting}
+-- Aggiunta delle ferie
+INSERT INTO Ferie (IdControllore, Inizio, Fine)
+VALUES ('id_controllore', 'data_inizio_ferie', 'data_fine_ferie');
+
+-- Rimozione delle ferie
+DELETE FROM Ferie
+WHERE IdControllore = 'id_controllore' AND Inizio = 'data_inizio_ferie';
+\end{lstlisting}
+
+OP4 - Aggiunta di un'abilitazione a un controllore di volo:
+\begin{lstlisting}
+INSERT INTO Abilitazione (MatricolaAbilitazione, IdControllore)
+VALUES (nuova_matricola, 'id_controllore');
+
+INSERT INTO AbilitazioneSettori (MatricolaAbilitazione, IdSettore)
+VALUES (nuova_matricola, 'id_settore');
+\end{lstlisting}
+
+OP5 - Calcolo dei turni mensili per i controllori di volo:
+Sarebbe estremamanete complicato riassumere questa operzione in un unica query, se il lettore è interessato può esamiare il codice dell'applicativo che utilizza un ORM.
+
+OP6 - Aggiunta di un nuovo piano di volo:
+\begin{lstlisting}
+INSERT INTO PianoDiVolo (OrarioAtterraggio, OrarioDecollo, Callsign, Dof, NumeroDiCoda, CodAdDecollo, OrientamentoPistaDecollo, CodAdAtterraggio, OrientamentoPistaAtterraggio)
+VALUES ('data_atterraggio', 'data_decollo', 'callsign', 'data', 'numero_coda', 'cod_ad_decollo', 'orientamento_decollo', 'cod_ad_atterraggio', 'orientamento_atterraggio');
+\end{lstlisting}
+
+OP7 - Rimozione di un nuovo piano di volo:
+\begin{lstlisting}
+DELETE FROM PianoDiVolo
+WHERE dof = 'dof' and callsign = 'callsign';
+\end{lstlisting}
+
+OP8 - Modifica di un nuovo piano di volo esistente:
+\begin{lstlisting}
+UPDATE PianoDiVolo (OrarioAtterraggio, OrarioDecollo, Callsign, Dof, NumeroDiCoda, CodAdDecollo, OrientamentoPistaDecollo, CodAdAtterraggio, OrientamentoPistaAtterraggio)
+SET OrarioAtterraggio = 'data_atterraggio', OrarioDecollo = 'data_decollo', NumeroDiCoda = 'numero_coda', CodAdDecollo = 'cod_ad_decollo', OrientamentoPistaDecollo = 'orientamento_decollo', CodAdAtterraggio = 'cod_ad_atterraggio', OrientamentoPistaAtterraggio = 'orientamento_atterraggio'
+WHERE dof = 'dof' and callsign = 'callsign';
+
+\end{lstlisting}
+
+OP9 - Aggiunta e/o rimozione di un nuovo aereomobile:
+\begin{lstlisting}
+     -- Aggiunta nuovo Aereomobile
+     INSERT INTO Aereomobile (NumeroDiCoda, NumeroDiCoda)
+     VALUES ('NumeroDiCoda', 'NumeroDiCoda');
+     
+     -- Rimozione delle ferie
+     DELETE FROM Aereomobile
+     WHERE NumeroDiCoda = 'NumeroDiCoda';
+     \end{lstlisting}
+
+OP10 - Calcolo del reddito annuo lordo di un controllore di volo:
+\begin{lstlisting}
+SELECT sum(Retribuzione) FROM turno
+where year(data) = 'anno' and IdControllore='id controllore';
+\end{lstlisting}
+
+OP11 - Stima dei voli in un settore in un'ora:
+\begin{lstlisting}
+     select * FROM atctables.stimati s, atctables.punto p
+     WHERE p.NomePunto = s.NomePunto AND
+     Dof = 'data' AND OriarioStimato BETWEEN 'ora_inizio' AND 'ora_fine' AND IdSettore = 'idSettore';
+\end{lstlisting}
+
+OP12 - Aggiunta di una percorrenza:
+\begin{lstlisting}
+INSERT INTO Percorrenza (Callsign, Dof, NomePunto, OrarioDiSorvolo)
+VALUES ('callsign', 'data', 'nome_punto', 'data_ora_sorvolo');
+\end{lstlisting}
+
+
+OPBonus1 - Ricerca dei voli in arrivo in un aeroporto:
+\begin{lstlisting}
+SELECT *
+FROM PianoDiVolo
+WHERE CodAdAtterraggio = 'cod_ad' AND Dof = 'data' AND OrarioAtterraggio BETWEEN 'ora_inizio' AND 'ora_fine';
+\end{lstlisting}
+
+OPBonus2 - Ricerca dei voli in partenza da un aeroporto:
+\begin{lstlisting}
+SELECT *
+FROM PianoDiVolo
+WHERE CodAdDecollo = 'cod_ad' AND Dof = 'data' AND OrarioDecollo BETWEEN 'ora_inizio' AND 'ora_fine';
+\end{lstlisting}
