@@ -1,13 +1,12 @@
+\definecolor{tableheadercolor}{HTML}{3aa827}
 \chapter{rogettazione logica}
 \section{Stima del volume dei dati}
 \begin{table}[H]
   \centering
   \rowcolors{2}{green!80!black!40}{white}
-  \begin{tabular}{|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+  \begin{tabular}{ccc}
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{Volume} \\
-    \hline
     Centri & E & 84 \\
     Posizioni & E & 166 \\
     Settori & E & 125 \\
@@ -24,7 +23,6 @@
     Abilitamento (abilitazioni settori) & R & 4200 \\
     Stimati & R & 500.000 \\
     Percorrenza & R & 500.000 \\
-    \hline
   \end{tabular}
   \end{table}
   \section{Descrizione delle operazioni principali e stima della loro frequenza}
@@ -32,11 +30,10 @@
   \begin{table}[H]
   \centering
   \rowcolors{2}{green!80!black!40}{white}
-  \begin{tabular}{|c|c|c|}
-  \hline
-  \rowcolor{green!70!black!80}
+  \begin{tabular}{ccc}
+  \rowcolor{tableheadercolor}
   \textbf{Codice} & \textbf{Operazione} & \textbf{Frequenza stimata} \\
-  \hline
+
   OP1 & Aggiunta e/o rimozione di un nuovo controllore di volo & 3 al mese \\
   OP2 & Modifica dei dati personali di un controllore di volo & 10 al mese \\
   OP3 & Assegnazione delle ferie a un controllore di volo & 100 al mese \\
@@ -50,7 +47,7 @@
   OP11 & Stima dei voli in un settore in un ora & 500.000 al mese \\
   OP12 & Aggiunta di una percorrenza & 500.000 al mese \\
 
-  \hline
+
   \end{tabular}
   \end{table}
   
@@ -64,14 +61,14 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
 \begin{table}[H]
   \centering
   \rowcolors{2}{green!80!black!40}{white}
-  \begin{tabular}{|c|c|c|c|}
-  \hline
-  \rowcolor{green!70!black!80}
+  \begin{tabular}{cccc}
+
+  \rowcolor{tableheadercolor}
   \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-  \hline
+
   Controllore & E & 1 & S \\
   &  & Totale: 1S, 6 al mese &\\
-  \hline
+
   \end{tabular}
   \end{table}
 
@@ -79,15 +76,15 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
       \centering
       \rowcolors{2}{green!80!black!40}{white}
-      \begin{tabular}{|c|c|c|c|}
-      \hline
-      \rowcolor{green!70!black!80}
+      \begin{tabular}{cccc}
+    
+      \rowcolor{tableheadercolor}
       \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-      \hline
+    
       Controllore & E & 1 & L \\
       Controllore & E & 1 & S \\
       &  & Totale: 1S 1L, 30 al mese &\\
-      \hline
+    
       \end{tabular}
       \end{table}
   
@@ -95,15 +92,15 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
       \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Controllore & E & 1 & L \\
     Ferie & E & 1 & S \\
     & & Totale: 1S, 1L, 300 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
 
@@ -111,16 +108,16 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Controllore & E & 1 & L \\
     Abilitamento & R & 1 & S \\
     Abilitazione & E & 1 & S \\
     & & Totale: 2S, 1L, 250 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
 
@@ -128,18 +125,18 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Controllore & E & 4200 & L \\
     Turno & E & 20000 & L \\
     Stimato & E & 500.000 & L \\
     Postazione & E & 166 & L \\
     Settore & E & 125 & L \\
     & & Totale: 0S, 524,491L, 524.491 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
     Per ogni turno e per ogni posizione viene calcolata l'occupazione e viene cercato il controllore adatto con meno turni lavorati.
@@ -159,18 +156,18 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Piano di Volo & E & 1 & S \\
     Stimati & E & 100 & S \\
     Punti & E & 100 & R \\
     Piste & E & 2 & R \\
     Aereomobile & E & 1 & R \\
     & & Totale: 101S, 103L, 610.000 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
 
@@ -178,18 +175,18 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Piano di Volo & E & 1 & S \\
     Stimati & E & 100 & S \\
     Punti & E & 100 & R \\
     Piste & E & 2 & R \\
     Aereomobile & E & 1 & R \\
     & & Totale: 101S, 103L, 30.500 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
   
@@ -197,14 +194,14 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Piano di Volo & E & 1 & S \\\
     & & Totale: 1S, 0L, 3.000 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
 
@@ -212,14 +209,14 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Aereomobile & E & 1 & S \\\
     & & Totale: 1S, 0L, 100 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
 
@@ -227,15 +224,15 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Controllore & E & 4200 & L \\
     Turno & E & 240.000 & L \\
     & & Totale: 0S, 244.200L, 20.000 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
   
@@ -243,16 +240,16 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Stimato & E & 30 & L \\
     Postazione & E & 1 & L \\
     Settore & E & 2 & L \\
     & & Totale: 0S, 33L, 16.500.000 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
     \begin{figure}[H]
@@ -265,14 +262,14 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
-    \begin{tabular}{|c|c|c|c|}
-    \hline
-    \rowcolor{green!70!black!80}
+    \begin{tabular}{cccc}
+  
+    \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-    \hline
+  
     Percorrenza & E & 1 & S \\\
     & & Totale: 1S, 0L, 1.000.000 al mese &\\
-    \hline
+  
     \end{tabular}
     \end{table}
   
@@ -292,29 +289,29 @@ Nel caso con ridondanza l'attributo verrebbe aggiornato ogni volta che viene ins
 \begin{table}[H]
      \centering
      \rowcolors{2}{green!80!black!40}{white}
-     \begin{tabular}{|c|c|c|c|}
-     \hline
-     \rowcolor{green!70!black!80}
+     \begin{tabular}{cccc}
+   
+     \rowcolor{tableheadercolor}
      \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-     \hline
+   
      controllore & E & 300 & S \\
      controllore & E & 1 & L \\
      & & Totale: 300S, 1L, 601 all'anno &\\
-     \hline
+   
      \end{tabular}
      \end{table}
 Nel caso senza ridondanza bisogna leggere tutti i turni svolti nell'anno e sommare i guadagni:
 \begin{table}[H]
      \centering
      \rowcolors{2}{green!80!black!40}{white}
-     \begin{tabular}{|c|c|c|c|}
-     \hline
-     \rowcolor{green!70!black!80}
+     \begin{tabular}{cccc}
+   
+     \rowcolor{tableheadercolor}
      \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
-     \hline
+   
      turni & E & 300 & L \\
      & & Totale: 0S, 300L, 300 all'anno &\\
-     \hline
+   
      \end{tabular}
      \end{table}
 
