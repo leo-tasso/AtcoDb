@@ -277,7 +277,134 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \end{table}
   
 \section{Raffinamento dello schema}
+\subsection*{Eliminazione delle gerarchie}
+In questo caso è stato adottato un collasso verso il basso separando i turni lavorativi da quelli standby. 
+Stessa Cosa è stata fatta per i tipi di postazione, anche se quella "avvicinamento" e "di rotta" sono state unite in un'unica in quanto ai fini dell'architettura logica non vi sono differenze.
+\subsection*{Eliminazione degli attributi compositi}
+Gli attributi composti di posizione sono stati eliminati creando gli attributi longitudine e latitudine direttamente nelle entità.
+\subsection*{Eliminazione degli identificatori esterni}
+Si sono risolti rimuovendo le assciazioni in quanto risultavano di tipo 1-1.
 \section{Analisi delle ridondanze}
 \section{Traduzione di entità e associazioni in relazioni}
+Tutte le realzioni sono state spostate dentro le entità, in quanto la maggior parte erano di tipo 1-1 o 0-1,
+sono invece state create nuove entità:
+\begin{itemize}
+  \item Composizione settori, per salvare da quali settori sono composte le postazioni.
+  \item Abilitazione settori, per salvare quali settori abilitano le relative abilitazioni.
+  \item Stimati, per salvare l'orario stimato su un punto.
+  \item Percorrenza, per salvare l'orario di sorvolo su un punto.
+\end{itemize}
+
+Abilitazione (
+     MatricolaAbilitazione,
+     IdControllore,
+     primary key (MatricolaAbilitazione))\\
+
+AbilitazioneSettori (
+     MatricolaAbilitazione,
+     IdSettore,
+     primary key (MatricolaAbilitazione, IdSettore))\\
+
+Aereomobile (
+     Tipo,
+     NumeroDiCoda,
+     primary key (NumeroDiCoda))\\
+
+Aerodromo (
+     AdLatitudine,
+     AdLongitudine,
+     CodiceIcao,
+     CodiceIata,
+     primary key (CodiceIcao))\\
+
+Centro (
+     NomeCentro,
+     primary key (NomeCentro))\\
+
+ComposizioneSettori (
+     IdPostazione,
+     IdSettore,
+     primary key (IdPostazione, IdSettore))\\
+
+Controllore (
+     IdControllore,
+     Nome,
+     Cognome,
+     NomeCentro,
+     primary key (IdControllore))\\
+
+Ferie (
+     IdControllore,
+     Inizio,
+     Fine,
+     primary key (IdControllore, Inizio))\\
+
+Percorrenza (
+     Callsign,
+     Dof,
+     NomePunto,
+     OrarioDiSorvolo,
+     primary key (Callsign, Dof, NomePunto))\\
+
+PianoDiVolo (
+     OrarioAtterraggio*,
+     OrarioDecollo*,
+     Callsign,
+     Dof,
+     NumeroDiCoda,
+     CodAdDecollo,
+     OrientamentoPistaDecollo,
+     CodAdAtterraggio,
+     OrientamentoPistaAtterraggio,
+     primary key (Callsign, Dof))\\
+
+Pista (
+     CodAd,
+     Orientamento,
+     Lunghezza,
+     primary key (CodAd, Orientamento))\\
+
+Postazione (
+     IdPostazione,
+     NomeCentro,
+     primary key (IdPostazione))\\
+
+Punto (
+     NomePunto,
+     PosLatitudine,
+     PosLongitudine,
+     IdSettore,
+     primary key (NomePunto))\\
+
+Settore (
+     IdSettore,
+     CodAd,
+     primary key (IdSettore))\\
+
+Stimati (
+     Callsign,
+     Dof date,
+     NomePunto,
+     OrarioStimato,
+     primary key (Callsign, Dof, NomePunto))\\
+
+Turno (
+     IdControllore,
+     Retribuzione,
+     Data,
+     Slot,
+     IdPostazione*,
+     CentroStandBy*,
+     primary key (IdControllore, Data, Slot))\\
 \section{Schema relazionale finale}
+\begin{figure}[H]
+  \centering
+  \includegraphics[height=1\textheight]{figures/Capture1.PNG}
+  \caption{"Schema sinistro della relazionale finale"}
+\end{figure}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{figures/Capture2.PNG}
+  \caption{"Schema destro della relazionale finale"}
+\end{figure}
 \section{Traduzione delle operazioni in query SQL}
