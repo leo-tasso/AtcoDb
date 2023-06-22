@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TowerControl));
             tableLayoutPanel1 = new TableLayoutPanel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             labelAirport = new Label();
@@ -241,6 +242,7 @@
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(1682, 748);
             this.Controls.Add(tableLayoutPanel1);
+            this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "TowerControl";
             this.Text = "TowerControl";
             this.FormClosing += this.TowerControl_FormClosing;

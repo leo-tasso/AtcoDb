@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Manager));
             tabPage3 = new TabPage();
             tableLayoutPanel4 = new TableLayoutPanel();
             NameBox = new TextBox();
@@ -559,6 +560,7 @@
             this.BackColor = SystemColors.ControlLight;
             this.ClientSize = new Size(1386, 704);
             this.Controls.Add(tabSelector);
+            this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "Manager";
             this.Text = "Manager";
             tabPage3.ResumeLayout(false);

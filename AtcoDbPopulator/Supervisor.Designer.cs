@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Supervisor));
             tableLayoutPanel1 = new TableLayoutPanel();
             flowLayoutPanel1 = new FlowLayoutPanel();
             CenterLabel = new Label();
@@ -119,6 +120,7 @@
             this.AutoScaleMode = AutoScaleMode.Font;
             this.ClientSize = new Size(794, 473);
             this.Controls.Add(tableLayoutPanel1);
+            this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "Supervisor";
             this.Text = "Supervisor";
             this.FormClosing += this.Supervisor_FormClosing;

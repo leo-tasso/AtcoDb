@@ -65,13 +65,13 @@ namespace AtcoDbPopulator
 
             string apt = dbContext.Settores
                 .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
-                .Select(s => s.CodAd).First() !;
+                .Select(s => s.CodAd).First()!;
             this.buttonLogOut.Enabled = true;
             this.buttonLogIn.Enabled = false;
             this.Running = true;
             this.player.ActiveTwr = dbContext.Settores
                 .Where(s => s.IdPostaziones.Any(p => p.IdPostazione.Equals(this.comboBoxAirports.SelectedItem)))
-                .Select(s => s.CodAd).First() !;
+                .Select(s => s.CodAd).First()!;
             this.comboBoxAirports.Enabled = false;
             this.comboBoxControllers.Enabled = false;
             this.CyclicChecker = new Thread(() => this.CyclicCheckTraffic(apt));
@@ -172,8 +172,8 @@ namespace AtcoDbPopulator
         {
             if (this.dataGridViewArrivals.SelectedCells.Count != 0)
             {
-                string callSign = this.dataGridViewArrivals.SelectedCells[1].Value.ToString() !;
-                DateTime dof = DateTime.Parse(this.dataGridViewArrivals.SelectedCells[2].Value.ToString() !);
+                string callSign = this.dataGridViewArrivals.SelectedCells[1].Value.ToString()!;
+                DateTime dof = DateTime.Parse(this.dataGridViewArrivals.SelectedCells[2].Value.ToString()!);
                 using var dbContext = new AtctablesContext();
                 var flightPlan = dbContext.Pianodivolos.Find(callSign, dof);
                 if (flightPlan!.OrarioDecollo != null)
@@ -188,8 +188,8 @@ namespace AtcoDbPopulator
         {
             if (this.dataGridViewDepartures.SelectedCells.Count != 0)
             {
-                string callSign = this.dataGridViewDepartures.SelectedCells[0].Value.ToString() !;
-                DateTime dof = DateTime.Parse(this.dataGridViewDepartures.SelectedCells[1].Value.ToString() !);
+                string callSign = this.dataGridViewDepartures.SelectedCells[0].Value.ToString()!;
+                DateTime dof = DateTime.Parse(this.dataGridViewDepartures.SelectedCells[1].Value.ToString()!);
                 using var dbContext = new AtctablesContext();
                 var flightPlan = dbContext.Pianodivolos.Find(callSign, dof);
                 flightPlan!.OrarioDecollo = this.mf.ActualTime;

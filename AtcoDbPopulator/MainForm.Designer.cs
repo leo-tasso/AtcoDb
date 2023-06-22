@@ -29,6 +29,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             populateControllersButton = new Button();
             controllerNum = new NumericUpDown();
             centersPopulateButton = new Button();
@@ -307,6 +308,7 @@
             this.Controls.Add(centersPopulateButton);
             this.Controls.Add(controllerNum);
             this.Controls.Add(populateControllersButton);
+            this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "MainForm";
             this.Text = "Populate controllers";
             ((System.ComponentModel.ISupportInitialize)controllerNum).EndInit();
