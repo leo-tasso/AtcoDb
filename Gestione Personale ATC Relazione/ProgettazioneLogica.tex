@@ -280,11 +280,47 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
 \subsection*{Eliminazione delle gerarchie}
 In questo caso è stato adottato un collasso verso il basso separando i turni lavorativi da quelli standby. 
 Stessa Cosa è stata fatta per i tipi di postazione, anche se quella "avvicinamento" e "di rotta" sono state unite in un'unica in quanto ai fini dell'architettura logica non vi sono differenze.
+
+
 \subsection*{Eliminazione degli attributi compositi}
 Gli attributi composti di posizione sono stati eliminati creando gli attributi longitudine e latitudine direttamente nelle entità.
 \subsection*{Eliminazione degli identificatori esterni}
 Si sono risolti rimuovendo le assciazioni in quanto risultavano di tipo 1-1.
 \section{Analisi delle ridondanze}
+In questa sezione calcoleremo se è conveniente inserire un attributo guadagni all'entità controllore al fine di calcolare il reddito annuale (OP10):\\
+Nel caso con ridondanza l'attributo verrebbe aggiornato ogni volta che viene inserito un turno per poi eseguire un unica lettura a fine anno.
+\begin{table}[H]
+     \centering
+     \rowcolors{2}{green!80!black!40}{white}
+     \begin{tabular}{|c|c|c|c|}
+     \hline
+     \rowcolor{green!70!black!80}
+     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
+     \hline
+     controllore & E & 300 & S \\
+     controllore & E & 1 & L \\
+     & & Totale: 300S, 1L, 601 all'anno &\\
+     \hline
+     \end{tabular}
+     \end{table}
+Nel caso senza ridondanza bisogna leggere tutti i turni svolti nell'anno e sommare i guadagni:
+\begin{table}[H]
+     \centering
+     \rowcolors{2}{green!80!black!40}{white}
+     \begin{tabular}{|c|c|c|c|}
+     \hline
+     \rowcolor{green!70!black!80}
+     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
+     \hline
+     turni & E & 300 & L \\
+     & & Totale: 0S, 300L, 300 all'anno &\\
+     \hline
+     \end{tabular}
+     \end{table}
+
+Chiaramente il secondo caso è più conveniente, si procederà quindi senza ridondanze.
+
+
 \section{Traduzione di entità e associazioni in relazioni}
 Tutte le realzioni sono state spostate dentro le entità, in quanto la maggior parte erano di tipo 1-1 o 0-1,
 sono invece state create nuove entità:
