@@ -53,7 +53,7 @@
             tableLayoutPanel1.RowCount = 2;
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Size = new Size(794, 473);
+            tableLayoutPanel1.Size = new Size(1673, 501);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // flowLayoutPanel1
@@ -66,7 +66,7 @@
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.Location = new Point(3, 3);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(788, 37);
+            flowLayoutPanel1.Size = new Size(1667, 37);
             flowLayoutPanel1.TabIndex = 0;
             // 
             // CenterLabel
@@ -111,14 +111,14 @@
             flowLayoutPanelGraphs.Dock = DockStyle.Fill;
             flowLayoutPanelGraphs.Location = new Point(3, 46);
             flowLayoutPanelGraphs.Name = "flowLayoutPanelGraphs";
-            flowLayoutPanelGraphs.Size = new Size(788, 424);
+            flowLayoutPanelGraphs.Size = new Size(1667, 452);
             flowLayoutPanelGraphs.TabIndex = 1;
             // 
             // Supervisor
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(794, 473);
+            this.ClientSize = new Size(1673, 501);
             this.Controls.Add(tableLayoutPanel1);
             this.Icon = (Icon)resources.GetObject("$this.Icon");
             this.Name = "Supervisor";

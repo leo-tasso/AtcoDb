@@ -75,22 +75,22 @@ namespace AtcoDbPopulator
             int index = 0;
             foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
             {
-                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1) !;
+                FormsPlot plot = (FormsPlot)table.GetControlFromPosition(0, 1)!;
                 plot.Plot.Clear();
-                DateTime[] x = new DateTime[10];
+                int[] x = new int[10];
                 for (int i = 0; i < 10; i++)
                 {
-                    x[i] = this.mf.ActualTime.AddHours(i);
+                    x[i] = i;
                 }
 
                 int[] y = new int[10];
                 for (int i = 0; i < 10; i++)
                 {
-                    y[i] = this.OccupationInSector(x[i], this.sectorsList[index]);
+                    y[i] = this.OccupationInSector(this.mf.ActualTime.AddHours(i), this.sectorsList[index]);
                 }
 
                 plot.Plot.AddScatter(
-                    x.Select(xs => (double)xs.Hour).ToArray(),
+                    x.Select(xs => (double)xs).ToArray(),
                     y.Select(ys => (double)ys).ToArray());
                 plot.Plot.AddHorizontalLine(PositionsUtils.PositionCapacityWithSectors(this.sectorsList[index].Count) / (24f / PositionsUtils.ShiftsInDays), color: System.Drawing.Color.Red);
 
@@ -105,7 +105,7 @@ namespace AtcoDbPopulator
             return this.estimates.Count(s =>
          s.OrarioStimato.Date.Equals(time.Date)
          && s.OrarioStimato.Hour == time.Hour
-         && sector.Contains(dbContext.Puntos.Find(s.NomePunto) !.IdSettore));
+         && sector.Contains(dbContext.Puntos.Find(s.NomePunto)!.IdSettore));
         }
 
         private TableLayoutPanel CreatePositionTable(string positionName)
@@ -127,9 +127,9 @@ namespace AtcoDbPopulator
 
             Label label = new Label();
             label.AutoSize = true;
-            label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName) !)).Select(s => s.IdSettore)
+            label.Text = positionName + @": " + string.Join(", ", dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName)!)).Select(s => s.IdSettore)
                 .ToList());
-            this.sectorsList.Add(new List<string>(dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName) !)).Select(s => s.IdSettore)
+            this.sectorsList.Add(new List<string>(dbContext.Settores.Where(s => s.IdPostaziones.Contains(dbContext.Postaziones.Find(positionName)!)).Select(s => s.IdSettore)
                 .ToList()));
             this.positionList.Add(positionName);
             flowLayoutPanel.Controls.Add(label);
@@ -222,8 +222,8 @@ namespace AtcoDbPopulator
             dbContext.Turnos.RemoveRange(shift);
             foreach (TableLayoutPanel table in this.flowLayoutPanelGraphs.Controls)
             {
-                Controllore? controller = dbContext.Controllores.Find(((((FlowLayoutPanel)table.GetControlFromPosition(0, 0) !).Controls[1] as ComboBox) !).SelectedItem.ToString()?.Split(" ")[0]);
-                if (((((FlowLayoutPanel)table.GetControlFromPosition(0, 0) !).Controls[2] as CheckBox) !).Checked)
+                Controllore? controller = dbContext.Controllores.Find(((((FlowLayoutPanel)table.GetControlFromPosition(0, 0)!).Controls[1] as ComboBox)!).SelectedItem.ToString()?.Split(" ")[0]);
+                if (((((FlowLayoutPanel)table.GetControlFromPosition(0, 0)!).Controls[2] as CheckBox)!).Checked)
                 {
                     // Remove stand by shift if present
                     var sBShift = dbContext.Turnos.Where(t =>

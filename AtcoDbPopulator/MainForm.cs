@@ -198,7 +198,7 @@ namespace AtcoDbPopulator
 
         private void LaunchManagerButton_Click(object sender, EventArgs e)
         {
-            new Thread(() => Application.Run(new Manager())).Start();
+            new Thread(() => Application.Run(new Manager(this))).Start();
         }
 
         private void LaunchTwr_Click(object sender, EventArgs e)

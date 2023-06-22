@@ -29,4 +29,9 @@ public class ControlloreViewModel
     /// Gets or sets the total worked shifts.
     /// </summary>
     public int? TurniLavorati { get; set; }
+
+    /// <summary>
+    /// Gets or sets the total gained amount of the current year.
+    /// </summary>
+    public int? Ral { get; set; }
 }

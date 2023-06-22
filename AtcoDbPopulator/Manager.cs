@@ -19,13 +19,16 @@ namespace AtcoDbPopulator
     public partial class Manager : Form
     {
         private const int MaxHolidayDays = 30;
+        private readonly MainForm mf;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Manager"/> class.
         /// </summary>
-        public Manager()
+        /// <param name="mf">The calling MainForm.</param>
+        public Manager(MainForm mf)
         {
             this.InitializeComponent();
+            this.mf = mf;
             using var dbContext = new AtctablesContext();
             this.comboBox1.DataSource = dbContext.Centros.Select(c => c.NomeCentro).ToList();
             this.dataGridView1.DataSource = this.DataSource();
@@ -80,6 +83,7 @@ namespace AtcoDbPopulator
                     Cognome = s.Cognome,
                     Id = s.IdControllore,
                     TurniLavorati = dbContext.Turnos.Count(t => t.IdControllore.Equals(s.IdControllore)),
+                    Ral = dbContext.Turnos.Where(t => t.IdControllore.Equals(s.IdControllore) && t.Data.Year == this.mf.ActualTime.Year).Sum(t => t.Retribuzione),
                 }).ToList();
         }
 
