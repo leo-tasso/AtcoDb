@@ -42,7 +42,7 @@ public class PositionsUtils
 
         int partIndex = totalMinutes / minutesPerPart;
 
-        return partIndex;
+        return partIndex + 1;
     }
 
     /// <summary>
