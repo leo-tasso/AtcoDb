@@ -136,12 +136,26 @@ namespace AtcoDbPopulator
             ComboBox comboBox = new ComboBox();
 
             // Fill box with controllers on duty.
-            comboBox.DataSource = dbContext.Turnos.Where(t =>
+            var source = dbContext.Turnos.Where(t =>
                     t.Data.Equals(this.mf.ActualTime.Date)
                     && t.Slot == PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)
                     && (t.CentroStandBy!.Equals(this.comboBoxCenter.SelectedItem) || t.IdPostazioneNavigation!.NomeCentro.Equals(this.comboBoxCenter.SelectedItem)))
                 .Select(t => t.IdControlloreNavigation.IdControllore + " " + t.IdControlloreNavigation.Nome + " " + t.IdControlloreNavigation.Cognome)
                 .ToList();
+
+            var shift = dbContext.Turnos.FirstOrDefault(t => t.Data.Equals(mf.ActualTime.Date) && t.Slot.Equals(PositionsUtils.SlotOfTime(this.mf.ActualTime.TimeOfDay)) && t.IdPostazione.Equals(positionName));
+            string? contrString = null;
+            if (shift != null)
+            {
+                var shiftController = dbContext.Controllores.Find(shift.IdControllore);
+                contrString = shiftController.IdControllore + " " + shiftController.Nome + " " +
+                                  shiftController.Cognome;
+                source.Remove(contrString);
+                source.Insert(0, contrString);
+            }
+
+            comboBox.DataSource = source;
+            comboBox.AutoSize = true;
             flowLayoutPanel.Controls.Add(comboBox);
 
             CheckBox checkBox = new CheckBox();
