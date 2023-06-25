@@ -1,5 +1,5 @@
 \definecolor{tableheadercolor}{HTML}{3aa827}
-\chapter{rogettazione logica}
+\chapter{Progettazione logica}
 \section{Stima del volume dei dati}
 \begin{table}[H]
   \centering
@@ -18,7 +18,7 @@
     Piste & E & 43 \\
     Punti & E & 3750 \\
     Piani di volo (mensili) & E & 5000 \\
-    Aereomobili & E & 5000 \\
+    Aeromobili & E & 5000 \\
     Composizione (settori postazioni) & R & 125 \\
     Abilitamento (abilitazioni settori) & R & 4200 \\
     Stimati & R & 500.000 \\
@@ -42,7 +42,7 @@
   OP6 & Aggiunta di un nuovo piano di volo & 2000 al mese \\
   OP7 & Rimozione di un piano di volo & 100 al mese \\
   OP8 & Modifica di un piano di volo esistente & 1500 al mese \\
-  OP9 & Aggiunta e/o rimozione di un nuovo aereomobile & 50 al mese \\
+  OP9 & Aggiunta e/o rimozione di un nuovo aeromobile & 50 al mese \\
   OP10 & Calcolo del ral & 1 all'anno \\
   OP11 & Stima dei voli in un settore in un ora & 500.000 al mese \\
   OP12 & Aggiunta di una percorrenza & 500.000 al mese \\
@@ -140,7 +140,7 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \end{tabular}
     \end{table}
     Per ogni turno e per ogni posizione viene calcolata l'occupazione e viene cercato il controllore adatto con meno turni lavorati.
-    Il modo con cui conteggiamo le letture non tiene conto delle ricerche, l'operazine effettiva sul calcolatore è estremamente pesante.
+    Il modo con cui conteggiamo le letture non tiene conto delle ricerche, l'operazione effettiva sul calcolatore è estremamente pesante.
     \begin{figure}[H]
       \centering
       \includegraphics[width=10cm]{figures/BasicControllerarrowsp1.pdf}
@@ -165,7 +165,7 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     Stimati & E & 100 & S \\
     Punti & E & 100 & R \\
     Piste & E & 2 & R \\
-    Aereomobile & E & 1 & R \\
+    Aeromobile & E & 1 & R \\
     & & Totale: 101S, 103L, 610.000 al mese &\\
   
     \end{tabular}
@@ -184,7 +184,7 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     Stimati & E & 100 & S \\
     Punti & E & 100 & R \\
     Piste & E & 2 & R \\
-    Aereomobile & E & 1 & R \\
+    Aeromobile & E & 1 & R \\
     & & Totale: 101S, 103L, 30.500 al mese &\\
   
     \end{tabular}
@@ -205,7 +205,7 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \end{tabular}
     \end{table}
 
-    \subsection*{OP9 - Aggiunta e/o rimozione di un nuovo aereomobile}
+    \subsection*{OP9 - Aggiunta e/o rimozione di un nuovo aeromobile}
     \begin{table}[H]
     \centering
     \rowcolors{2}{green!80!black!40}{white}
@@ -214,7 +214,7 @@ costi, si considerano di peso doppio gli accessi in scrittura rispetto a quelli 
     \rowcolor{tableheadercolor}
     \textbf{Concetto} & \textbf{Costrutto} & \textbf{accessi} & \textbf{tipo}\\
   
-    Aereomobile & E & 1 & S \\\
+    Aeromobile & E & 1 & S \\\
     & & Totale: 1S, 0L, 100 al mese &\\
   
     \end{tabular}
@@ -282,7 +282,7 @@ Stessa Cosa è stata fatta per i tipi di postazione, anche se quella "avviciname
 \subsection*{Eliminazione degli attributi compositi}
 Gli attributi composti di posizione sono stati eliminati creando gli attributi longitudine e latitudine direttamente nelle entità.
 \subsection*{Eliminazione degli identificatori esterni}
-Si sono risolti rimuovendo le assciazioni in quanto risultavano di tipo 1-1.
+Si sono risolti rimuovendo le associazioni in quanto risultavano di tipo 1-1.
 \section{Analisi delle ridondanze}
 In questa sezione calcoleremo se è conveniente inserire un attributo guadagni all'entità controllore al fine di calcolare il reddito annuale (OP10):\\
 Nel caso con ridondanza l'attributo verrebbe aggiornato ogni volta che viene inserito un turno per poi eseguire un unica lettura a fine anno.
@@ -319,7 +319,7 @@ Chiaramente il secondo caso è più conveniente, si procederà quindi senza rido
 
 
 \section{Traduzione di entità e associazioni in relazioni}
-Tutte le realzioni sono state spostate dentro le entità, in quanto la maggior parte erano di tipo 1-1 o 0-1,
+Tutte le relazioni sono state spostate dentro le entità, in quanto la maggior parte erano di tipo 1-1 o 0-1,
 sono invece state create nuove entità:
 \begin{itemize}
   \item Composizione settori, per salvare da quali settori sono composte le postazioni.
@@ -338,7 +338,7 @@ AbilitazioneSettori (
      IdSettore,
      primary key (MatricolaAbilitazione, IdSettore))\\
 
-Aereomobile (
+aeromobile (
      Tipo,
      NumeroDiCoda,
      primary key (NumeroDiCoda))\\
@@ -503,7 +503,7 @@ VALUES (nuova_matricola, 'id_settore');
 \end{lstlisting}
 
 OP5 - Calcolo dei turni mensili per i controllori di volo:
-Sarebbe estremamanete complicato riassumere questa operzione in un unica query, se il lettore è interessato può esamiare il codice dell'applicativo che utilizza un ORM.
+Sarebbe estremanete complicato riassumere questa operazione in un unica query, se il lettore è interessato può esaminare il codice dell'applicativo che utilizza un ORM.
 
 OP6 - Aggiunta di un nuovo piano di volo:
 \begin{lstlisting}
@@ -525,14 +525,14 @@ WHERE dof = 'dof' and callsign = 'callsign';
 
 \end{lstlisting}
 
-OP9 - Aggiunta e/o rimozione di un nuovo aereomobile:
+OP9 - Aggiunta e/o rimozione di un nuovo aeromobile:
 \begin{lstlisting}
-     -- Aggiunta nuovo Aereomobile
-     INSERT INTO Aereomobile (NumeroDiCoda, NumeroDiCoda)
+     -- Aggiunta nuovo aeromobile
+     INSERT INTO aeromobile (NumeroDiCoda, NumeroDiCoda)
      VALUES ('NumeroDiCoda', 'NumeroDiCoda');
      
      -- Rimozione delle ferie
-     DELETE FROM Aereomobile
+     DELETE FROM aeromobile
      WHERE NumeroDiCoda = 'NumeroDiCoda';
      \end{lstlisting}
 
@@ -544,7 +544,7 @@ where year(data) = 'anno' and IdControllore='id controllore';
 
 OP11 - Stima dei voli in un settore in un'ora:
 \begin{lstlisting}
-     select * FROM atctables.stimati s, atctables.punto p
+     SELECT * FROM atctables.stimati s, atctables.punto p
      WHERE p.NomePunto = s.NomePunto AND
      Dof = 'data' AND OriarioStimato BETWEEN 'ora_inizio' AND 'ora_fine' AND IdSettore = 'idSettore';
 \end{lstlisting}
