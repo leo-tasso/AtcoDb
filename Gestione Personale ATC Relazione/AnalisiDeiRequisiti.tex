@@ -23,7 +23,7 @@ Ogni posizione ha una capacità massima data dal fatto che un controllore è in 
 Ogni controllore è autorizzato a lavorare solamente in posizioni contenenti settori per i quali ha l’abilitazione, ogni abilitazione è relativa ad uno o più settori ed è individuale. Inoltre possono essere allocati turni al controllore solamente in posizioni appartenenti al centro in cui lavora.
 Esistono due tipi di turni, Il primo, di lavoro mentre il secondo di standby, quest'ultimo è necessario per garantire ridondanza, in caso di imprevisti (e.g. controllore malato, traffico eccessivo)
 per ogni 3 turni di lavoro è necessario un lavoratore che copre il turno in standby. Occorre tenere uno storico dei turni e dei relativi compensi per computare il RAL a fine anno.
-Ogni traffico aereo deve compilare un piano di volo almeno 3 ore prima della partenza (Anche se la maggior parte dei traffici è schedulata con molti mesi di anticipo), ogni piano di volo contiene l'aeromobile che verrà utilizzato, l'aerodromo di partenza, quello di arrivo e la lista di waypoint che attraverserà con i relativi orari stimati. Ogni aeroporto contiene delle piste il cui numero è dato dall'arrotondamento delle prime due cifre del loro orientamento magnetico (e.g. orientamento 321° la pista sarà 32, mentre dall'altro lato 14) con l'aggiunta di L(left), R(right), o C(center) per piste parallele. Ogni aeroporto contiene anche una o più settori di tipo torre, senza quindi waypoint. 
+Ogni traffico aereo deve compilare un piano di volo almeno 3 ore prima della partenza (Anche se la maggior parte dei traffici è schedulata con molti mesi di anticipo), ogni piano di volo contiene l'aeromobile che verrà utilizzato (identificato univocamente dal suo numero di coda, simle ad una targa, dove la prima lettera indica la nazionalità di immatricolazione, questo appartiene ad un modello o tipo identificato da massimo 4 caratteri alfanumerici), l'aerodromo di partenza, quello di arrivo e la lista di waypoint che attraverserà con i relativi orari stimati. Ogni aeroporto contiene delle piste il cui numero è dato dall'arrotondamento delle prime due cifre del loro orientamento magnetico (e.g. orientamento 321° la pista sarà 32, mentre dall'altro lato 14) con l'aggiunta di L(left), R(right), o C(center) per piste parallele. Ogni aeroporto contiene anche una o più settori di tipo torre, senza quindi waypoint. 
 Ogni punto (i.e. waypoint) appartiene ad un settore di tipo avvicinamento o di rotta.
 Ogni controllore ha diritto a 30 giorni di ferie all'anno.\\
 Il software deve permettere la gestione dei controllori di volo in termini amministrativi (aggiungere, licenziare, modificare), 
@@ -70,7 +70,7 @@ Di seguito vengono fornite soluzioni e correzioni corrispondenti ai punti ambigu
 
 Integrando queste soluzioni e correzioni nelle specifiche del sistema, sarà possibile ottenere una visione più completa e dettagliata dei requisiti e procedere con la progettazione e lo sviluppo del database per il supporto e la gestione del personale di controllo del traffico aereo.
 
-
+\pagebreak
 
 \section{Definizione delle specifiche in linguaggio naturale ed estrazione dei concetti principali}
 \subsection{Specifiche in linguaggio naturale}
