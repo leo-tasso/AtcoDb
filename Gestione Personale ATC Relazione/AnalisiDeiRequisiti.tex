@@ -28,7 +28,7 @@ Ogni punto (i.e. waypoint) appartiene ad un settore di tipo avvicinamento o di r
 Ogni controllore ha diritto a 30 giorni di ferie all'anno.\\
 Il software deve permettere la gestione dei controllori di volo in termini amministrativi (aggiungere, licenziare, modificare), 
 ma ancora più importante è il punto di vista logistico, ogni mese, per il successivo, verranno computati i turni, in modo da riempire tutti i settori facendo lavorare i controllori in maniera equa e selezionando le posizioni attive in modo che non venga mai superata l'occupazione limite delle posizioni (calcolando il traffico previsto sulla posizione al momento del turno).\\
-Il secondo software dovrà permettere la gestione di una posizione di aerodromo dando la possibilità di segnare gli aerei in partenza e in arrivo.\\
+Il secondo software dovrà permettere la gestione di una posizione di aerodromo dando la possibilità di segnare gli aerei in partenza e in arrivo come decollati o atterrati una volta che ciò avviene.\\
 Il terzo software dovrà fornire al supervisore del centro un overview riguardo l'occupazione prevista a breve termine (poche ore successive), e dovrà permettergli di cambiare le posizioni aperte, modificando quindi anche i turni.\\
 \section{Rilevamento delle ambiguità e correzioni proposte}
 
@@ -45,7 +45,7 @@ Dalla descrizione fornita emergono alcuni punti ambigui o che necessitano di ult
   
   \item \textbf{Gestione dei turni}: Viene menzionato che ogni mese vengono computati i turni per il mese successivo, ma non viene specificato come avviene questo calcolo e quali criteri vengono seguiti per assegnare i turni ai controllori. Inoltre, non viene chiarito se esistono vincoli specifici (ad esempio, giorni di riposo consecutivi) che devono essere rispettati durante la generazione dei turni.
   
-  \item \textbf{Software per la gestione di una posizione di aerodromo}: Viene menzionato che deve essere creato un software per la gestione di una posizione di aerodromo, ma non viene specificato quali siano le funzionalità richieste per questo software e quali dati devono essere registrati.
+  \item \textbf{Software per la gestione di una posizione di aerodromo}: Viene menzionato che deve essere creato un software per la gestione di una posizione di aerodromo, ma non viene specificato quali siano le funzionalità richieste per questo software e quali dati devono essere monitorati.
   
   \item \textbf{Overview dell'occupazione prevista}: Viene menzionato che il supervisore del centro deve avere un'overview riguardo all'occupazione prevista a breve termine e deve poter modificare le posizioni aperte e i turni. Tuttavia, non viene specificato come viene generata questa overview e quali informazioni specifiche deve fornire. Inoltre, non viene chiarito come vengano effettuate le modifiche ai turni e alle posizioni aperte.
   \end{enumerate}
@@ -63,7 +63,7 @@ Di seguito vengono fornite soluzioni e correzioni corrispondenti ai punti ambigu
 
 \item \textbf{Gestione dei turni}: Il calcolo dei turni potrebbe essere basato su algoritmi di scheduling che prendono in considerazione le abilitazioni dei controllori, le capacità delle posizioni e i requisiti di riposo. Potrebbero essere definiti vincoli specifici da rispettare durante la generazione dei turni, ad esempio limiti massimi di turni di lavoro consecutivi o minimi giorni di riposo tra i turni. Sarà necessario definire tali regole e algoritmi per garantire una distribuzione equa dei turni e il rispetto delle normative di lavoro.
 
-\item \textbf{Software per la gestione di una posizione di aerodromo}: Il software per la gestione di una posizione di aerodromo dovrebbe consentire di segnare gli aerei in partenza e in arrivo, tenendo traccia delle informazioni relative a ciascun volo. Potrebbe essere necessario registrare dettagli come il numero di volo, l'orario di partenza e arrivo, le compagnie aeree coinvolte e altri dati pertinenti. Inoltre, potrebbe essere utile avere una funzionalità per monitorare lo stato dei voli in tempo reale.
+\item \textbf{Software per la gestione di una posizione di aerodromo}: Il software per la gestione di una posizione di aerodromo dovrebbe consentire di segnare gli aerei in partenza e in arrivo come decollati o atterrati, indicando l'orario in cui ciò avviene, tenendo traccia delle informazioni relative a ciascun volo. Potrebbe essere utile avere una funzionalità per monitorare lo stato dei voli in tempo reale.
 
 \item \textbf{Overview dell'occupazione prevista}: Il software per il supervisore del centro dovrebbe fornire un'overview dell'occupazione prevista a breve termine, basata sui turni e sulle posizioni assegnate. Potrebbe essere creato un modulo in cui il supervisore può visualizzare l'occupazione corrente dei settori, i controllori assegnati e altre informazioni pertinenti. Inoltre, il supervisore dovrebbe avere la possibilità di apportare modifiche ai turni e alle posizioni aperte, come cambiare i controllori assegnati o aggiungere/rimuovere posizioni, per gestire in modo ottimale le risorse e far fronte a situazioni impreviste.
 \end{enumerate}
