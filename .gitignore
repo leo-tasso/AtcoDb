@@ -661,3 +661,4 @@ TSWLatexianTemp*
 
 # xwatermark package
 *.xwm
+.DS_Store
